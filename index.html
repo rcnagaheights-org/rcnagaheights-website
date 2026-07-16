@@ -6,10 +6,7 @@
   <meta name="description" content="Rotary Club of Naga Heights &mdash; a community of leaders serving Naga City through education, health, environment, and livelihood projects. Discover our DiskwenTulong Card program, service projects, and how to get involved.">
   <link rel="canonical" href="https://rcnagaheights.org/">
   <meta name="theme-color" content="#0c3c7c">
-  <!-- NOTE: Google Drive direct-link workaround for the favicon. Google has been known to
-       rate-limit/block this pattern for hotlinking over time -- if it ever stops showing,
-       re-host on a dedicated image host (e.g. imgbb.com) and swap the URL below. -->
-  <link rel="icon" type="image/png" href="/rotary-logo.png">
+  <link rel="icon" type="image/png" href="/assets/rotary-logo.png">
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Rotary Club of Naga Heights">
@@ -46,12 +43,14 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
 .eyebrow{letter-spacing:.16em;text-transform:uppercase}
 .hero-slide{opacity:0;transition:opacity 1s}.hero-slide.active{opacity:1}.lift{transition:.25s}.lift:hover{transform:translateY(-5px);box-shadow:0 18px 40px #0c3c7c22}
 .modal-hidden{display:none!important}.nav-link.active,a.active{background:#eff6ff;color:#0c3c7c}.social-svg{width:25px;height:25px;fill:currentColor}
+.fwt-tag{position:relative;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:#f7a81b;color:#0c3c7c;font-style:italic;font-weight:700;font-size:1rem;height:2.75rem;min-width:6.5rem;padding:0 1.1rem 0 1.25rem;border-radius:.4rem 0 0 .4rem}
+.fwt-tag::after{content:'';position:absolute;right:-.85rem;top:0;width:0;height:0;border-top:1.375rem solid transparent;border-bottom:1.375rem solid transparent;border-left:.85rem solid #f7a81b}
   </style>
  </head>
  <body data-template-id="__page-root" style="background: rgb(255, 255, 255);">
 <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b shadow-md">
-   <nav class="max-w-7xl mx-auto h-[74px] px-4 sm:px-6 flex items-center justify-between"><a href="/" class="flex items-center gap-3"><!-- TODO: temporary stand-in for the real Canva-exported logo; replace once exported -->
-<img data-template-id="nav-logo" class="canva-image w-11 h-11" src="/rotary-logo.png" alt="Rotary Club of Naga Heights logo"><b data-template-id="nav-club-name" class="canva-text text-[#0c3c7c] text-lg" style="color: rgb(12, 60, 124); font-weight: 700; font-style: normal; font-size: 18px;">Rotary Club of Naga Heights</b></a>
+   <nav class="max-w-7xl mx-auto h-[74px] px-4 sm:px-6 flex items-center justify-between"><a href="/" class="flex items-center">
+<img data-template-id="nav-logo" class="h-10 lg:h-11 w-auto" src="/assets/header-logo.png" alt="Rotary Club of Naga Heights"></a>
     <div class="hidden xl:flex gap-1"><a data-template-id="nav-about" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f] active" href="/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">About Rotary</a> <a data-template-id="nav-rotarians" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/rotarians/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">The Rotarians</a> <a data-template-id="nav-projects" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/projects/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">Service Projects</a> <a data-template-id="nav-foundation" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/foundation/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">The Foundation</a> <a data-template-id="nav-contact" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/contact/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">Contact Us</a>
     </div><button id="menu-button" class="xl:hidden w-11 h-11 grid place-items-center"><i data-lucide="menu"></i></button>
    </nav>
@@ -60,40 +59,15 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
   </header>
   <main class="pt-[74px]">
 
-    <section class="relative min-h-[650px] flex items-center overflow-hidden">
+    <section class="relative min-h-[650px] overflow-hidden">
      <div class="absolute inset-0"><img data-template-id="hero-bg-1" class="canva-image hero-slide active absolute inset-0 w-full h-full object-cover" src="https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1920" alt="Volunteers distributing aid at an outdoor donation center, promoting social impact and diversity."> <img data-template-id="hero-bg-2" class="canva-image hero-slide absolute inset-0 w-full h-full object-cover" src="https://images.pexels.com/photos/5029923/pexels-photo-5029923.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1920" alt="A joyful group of volunteers planting a tree outdoors, symbolizing community and teamwork."> <img data-template-id="hero-bg-3" class="canva-image hero-slide absolute inset-0 w-full h-full object-cover" src="https://images.pexels.com/photos/6129507/pexels-photo-6129507.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1920" alt="A diverse team of doctors and nurses smiling confidently in a hospital setting.">
       <div class="absolute inset-0 bg-gradient-to-r from-[#071f47]/95 via-[#17458f]/80 to-[#17458f]/30"></div>
      </div>
-     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 w-full">
+     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-10 w-full min-h-[650px] flex flex-col justify-center">
+      <img data-template-id="hero-eyebrow" class="max-w-full w-[300px] h-[143px] sm:w-[630px] sm:h-[260px] lg:w-[840px] lg:h-[340px] mb-8 lg:mb-10" src="/assets/banner.png" alt="Create Lasting Impact">
       <div class="max-w-3xl">
-       <div class="flex items-center gap-3 mb-6"><span data-template-id="hero-eyebrow" class="canva-tag eyebrow px-4 py-2 rounded-full font-extrabold text-xs bg-[#f7a81b] text-[#0c3c7c]" style="color: rgb(12, 60, 124); font-weight: 800; font-style: normal; font-size: 12px;">Create Lasting Impact</span> <!-- TODO: temporary stand-in for the real Canva-exported logo; replace once exported -->
-<img data-template-id="hero-logo" class="canva-image w-12 h-12" src="/rotary-logo.png" alt="Rotary Club of Naga Heights logo">
-       </div>
-       <h1 data-template-id="hero-title" class="canva-text text-white font-extrabold text-4xl sm:text-6xl leading-tight mb-5" style="color: rgb(255, 255, 255); font-weight: 800; font-style: normal; font-size: 48px;">Building a Stronger Naga, One Act of Service at a Time</h1>
-       <p data-template-id="hero-subtitle" class="canva-text text-blue-50 text-lg" style="color: rgb(239, 246, 255); font-weight: 400; font-style: normal; font-size: 18px;">Neighbors, professionals, and community leaders serving together.</p>
-      </div>
-     </div>
-    </section>
-    <section class="w-full py-24 lg:py-32 relative overflow-hidden" style="background: linear-gradient(135deg, #f4f7fc 0%, #e8f0ff 50%, #f4f7fc 100%);"><!-- Rotary wheel watermarks -->
-     <div class="absolute top-8 left-8 w-32 h-32 text-[#17458f] opacity-5" style="pointer-events: none;"><i data-lucide="rotcw" style="width: 100%; height: 100%;"></i>
-     </div>
-     <div class="absolute bottom-12 right-12 w-40 h-40 text-[#17458f] opacity-5" style="pointer-events: none;"><i data-lucide="rotcw" style="width: 100%; height: 100%;"></i>
-     </div><!-- Decorative gold accent lines -->
-     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#f7a81b] to-transparent opacity-30"></div>
-     <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#f7a81b] to-transparent opacity-30"></div>
-     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
-      <div class="text-center mb-12 lg:mb-16"><span data-template-id="four-way-test-eyebrow" class="canva-text inline-block eyebrow text-xs font-bold text-[#f7a81b] px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm mb-4" style="color: rgb(247, 168, 27); font-weight: 700; font-style: normal; font-size: 12px;">Our Guiding Principle</span>
-       <h2 data-template-id="four-way-test-heading" class="canva-text text-4xl lg:text-5xl font-bold text-[#0c3c7c] mb-6" style="color: rgb(12, 60, 124); font-weight: 700; font-style: normal; font-size: 40px;">The Rotary Four-Way Test</h2>
-       <p data-template-id="four-way-test-intro" class="canva-text text-slate-600 leading-8 max-w-2xl mx-auto" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">The Four-Way Test has guided Rotarians around the world for generations. It serves as a simple yet powerful ethical guide in our personal lives, our professions, and our service to the community.</p>
-      </div><!-- Premium floating card with image -->
-      <div class="flex justify-center">
-       <div class="w-full max-w-4xl transform transition-all duration-500 hover:scale-105 hover:shadow-2xl group">
-        <div class="rounded-[32px] bg-white border border-gray-100/50 shadow-lg overflow-hidden p-8 lg:p-12">
-         <div class="flex items-center justify-center min-h-[480px]"><!-- TODO: placeholder, replace with the real Four-Way Test graphic exported from Canva -->
-<img data-template-id="four-way-test-image" class="canva-image w-full h-auto max-w-[85%] transition-transform duration-500 group-hover:scale-110" loading="lazy" style="max-height: 100%; object-fit: contain;" src="https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="The Rotary Four-Way Test: Is it the truth? Is it fair to all concerned? Will it build goodwill and better friendships? Will it be beneficial to all concerned?">
-         </div>
-        </div>
-       </div>
+       <h1 data-template-id="hero-title" class="canva-text text-[#f7a81b] font-extrabold text-4xl sm:text-6xl leading-tight mb-5" style="color: rgb(247, 168, 27); font-weight: 800; font-style: normal; font-size: 48px;">Building a Stronger Community, One Act of Service at a Time</h1>
+       <p data-template-id="hero-subtitle" class="canva-text text-[#f7a81b] text-lg" style="color: rgb(247, 168, 27); font-weight: 400; font-style: normal; font-size: 18px;">Neighbors, professionals, and community leaders serving together.</p>
       </div>
      </div>
     </section>
@@ -103,6 +77,40 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
        <h2 data-template-id="about-heading" class="canva-text text-3xl font-bold text-[#0c3c7c] mt-3 mb-5" style="color: rgb(12, 60, 124); font-weight: 700; font-style: normal; font-size: 30px;">People of Action, Rooted in Naga</h2>
        <p data-template-id="about-body" class="canva-text text-slate-600 leading-7" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Rotary connects leaders and problem-solvers who act to create lasting change. The Rotary Club of Naga Heights applies these ideals through education, health, the environment, livelihoods, and fellowship.</p>
       </div><img data-template-id="about-image" class="canva-image w-full h-[420px] object-cover rounded-[2rem]" src="https://images.pexels.com/photos/6647037/pexels-photo-6647037.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Young volunteer helping senior man with walker near a parked car, symbolizing care and support.">
+     </div>
+    </section>
+    <section class="py-20">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div data-template-id="four-way-test-card" class="rounded-[2rem] bg-[#0c3c7c] p-8 lg:p-14 w-full min-h-[420px] flex flex-col items-center justify-center">
+       <div class="flex items-center justify-center gap-5 lg:gap-8 mb-8 lg:mb-10 flex-wrap text-center">
+        <div class="flex items-center gap-3 shrink-0">
+         <b data-template-id="four-way-test-brand" class="text-white font-extrabold text-3xl lg:text-4xl">Rotary</b>
+         <img src="/assets/rotary-logo.png" alt="" class="w-11 h-11 lg:w-14 lg:h-14">
+        </div>
+        <div class="text-left">
+         <h2 data-template-id="four-way-test-heading" class="text-[#f7a81b] font-extrabold text-3xl lg:text-5xl leading-tight">THE FOUR-WAY TEST</h2>
+         <p data-template-id="four-way-test-intro" class="text-white italic text-base lg:text-lg mt-1">Of the things we think, say or do:</p>
+        </div>
+       </div>
+       <div class="flex flex-col items-start space-y-5 lg:space-y-6">
+        <div class="flex items-center gap-4">
+         <span class="fwt-tag">first</span>
+         <p class="text-white text-lg lg:text-2xl">Is it the <b class="font-extrabold">TRUTH</b>?</p>
+        </div>
+        <div class="flex items-center gap-4">
+         <span class="fwt-tag">second</span>
+         <p class="text-white text-lg lg:text-2xl">Is it <b class="font-extrabold">FAIR</b> to all concerned?</p>
+        </div>
+        <div class="flex items-center gap-4">
+         <span class="fwt-tag">third</span>
+         <p class="text-white text-lg lg:text-2xl">Will it build <b class="font-extrabold">GOODWILL</b> and <b class="font-extrabold">BETTER FRIENDSHIPS</b>?</p>
+        </div>
+        <div class="flex items-center gap-4">
+         <span class="fwt-tag">fourth</span>
+         <p class="text-white text-lg lg:text-2xl">Will it be <b class="font-extrabold">BENEFICIAL</b> to all concerned?</p>
+        </div>
+       </div>
+      </div>
      </div>
     </section>
     <section class="py-20">
