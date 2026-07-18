@@ -117,9 +117,11 @@ explicit confirmation, per the QR-permanence note.
       field to every entry in assets/merchants/partners.json (required
       for the category-thumbnail UI to work at all), but these are
       Claude's best-guess mapping from business name/type, not
-      user-confirmed. Least confident: Aran & Co. (Retail), Bicol
-      Cladding (Services), Lift (Health & Wellness), Naga Slides
-      Inflatables (Services), Patron CamSur (Food & Dining)
+      user-confirmed. Aran & Co. confirmed as Food & Dining (was
+      guessed Retail — Retail now has 0 partners, so that tile no
+      longer renders). Still unconfirmed: Bicol Cladding (Services),
+      Lift (Health & Wellness), Naga Slides Inflatables (Services),
+      Patron CamSur (Food & Dining)
 - [ ] **`Logo.SFOM Law.JPG`** (assets/merchants/_unmatched/) still
       doesn't match any partner name — find out what this is
 - [ ] **Mendoza Law Office has no logo** — currently shows an
