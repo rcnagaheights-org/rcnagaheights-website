@@ -6,21 +6,25 @@ framework, no package.json. Every page is a self-contained .html file.
 
 ## Structure
 ```
-index.html               -> / (About Rotary / homepage)
-rotarians/index.html     -> /rotarians/  (Officers, members, president)
-projects/index.html      -> /projects/   (Service projects)
-diskwentulong/index.html -> /diskwentulong/ (DTC info + partner
-                             merchant directory — see docs/DTC-DESIGN.md)
-bulletin/index.html      -> /bulletin/   (exists, not linked in nav yet)
-contact/index.html       -> /contact/    (also holds "Get Involved")
+index.html            -> / (About Rotary / homepage)
+rotarians/index.html  -> /rotarians/  (Officers, members, president)
+projects/index.html   -> /projects/   (Service projects)
+foundation/index.html -> /foundation/ (Partner Merchants — still live;
+                          planned to be replaced by diskwentulong/, see
+                          docs/DTC-DESIGN.md, but that page is NOT built
+                          yet)
+bulletin/index.html   -> /bulletin/   (exists, not linked in nav yet)
+contact/index.html    -> /contact/    (also holds "Get Involved")
 assets/rotary-logo.png -> real logo file (was a Drive hotlink, now local)
 CNAME                  -> custom domain config, do not remove
 docs/DTC-DESIGN.md     -> full DiskwenTulong Card design detail
 docs/CONTENT-MANAGEMENT.md -> Google Drive content sync procedure
 ```
 
-There is no `foundation/` page — it was removed and replaced by
-`diskwentulong/`. Any lingering `/foundation/` reference is a bug.
+`foundation/` is still live and linked in nav on every page right now.
+Per docs/DTC-DESIGN.md it's planned to be replaced by `diskwentulong/`,
+but that page doesn't exist yet — do not remove or unlink `foundation/`
+until `diskwentulong/` is actually built and ready to take its place.
 
 Each page: own `<title>`/meta description/canonical/OG/Twitter Card/JSON-LD,
 shared header+nav+footer duplicated per file (no templating), page-specific
