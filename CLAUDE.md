@@ -6,15 +6,21 @@ framework, no package.json. Every page is a self-contained .html file.
 
 ## Structure
 ```
-index.html            -> / (About Rotary / homepage)
-rotarians/index.html  -> /rotarians/  (Officers, members, president)
-projects/index.html   -> /projects/   (Service projects)
-foundation/index.html -> /foundation/ (Get involved, Partner Merchants)
-bulletin/index.html   -> /bulletin/   (exists but NOT linked in nav yet)
-contact/index.html    -> /contact/
+index.html               -> / (About Rotary / homepage)
+rotarians/index.html     -> /rotarians/  (Officers, members, president)
+projects/index.html      -> /projects/   (Service projects)
+diskwentulong/index.html -> /diskwentulong/ (DTC info + partner
+                             merchant directory — see docs/DTC-DESIGN.md)
+bulletin/index.html      -> /bulletin/   (exists, not linked in nav yet)
+contact/index.html       -> /contact/    (also holds "Get Involved")
 assets/rotary-logo.png -> real logo file (was a Drive hotlink, now local)
-CNAME                 -> custom domain config, do not remove
+CNAME                  -> custom domain config, do not remove
+docs/DTC-DESIGN.md     -> full DiskwenTulong Card design detail
+docs/CONTENT-MANAGEMENT.md -> Google Drive content sync procedure
 ```
+
+There is no `foundation/` page — it was removed and replaced by
+`diskwentulong/`. Any lingering `/foundation/` reference is a bug.
 
 Each page: own `<title>`/meta description/canonical/OG/Twitter Card/JSON-LD,
 shared header+nav+footer duplicated per file (no templating), page-specific
@@ -25,17 +31,24 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
 (Libre Franklin + Playfair Display). Color tokens: --blue:#17458f
 --deep:#0c3c7c --gold:#f7a81b --mist:#f4f7fc
 
-## Current status (as of 2026-07-15)
-- Site migrated from Canva hosting to GitHub Pages, DNS live, HTTPS working.
-- Phase 1 (public informational site) in progress. Most content sections
-  still have PLACEHOLDER data (officer names, addresses, project photos) —
-  check for literal text like "Officer Name", "Address Here", "XXX" in
-  phone numbers before assuming content is real.
-- Phase 2 (DiskwenTulong Card program + real Digital Bulletin) is NOT built
-  yet. Do not re-add: DTC register/verify UI, DTC banner on homepage, or
-  the "Digital Bulletin" nav link — these were deliberately removed because
-  they pointed at a backend (Google Apps Script) that doesn't exist yet.
-  The bulletin page itself still exists at /bulletin/, just unlinked.
+## Current status
+- Site is live on GitHub Pages, DNS + HTTPS confirmed working.
+- Phase 1 (public site) in progress — most sections still have PLACEHOLDER
+  data (check for literal text like "Officer Name", "Address Here", "XXX"
+  in phone numbers before assuming content is real).
+- Phase 2 (DiskwenTulong Card + real Digital Bulletin) is NOT built yet.
+  Do not re-add DTC register/verify UI or the "Digital Bulletin" nav link
+  — deliberately removed, they pointed at a backend that doesn't exist.
+  For full current DTC design (which IS actively being planned, just not
+  built), see docs/DTC-DESIGN.md — do not assume it's simply "not
+  happening" just because the UI isn't live yet.
+
+## Content management (Google Drive)
+A Google Drive connector is available to you, but you have no
+background awareness of it — you only check Drive when the user asks
+(e.g. "run the content sync"). Full procedure, slot counts, and
+freshness rules are in docs/CONTENT-MANAGEMENT.md — read it before
+doing any Drive-related content work.
 
 ## Hard rules — do not reintroduce
 - No public membership application form anywhere
@@ -46,32 +59,48 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
 - Only one Four-Way Test section on the About page
 - Merchant-facing card verification must never expose cardholder
   email/phone/address — name + status + dates only
+- Full DTC-specific rules (expiration logic, member-only registration,
+  the two separate QR codes, category schema) are in docs/DTC-DESIGN.md
+  — check it before touching anything DTC-related
 
 ## Known placeholders / open TODOs
-- `assets/rotary-logo.png` is a temporary stand-in (Rotary Wheel favicon
-  reused as the logo) — swap for the real Canva-exported logo when ready
-- Four-Way Test graphic and the homepage OG/social banner are stock-photo
-  placeholders, not final art
-- Site-wide max-width is 1280px (`max-w-7xl`) everywhere, including header/
-  footer — looks fine on normal screens but leaves large empty margins on
-  very wide monitors. Widening it is a pending decision, not yet actioned,
-  and must be done consistently across ALL sections/pages if done at all
-  (header/footer alone would look inconsistent with content below them)
-- "Latest project" (homepage carousel + Projects page featured slot) is
-  manually curated HTML, not date-sorted. No data source exists yet for
-  real automatic sorting.
+- Confirm current status of logo/banner/Four-Way Test assets with the
+  user rather than assuming — these have changed more than once
+- Site-wide max-width (1280px, `max-w-7xl` everywhere) leaves large empty
+  margins on very wide monitors — a pending decision, not yet actioned;
+  must be done consistently across ALL sections if done at all
+- "Latest project" (homepage + Projects page) is manually curated HTML,
+  not date-sorted — no data source exists yet for real sorting
+
+## Keep this file updated
+After a change affecting "Current status" or "Known placeholders," update
+those sections as part of your commit — don't leave them stale. This file
+is only useful if it reflects reality.
+
+**Keep this file itself short.** If something needs more than a few lines
+to explain properly (like the DTC design), put it in its own file under
+docs/ and link to it from here instead of expanding this file in place.
+
+## Documentation versioning convention
+Applies to this file, anything under docs/, and Google Drive project docs
+if you have access to them:
+- MINOR changes (a clarification, one resolved decision) -> decimal bump:
+  v4 -> v4.1 -> v4.2
+- MAJOR changes (substantial rewrite, multiple sections) -> whole number:
+  v4.x -> v5
+Avoid separate "ADDENDUM" files for small changes, and avoid full
+rewrites for one-line updates.
 
 ## Verifying changes
-No build step and no test suite. Before considering an HTML edit done:
-- Extract and run each page's inline `<script>` through `node --check`
-  to catch JS syntax errors (there is no bundler to catch these otherwise)
-- Grep for `canva://` and `drive.google.com` — neither should ever appear;
-  both are dead references from the old Canva-hosted version
+No build step, no test suite. Before considering an HTML edit done:
+- Run each page's inline `<script>` through `node --check`
+- Grep for `canva://` and `drive.google.com` — neither should ever appear
 - Confirm internal links use trailing-slash paths (`/rotarians/`, not
   `/rotarians`) to match the folder+index.html structure GitHub Pages uses
 
 ## Fuller background
-More detailed history (why GitHub Pages was chosen over Canva, the planned
-Apps Script backend for Phase 2, full phase roadmap) lives in a Google
-Drive doc the user maintains outside this repo. Ask the user directly if
-you need that context — it isn't available to you automatically.
+Deeper project history and rationale (why GitHub Pages over Canva, full
+phase roadmap) lives in Google Drive docs the user maintains outside this
+repo — you now have Drive access, so you can read these directly rather
+than asking the user to explain them each time. DTC-specific design detail
+is additionally mirrored into docs/DTC-DESIGN.md for convenience.
