@@ -64,12 +64,31 @@ When a new upload would push a section past its slot count:
    what's actually been pulled into the repo so far
 
 ## Known real content already in Drive (as of 2026-07-18)
-- Partner Merchants: "DTC Partners.xlsx" (26 partners: name, discount/
-  commitment, Facebook link) + ~24 individual logo files
-- President: a real photo + name found in the "Welcome Banner" Branding
-  subfolder (not the President folder) — confirmed correct placement by
-  the user, don't assume folder name always matches expectation
-- Branding subfolders "RCNH Website.Recent Projects" and
-  "RCNH Website.Welcome Banner" contain real event/project photos
+- Partner Merchants: "DTC Partners.xlsx" (28 partners confirmed — see
+  Open Items below, an earlier note here said 26) + 27 individual logo
+  files (1 partner, Mendoza Law Office, has no logo yet). Pulled into
+  repo assets/merchants/ (logos + partners.json).
+- President: real photo (assets/president/president.png) plus a full
+  "Presidential Message.txt" (name, credentials, and welcome message —
+  pulled into assets/president/presidential-message.txt) — both now live
+  directly in the President folder.
+- Branding subfolder "RCNH Website.Hero Carousel" (renamed from "Welcome
+  Banner") contains the 3 real photos for the homepage's rotating hero
+  background (confirmed by the rename, not just inferred) — pulled into
+  assets/hero-carousel/.
+- Branding subfolder "RCNH Website.Recent Projects" contains 3 real
+  photos for the homepage "Recent Projects" carousel — pulled into
+  assets/recent-projects/ as-is; no per-photo captions/titles exist or
+  are needed.
+- "About Rotary" homepage photo — pulled into assets/about-rotary/.
 - Officers and Members, Service Projects, Contact Info folders were
   still empty as of last full scan — check again, this changes over time
+
+## Open items (from the 2026-07-18 content sync pass)
+- [ ] `Logo.SFOM Law.JPG` (in assets/merchants/_unmatched/) doesn't match
+  any partner name in DTC Partners.xlsx — confirm with the user what
+  this is before using it.
+- [ ] Mendoza Law Office (in the spreadsheet) has no logo file — need one
+  before it can display like the other partners.
+- [ ] None of the pulled assets are wired into live HTML yet — that's a
+  separate dev pass once the user confirms what's ready to go live.
