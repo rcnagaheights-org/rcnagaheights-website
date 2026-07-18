@@ -96,21 +96,23 @@ merchant becomes a Sheet edit, not a code push.
 partner cards) moved to the Contact page instead, as a new section
 below existing contact details.
 
-## Status update — 2026-07-18: /diskwentulong/ frontend built
+## Status update — 2026-07-18: /diskwentulong/ frontend built and LIVE
 
-Built as a NEW page at /diskwentulong/, NOT yet linked in nav and NOT
-replacing /foundation/ — that cutover still needs explicit user
-confirmation before it happens (see the QR-permanence note in §3).
-Category thumbnails + popup UI are done, fetching
-assets/merchants/partners.json client-side (no backend/Apps Script
-exists yet, so this is a static JSON file for now, not a live
+Built at /diskwentulong/. Category thumbnails + popup UI are done,
+fetching assets/merchants/partners.json client-side (no backend/Apps
+Script exists yet, so this is a static JSON file for now, not a live
 getPartners endpoint — swapping the fetch URL to a real endpoint later
 is a small change, same data shape).
 
+**Cutover completed 2026-07-18, per explicit user confirmation**:
+`/foundation/` has been removed entirely (deleted, no redirect — a
+visit now 404s) and every page's nav/footer now links
+"DiskwenTulong Card" -> /diskwentulong/ instead of "The Foundation" ->
+/foundation/. This IS the physical-card QR destination going forward
+(see §3) — do not restructure this page's URL/structure again without
+explicit confirmation, per the QR-permanence note.
+
 ## Open items
-- [ ] **Nav cutover decision**: when to replace `/foundation/`'s nav
-      link with `/diskwentulong/` and retire the old page — needs
-      explicit confirmation, not done automatically
 - [ ] **Category assignments need confirmation** — added a `category`
       field to every entry in assets/merchants/partners.json (required
       for the category-thumbnail UI to work at all), but these are
@@ -125,8 +127,8 @@ is a small change, same data shape).
       real logo
 - [ ] **"What is DTC" section copy is a first draft** — written by
       Claude to get the page functional, not reviewed/approved wording
-- [ ] Exact nav label wording for the DTC page link (once the cutover
-      decision above is made)
+- [ ] Nav label is currently "DiskwenTulong Card" (Claude's choice,
+      live now) — confirm this wording or change it
 - [ ] Build: Members sheet, getPartners endpoint (real backend — see
       docs/BACKEND-CAPABILITY-TEST.md, Claude cannot deploy Apps Script
       itself), /verify/ page
