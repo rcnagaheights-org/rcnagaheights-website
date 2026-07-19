@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v5 · Last updated: 2026-07-19
+Version: v5.1 · Last updated: 2026-07-19
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -196,13 +196,22 @@ items below for specific untested risks.
 - [x] **Cards batch tab headers** — confirmed 2026-07-19: both `TEST` and
       `2026` tabs have the correct 6-column header row.
 - [x] **getPartners endpoint + /verify/ page** — built 2026-07-19, see
-      status update above. Untested against the live backend (see below).
+      status update above.
 - [x] **Public read access gated behind Google login** — resolved
       2026-07-19: user redeployed the Web App as "Access: Anyone" (was
       "Anyone with a Google account"), so `/diskwentulong/` and
       `/verify/` no longer force a Google sign-in wall on ordinary
-      visitors/cashiers. Still untested against the live endpoint
-      (network blocked, see above).
+      visitors/cashiers.
+- [x] **End-to-end tested live, 2026-07-19 — CONFIRMED WORKING.** Full
+      round trip on the real deployment with Code.gs v4: registered
+      `DTC-TEST-00001` via `/register/` ("Card registered
+      successfully"), then verified it on `/verify/` — showed `ACTIVE`,
+      correct cardholder name, `registered_date` 2026-07-19,
+      `expiry_date` 2027-12-31, and the merchant dropdown populated from
+      the live `getPartners` data (not the static fallback). This is the
+      first real confirmation any of the DTC backend actually works —
+      previously only structurally verified, never live-tested (this
+      environment's network policy blocks `script.google.com` entirely).
 - [x] **Member auth on /register/ — tried twice, then dropped entirely
       (2026-07-19).** Full history moved to §3 (this item was getting
       long enough to duplicate it here). Short version: `Session.
@@ -250,9 +259,12 @@ items below for specific untested risks.
 - [ ] Confirm the physical-card-+-ID check is written into partner
       onboarding/MOA materials as a required procedure — not yet formally
       confirmed as of this writing
-- [ ] Test /diskwentulong/, /verify/, and /register/ fully against the
-      live backend before any physical card printing run — nothing has
-      been end-to-end tested yet (see status update above)
+- [x] **Test /register/ and /verify/ against the live backend** —
+      confirmed working 2026-07-19, see the end-to-end test item above.
+      Still worth a fuller pass (multiple cards/batches, an
+      already-registered card, an invalid card number, `/diskwentulong/`
+      itself once the Merchants sheet CSV is pasted in) before any real
+      physical card printing run, but the core round trip works.
 - [ ] dtc@rcnagaheights.org's remaining purpose, if any, now that client
       registration-confirmation emails are no longer part of the design
       (see §0)

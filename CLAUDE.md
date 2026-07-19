@@ -65,11 +65,13 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   authentication — this was tried twice (Session.getActiveUser(), then
   a Google Sign-In + ID-token flow) and both were dropped as too much
   setup complexity; see docs/DTC-DESIGN.md §3 before assuming this is a
-  bug or re-adding auth without checking that history first. None of
-  this has been end-to-end tested with real data yet — confirm it works
-  before printing/distributing any physical cards. The "Digital
-  Bulletin" nav link is still deliberately absent — that backend doesn't
-  exist.
+  bug or re-adding auth without checking that history first. Register +
+  verify confirmed working end-to-end 2026-07-19 (real test: registered
+  DTC-TEST-00001, then verified it showed ACTIVE with correct dates) —
+  still worth a fuller pass (multiple cards, invalid numbers,
+  already-registered cards) before any real physical card printing run.
+  The "Digital Bulletin" nav link is still deliberately absent — that
+  backend doesn't exist.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
