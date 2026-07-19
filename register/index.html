@@ -40,7 +40,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
      <div class="max-w-7xl mx-auto px-4 sm:px-6 max-w-2xl">
       <span class="eyebrow text-xs font-bold text-[#f7a81b]">Members Only</span>
       <h1 class="text-4xl font-bold text-[#0c3c7c] mt-3 mb-5">Register a DiskwenTulong Card</h1>
-      <p class="text-slate-600 text-lg leading-8">For Rotary Club of Naga Heights members registering a card on a client's behalf. You must be signed in to your own Google account in this browser — it's checked against the club's Members list before any registration is allowed. Only the client's full name and the card number printed on their physical card are collected; no client email, phone, or address is ever asked for.</p>
+      <p class="text-slate-600 text-lg leading-8">For Rotary Club of Naga Heights members registering a card on a client's behalf. Only the client's full name and the card number printed on their physical card are collected; no client email, phone, or address is ever asked for. Please only use this on behalf of an actual DiskwenTulong Card client.</p>
 
       <form id="register-form" class="mt-8 bg-white border rounded-2xl p-6 grid gap-4">
        <div>
@@ -51,7 +51,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
         <label for="card-number-input" class="block font-semibold text-sm mb-1">Card Number</label>
         <input id="card-number-input" type="text" required placeholder="DTC-2026-00001" class="w-full border rounded-lg px-4 py-3 text-lg" autocomplete="off">
        </div>
-       <button type="submit" class="bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold py-3 rounded-full transition-colors">Register Card</button>
+       <button id="register-submit-btn" type="submit" class="bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold py-3 rounded-full transition-colors">Register Card</button>
       </form>
 
       <div id="register-result" class="modal-hidden mt-8 rounded-xl p-5 border"></div>
@@ -123,18 +123,24 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-// This is the SEPARATE, domain-restricted deployment ("Access: Anyone
-// within rcnagaheights.org") of the same Code.gs -- used ONLY here, so
-// Session.getActiveUser() in registerCard_ requires an @rcnagaheights.org
-// sign-in before it ever runs. /diskwentulong/ and /verify/ intentionally
-// use the other, public "Anyone" deployment instead -- do not point this
-// page back at that one, and do not point those pages at this one.
-const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbwnx05DPZH-B7Va5sPgcQYtdrRc7F3p4OPUtEEmgqOHgfHCcqZikrX78RJjf-wfBB-Q/exec';
+// Simplified 2026-07-19 per user decision: no member identity is
+// captured at all for registration (dropped the Google Sign-In /
+// ID-token approach as too much setup overhead -- see
+// docs/DTC-DESIGN.md for the accepted tradeoff). This means anyone with
+// this URL and an UNREGISTERED card number can register a card -- the
+// only practical protections left are that card numbers are pre-printed
+// physical stock (not guessable in bulk) and this URL isn't publicly
+// promoted. Uses the SAME public "Access: Anyone" deployment as
+// /diskwentulong/ and /verify/ -- there is no longer a separate
+// registration-only deployment.
+const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC/exec';
+
 document.getElementById('register-form').addEventListener('submit', function(e){
   e.preventDefault();
   const fullName = document.getElementById('full-name-input').value.trim();
   const cardNumber = document.getElementById('card-number-input').value.trim();
   const resultBox = document.getElementById('register-result');
+  resultBox.classList.remove('modal-hidden');
   resultBox.className = 'mt-8 rounded-xl p-5 border bg-slate-50 text-slate-600 border-slate-200';
   resultBox.textContent = 'Registering…';
 
@@ -153,7 +159,7 @@ document.getElementById('register-form').addEventListener('submit', function(e){
     })
     .catch(() => {
       resultBox.className = 'mt-8 rounded-xl p-5 border bg-red-50 text-red-700 border-red-200';
-      resultBox.textContent = 'Could not reach the registration service. Please make sure you are signed in to Google and try again.';
+      resultBox.textContent = 'Could not reach the registration service. Please try again.';
     });
 });
 

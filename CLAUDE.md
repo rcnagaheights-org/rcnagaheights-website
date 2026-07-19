@@ -15,9 +15,10 @@ diskwentulong/index.html -> /diskwentulong/ (DTC info + partner merchant
 verify/index.html       -> /verify/  (public, no-index: partner-counter
                              card verification, printed at partner
                              counters per docs/DTC-DESIGN.md §4)
-register/index.html     -> /register/ (members-only, no-index: register
-                             a client's card — see docs/DTC-DESIGN.md §3
-                             for the untested cross-origin auth risk)
+register/index.html     -> /register/ (no-index: register a client's
+                             card — NO auth of any kind as of 2026-07-19,
+                             an accepted tradeoff, see docs/DTC-DESIGN.md
+                             §3 before assuming this is a bug)
 bulletin/index.html      -> /bulletin/   (exists, not linked in nav yet)
 contact/index.html       -> /contact/    (also holds "Get Involved")
 assets/rotary-logo.png -> real logo file (was a Drive hotlink, now local)
@@ -57,14 +58,18 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   "Most Recent Service Project" slot; the archive grid below is still
   placeholder — 5 more real projects exist in the Drive summary sheet
   but have no matching photos yet.
-- DTC backend is now live: an Apps Script Web App is deployed (2026-07-19),
-  and `/diskwentulong/` (live getPartners, falls back to the static
-  partners.json if empty/unreachable), `/verify/`, and `/register/` all
-  call it. None of this has been end-to-end tested with real data yet —
-  see docs/DTC-DESIGN.md's open items for the specific untested risk
-  (member auth on the registration flow) before printing/distributing
-  any physical cards. The "Digital Bulletin" nav link is still
-  deliberately absent — that backend doesn't exist.
+- DTC backend is now live: ONE Apps Script Web App deployment
+  ("Access: Anyone", 2026-07-19), shared by `/diskwentulong/` (live
+  getPartners, falls back to the static partners.json if empty/
+  unreachable), `/verify/`, and `/register/`. Registration has NO member
+  authentication — this was tried twice (Session.getActiveUser(), then
+  a Google Sign-In + ID-token flow) and both were dropped as too much
+  setup complexity; see docs/DTC-DESIGN.md §3 before assuming this is a
+  bug or re-adding auth without checking that history first. None of
+  this has been end-to-end tested with real data yet — confirm it works
+  before printing/distributing any physical cards. The "Digital
+  Bulletin" nav link is still deliberately absent — that backend doesn't
+  exist.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v3.1 · Last updated: 2026-07-19
+Version: v5 · Last updated: 2026-07-19
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -45,35 +45,46 @@ Each batch tab has the same columns:
 | `status` | UNREGISTERED / ACTIVE / SUSPENDED / EXPIRED |
 | `registered_date` | Set at registration |
 | `expiry_date` | Always the single fixed date from §1 |
-| `registered_by` | Email of the Rotary member who performed the registration (internal audit only — see §3; never shown on the verify page) |
+| `registered_by` | **No longer populated as of 2026-07-19 (v4) — see §3.** Column stays in the schema but is always left blank. |
 
 There is intentionally no `cardholder_email` or `cardholder_phone`
 column — see §3.
 
-## 3. Member-assisted registration — minimal client data, no DPO trigger
-Registration is performed BY a Rotary member on behalf of the
-cardholder/client, not self-service by the client. This keeps the
-member-accountability mechanism from the original design while
-minimizing what's collected about the client:
+## 3. Registration — minimal client data, no DPO trigger, no member identity check
+Only the **client/cardholder** provides anything, directly on
+`/register/`: **Full Name** and the **Card Number** printed on their
+physical card. No client email, phone, or address is collected
+anywhere in this flow — deliberate, to stay under the data-collection
+threshold that would otherwise trigger a Data Protection Officer (DPO)
+registration requirement. **No confirmation email is sent to the
+client after registration** — there is no client email on file to send
+it to.
 
-- The **registering member** signs in with Google. Deploy the
-  registration Web App as "Execute as: User accessing the app" +
-  "Access: Anyone with a Google account" so Apps Script can read the
-  signed-in member's real email natively, and check it against a
-  **Members** sheet (email, name, active status) before allowing the
-  registration to proceed. This is unchanged from the original design
-  and is still the actual fraud-prevention/accountability mechanism —
-  the member's email is recorded in `registered_by` for audit, but is
-  never shown publicly and never emailed anywhere.
-- The **client/cardholder** only ever provides two things: **Full Name**
-  and the **Card Number** printed on their physical card. No client
-  email, phone, or address is collected anywhere in this flow — this is
-  deliberate, to stay under the data-collection threshold that would
-  otherwise trigger a Data Protection Officer (DPO) registration
-  requirement.
-- **No confirmation email is sent to the client after registration** —
-  there is no client email on file to send it to. (This replaces the
-  original design's `sendRegistrationEmail_` step entirely.)
+**Member-accountability mechanism REMOVED, 2026-07-19 (accepted
+tradeoff, not an oversight).** The original design (and v2/v3 of this
+doc) required the registering member to sign in with Google — first via
+`Session.getActiveUser()` on a domain-restricted deployment, then via an
+explicit Google Identity Services Sign-In button with server-side ID
+token verification — checked against a **Members** sheet before
+allowing registration, with the member's email recorded in
+`registered_by` for internal audit. Both approaches were built and
+documented (see prior versions of this file), but the user judged the
+Google Cloud Console setup (OAuth Client ID, linking a GCP project to
+the Apps Script project) too much ongoing complexity to maintain, and
+explicitly chose to drop member identity capture entirely rather than
+pursue either mechanism further.
+
+**What this means in practice:** `/register/` has NO authentication of
+any kind. Anyone with the page's URL and an `UNREGISTERED` card number
+can register a card. The `Members` sheet and its allowlist check are
+gone from Code.gs entirely (v4). The only practical protections left
+are: (1) card numbers are pre-printed physical stock, not guessable or
+enumerable in bulk without an actual card in hand, and (2) `/register/`
+is not linked from site navigation (`noindex`, not in the nav — reached
+by whoever is told the URL). This is meaningfully weaker than the
+original design's fraud-prevention goal — if that matters more than the
+setup savings, revisit this decision before printing/distributing a
+real batch of cards.
 
 ## 4. Partner verification — two separate QR codes, do not confuse them
 1. **Printed on the physical card** -> `/diskwentulong/` — browsing/
@@ -186,47 +197,32 @@ items below for specific untested risks.
       `2026` tabs have the correct 6-column header row.
 - [x] **getPartners endpoint + /verify/ page** — built 2026-07-19, see
       status update above. Untested against the live backend (see below).
-- [ ] **UNTESTED, before any real card batch goes live: member auth on
-      /register/**. `registerCard_` in Code.gs identifies the registering
-      member via `Session.getActiveUser()`, which depends on the "Execute
-      as: User accessing the app" deployment setting. That's only
-      confirmed to work for a direct browser navigation to the `/exec`
-      URL while signed in to Google — a background `fetch()` POST from
-      a different origin (this site) may not carry that identity
-      correctly (third-party-cookie restrictions in modern browsers are
-      the specific risk). Test a real registration, with a real member
-      actually signed in, before trusting this for a real batch. If it
-      doesn't work, the fix is likely a client-side Google Identity
-      Services sign-in flow that gets an ID token and sends it
-      explicitly in the POST body, verified server-side — not something
-      Claude can deploy itself (see docs/BACKEND-CAPABILITY-TEST.md).
 - [x] **Public read access gated behind Google login** — resolved
       2026-07-19: user redeployed the Web App as "Access: Anyone" (was
       "Anyone with a Google account"), so `/diskwentulong/` and
       `/verify/` no longer force a Google sign-in wall on ordinary
       visitors/cashiers. Still untested against the live endpoint
       (network blocked, see above).
-- [x] **Two separate Web App deployments, split by access level** —
-      resolved 2026-07-19. Same underlying Code.gs, two deployments:
-      - **Public deployment** ("Access: Anyone") — used by
-        `/diskwentulong/` (`?action=partners`) and `/verify/`
-        (`?action=verify`). No Google sign-in required; matches the
-        user's explicit call that requiring a Google account here would
-        just be friction for cashiers/clients who have nothing to do
-        with the club's Google Workspace.
-      - **Registration deployment** ("Access: Anyone within
-        rcnagaheights.org", domain-restricted) — used ONLY by
-        `/register/` (`?action=register`). Forces sign-in with an
-        @rcnagaheights.org account before `Session.getActiveUser()` ever
-        runs — a real access-level guarantee, on top of (not instead of)
-        the Members-sheet allowlist check `registerCard_` already does
-        internally.
-      `register/index.html`'s `APPS_SCRIPT_URL` now points at the
-      registration deployment; `/diskwentulong/` and `/verify/` remain on
-      the public deployment. Still untested against the live
-      endpoints — network blocked in this environment. Confirm a real
-      registration works, with a real @rcnagaheights.org member account
-      actually signed in, before trusting this for any real card batch.
+- [x] **Member auth on /register/ — tried twice, then dropped entirely
+      (2026-07-19).** Full history moved to §3 (this item was getting
+      long enough to duplicate it here). Short version: `Session.
+      getActiveUser()` was confirmed broken for a cross-origin `fetch()`
+      call (live-tested, no sign-in prompt ever appeared); the follow-up
+      fix (Google Identity Services Sign-In button + server-side ID
+      token verification, Code.gs v3) was built and documented, but the
+      user then judged the Google Cloud Console setup (OAuth Client ID,
+      linking a GCP project) too much complexity to maintain, and chose
+      to drop member identity capture entirely instead (Code.gs v4). See
+      §3 for what this means in practice and the accepted tradeoff.
+      **Consolidation:** only ONE Web App deployment is needed now
+      ("Access: Anyone"), shared by all three actions — the separate
+      domain-restricted registration deployment from the v3 attempt is
+      no longer used by anything.
+      `register/index.html`'s `APPS_SCRIPT_URL` now points at the same
+      public deployment as `/diskwentulong/` and `/verify/`. Still
+      untested against the live endpoint (network blocked in this
+      environment) — confirm a real registration works before trusting
+      this for any real card batch.
 - [ ] **Merchant-selection tracking, documented but not implemented.**
       §4 says the `/verify/` dropdown ("Which merchant are you at?") is
       "for usage tracking" — but Code.gs v2's `verifyCard_`/
