@@ -1,5 +1,5 @@
 # Content Management — Google Drive Sync
-Version: v1 · Last updated: 2026-07-18
+Version: v1.1 · Last updated: 2026-07-19
 
 ## Availability
 A Google Drive connector IS available to you. Use it to read/pull
@@ -63,32 +63,53 @@ When a new upload would push a section past its slot count:
    itself tidy and unambiguous about what's current, separate from
    what's actually been pulled into the repo so far
 
-## Known real content already in Drive (as of 2026-07-18)
-- Partner Merchants: "DTC Partners.xlsx" (28 partners confirmed — see
-  Open Items below, an earlier note here said 26) + 27 individual logo
-  files (1 partner, Mendoza Law Office, has no logo yet). Pulled into
-  repo assets/merchants/ (logos + partners.json).
+## Known real content already in Drive (as of 2026-07-19)
+- Partner Merchants: "DTC Partners.xlsx" (28 partners) + logo files for
+  all 28, including Mendoza Law Office (was missing a logo — resolved
+  2026-07-19, see Open items). Jamer Law's logo was replaced 2026-07-19
+  with a newer upload. Pulled into repo assets/merchants/ (logos +
+  partners.json), and wired live on /diskwentulong/.
 - President: real photo (assets/president/president.png) plus a full
   "Presidential Message.txt" (name, credentials, and welcome message —
   pulled into assets/president/presidential-message.txt) — both now live
-  directly in the President folder.
-- Branding subfolder "RCNH Website.Hero Carousel" (renamed from "Welcome
-  Banner") contains the 3 real photos for the homepage's rotating hero
-  background (confirmed by the rename, not just inferred) — pulled into
-  assets/hero-carousel/.
+  directly in the President folder, and live on /rotarians/.
+- Officers and Members: "Membership Roster RY 2026-27.xlsx" — 29 real
+  people with distinct positions, pulled 2026-07-19 and wired live on
+  /rotarians/ (13 officers/chairs + 15 members, President handled
+  separately). Still plain hardcoded HTML per person, not data-driven —
+  future roster changes mean re-editing rotarians/index.html by hand.
+- Branding subfolder "RCNH Website.Hero Carousel" contains the 3 real
+  photos for the homepage's rotating hero background — refreshed
+  2026-07-19 with a new set (replacing the 2026-07-17 set), pulled into
+  assets/hero-carousel/ and live on the homepage. A newer Drive
+  requirement doc (2026-07-19) asks for mobile-crop exports of each
+  photo via a `<picture>` element — not built, no mobile crops uploaded
+  yet, tracked as an open item below.
 - Branding subfolder "RCNH Website.Recent Projects" contains 3 real
   photos for the homepage "Recent Projects" carousel — pulled into
   assets/recent-projects/ as-is; no per-photo captions/titles exist or
   are needed.
 - "About Rotary" homepage photo — pulled into assets/about-rotary/.
-- Officers and Members, Service Projects, Contact Info folders were
-  still empty as of last full scan — check again, this changes over time
+- Service Projects: "Service Projects.xlsx" lists 6 real projects, but
+  only one photo exists in the folder (a generic "Banner.png", matched
+  by its visible school signage to "BINHI ng Kinabukasan"). That one
+  project + photo is now live on /projects/'s "Most Recent Service
+  Project" slot; the other 5 projects have no photos yet and the archive
+  grid below is still placeholder.
+- Contact Info folder was still empty as of last full scan — check
+  again, this changes over time.
 
-## Open items (from the 2026-07-18 content sync pass)
-- [ ] `Logo.SFOM Law.JPG` (in assets/merchants/_unmatched/) doesn't match
-  any partner name in DTC Partners.xlsx — confirm with the user what
-  this is before using it.
-- [ ] Mendoza Law Office (in the spreadsheet) has no logo file — need one
-  before it can display like the other partners.
-- [ ] None of the pulled assets are wired into live HTML yet — that's a
-  separate dev pass once the user confirms what's ready to go live.
+## Open items
+- [ ] Hero carousel mobile crops — a Drive requirement doc (added
+  2026-07-19) asks for a second, portrait-ish export of each of the 3
+  hero photos for a `<picture>`-element mobile layout (baked-in text
+  would get cropped badly on narrow screens using the desktop crop
+  as-is). No mobile crop files exist in Drive yet, and the two Drive
+  docs describing this disagree on the exact target aspect ratio (4:5
+  vs 1:1 square) — confirm with the user which is current before
+  building anything.
+- [ ] 5 of the 6 real service projects in Service Projects.xlsx still
+  have no matching photo — archive grid on /projects/ is still
+  placeholder pending more uploads.
+- [ ] Rotarians roster (29 people) is hardcoded HTML, not data-driven —
+  same scaling concern flagged in CLAUDE.md for Service Projects.

@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v2 · Last updated: 2026-07-18
+Version: v2.1 · Last updated: 2026-07-19
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -164,11 +164,10 @@ explicit confirmation, per the QR-permanence note.
       longer renders). Still unconfirmed: Bicol Cladding (Services),
       Lift (Health & Wellness), Naga Slides Inflatables (Services),
       Patron CamSur (Food & Dining)
-- [ ] **`Logo.SFOM Law.JPG`** (assets/merchants/_unmatched/) still
-      doesn't match any partner name — find out what this is
-- [ ] **Mendoza Law Office has no logo** — currently shows an
-      initial-letter fallback avatar on /diskwentulong/ instead of a
-      real logo
+- [x] **`Logo.SFOM Law.JPG`** — resolved 2026-07-19: confirmed by the
+      user to be Mendoza Law Office's logo. Moved to
+      assets/merchants/mendozalaw.jpg and wired into partners.json.
+- [x] **Mendoza Law Office has no logo** — resolved 2026-07-19, see above.
 - [ ] **"What is DTC" section copy is a first draft** — written by
       Claude to get the page functional, not reviewed/approved wording
 - [ ] Nav label is currently "DiskwenTulong Card" (Claude's choice,

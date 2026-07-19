@@ -210,10 +210,10 @@ function openCategory(cat, items){
     const card = document.createElement('div');
     card.className = 'border rounded-xl p-4 flex items-start gap-4';
     const logoHtml = p.logo
-      ? `<img src="/assets/merchants/${encodeURIComponent(p.logo)}" alt="${escapeHtml(p.name)}" class="w-14 h-14 rounded-lg object-cover shrink-0">`
+      ? `<img src="/assets/merchants/${encodeURIComponent(p.logo)}" alt="${escapeHtml(p.name)}" class="w-14 h-14 rounded-lg object-contain bg-white border p-1 shrink-0">`
       : `<div class="w-14 h-14 rounded-lg bg-[#17458f] text-white grid place-items-center font-bold text-lg shrink-0">${escapeHtml(p.name.charAt(0))}</div>`;
     const fbHtml = p.facebook_url
-      ? `<a href="${escapeHtml(p.facebook_url)}" target="_blank" rel="noopener noreferrer" class="text-[#17458f] text-sm mt-2 inline-block hover:underline">Facebook &rarr;</a>`
+      ? `<a href="${escapeHtml(p.facebook_url)}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="w-7 h-7 rounded-full bg-[#1877f2] text-white grid place-items-center mt-2 hover:scale-110 transition-transform"><svg viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;fill:currentColor"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.025 4.388 11.016 10.125 11.927v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.696 4.533-4.696 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.089 24 18.098 24 12.073z"></path></svg></a>`
       : '';
     card.innerHTML = `${logoHtml}<div><h4 class="font-bold text-[#0c3c7c]">${escapeHtml(p.name)}</h4><p class="text-slate-600 text-sm mt-1">${escapeHtml(p.commitment || '')}</p>${fbHtml}</div>`;
     list.appendChild(card);

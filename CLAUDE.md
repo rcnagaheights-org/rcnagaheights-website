@@ -36,8 +36,21 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
 ## Current status
 - Site is live on GitHub Pages, DNS + HTTPS confirmed working.
 - Phase 1 (public site) in progress — most sections still have PLACEHOLDER
-  data (check for literal text like "Officer Name", "Address Here", "XXX"
-  in phone numbers before assuming content is real).
+  data (check for literal text like "Address Here", "XXX" in phone
+  numbers before assuming content is real).
+- Rotarians page now has the full real roster (29 people, from a Drive
+  membership sheet) instead of 4 hardcoded name slots — still plain
+  hardcoded HTML, not data-driven; re-editing this file by hand is
+  expected for future roster changes until/unless it's rebuilt data-driven.
+- Homepage hero is a rotating carousel of 3 real photos (confirmed with
+  the user 2026-07-19 — earlier guidance calling it a single static image
+  was superseded). A Drive requirement doc (2026-07-19) asks for separate
+  mobile-crop exports of each hero photo via a `<picture>` element — not
+  built yet, no mobile crop images exist in Drive yet either.
+- Projects page has one real project (BINHI ng Kinabukasan) in the
+  "Most Recent Service Project" slot; the archive grid below is still
+  placeholder — 5 more real projects exist in the Drive summary sheet
+  but have no matching photos yet.
 - Phase 2 (DiskwenTulong Card + real Digital Bulletin) is NOT built yet.
   Do not re-add DTC register/verify UI or the "Digital Bulletin" nav link
   — deliberately removed, they pointed at a backend that doesn't exist.
