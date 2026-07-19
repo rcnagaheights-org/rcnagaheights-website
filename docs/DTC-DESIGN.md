@@ -155,15 +155,11 @@ visit now 404s) and every page's nav/footer now links
 explicit confirmation, per the QR-permanence note.
 
 ## Open items
-- [ ] **Category assignments need confirmation** — added a `category`
-      field to every entry in assets/merchants/partners.json (required
-      for the category-thumbnail UI to work at all), but these are
-      Claude's best-guess mapping from business name/type, not
-      user-confirmed. Aran & Co. confirmed as Food & Dining (was
-      guessed Retail — Retail now has 0 partners, so that tile no
-      longer renders). Still unconfirmed: Bicol Cladding (Services),
-      Lift (Health & Wellness), Naga Slides Inflatables (Services),
-      Patron CamSur (Food & Dining)
+- [x] **Category assignments** — all 28 entries in
+      assets/merchants/partners.json now user-confirmed (2026-07-19):
+      Aran & Co. -> Food & Dining, Bicol Cladding -> Services,
+      Lift -> Health & Wellness, Naga Slides Inflatables -> Services,
+      Patron CamSur -> Food & Dining. No longer guesses.
 - [x] **`Logo.SFOM Law.JPG`** — resolved 2026-07-19: confirmed by the
       user to be Mendoza Law Office's logo. Moved to
       assets/merchants/mendozalaw.jpg and wired into partners.json.
