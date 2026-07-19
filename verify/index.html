@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Verify a DiskwenTulong Card | Rotary Club of Naga Heights</title>
+  <meta name="description" content="Verify a DiskwenTulong Card (DTC) at your business counter: check cardholder name, card status, and expiry.">
+  <link rel="canonical" href="https://rcnagaheights.org/verify/">
+  <meta name="theme-color" content="#0c3c7c">
+  <link rel="icon" type="image/png" href="/assets/rotary-logo.png">
+  <meta name="robots" content="noindex">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Rotary Club of Naga Heights">
+  <meta property="og:title" content="Verify a DiskwenTulong Card | Rotary Club of Naga Heights">
+  <meta property="og:description" content="Verify a DiskwenTulong Card (DTC) at your business counter: check cardholder name, card status, and expiry.">
+  <meta property="og:url" content="https://rcnagaheights.org/verify/">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&amp;family=Playfair+Display:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+:root{--blue:#17458f;--deep:#0c3c7c;--gold:#f7a81b;--mist:#f4f7fc}*{box-sizing:border-box}
+body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{font-family:'Playfair Display',serif}
+.eyebrow{letter-spacing:.16em;text-transform:uppercase}
+.modal-hidden{display:none!important}.nav-link.active,a.active{background:#eff6ff;color:#0c3c7c}.social-svg{width:25px;height:25px;fill:currentColor}
+  </style>
+ </head>
+ <body data-template-id="__page-root" style="background: rgb(255, 255, 255);">
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b shadow-md">
+   <nav class="max-w-7xl mx-auto h-[112px] px-4 sm:px-6 flex items-center justify-between"><a href="/" class="flex items-center">
+<img class="h-20 lg:h-24 w-auto" src="/assets/header-logo.png" alt="Rotary Club of Naga Heights"></a>
+    <div class="hidden xl:flex gap-1"><a class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/">About Rotary</a> <a class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/rotarians/">The Rotarians</a> <a class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/projects/">Service Projects</a> <a class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/diskwentulong/">DiskwenTulong Card</a> <a class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/contact/">Contact Us</a>
+    </div><button id="menu-button" class="xl:hidden w-11 h-11 grid place-items-center"><i data-lucide="menu"></i></button>
+   </nav>
+   <div id="mobile-menu" class="hidden xl:hidden border-t bg-white px-5 py-3 grid"><a class="nav-link text-left py-3 border-b" href="/">About Rotary</a> <a class="nav-link text-left py-3 border-b" href="/rotarians/">The Rotarians</a> <a class="nav-link text-left py-3 border-b" href="/projects/">Service Projects</a> <a class="nav-link text-left py-3 border-b" href="/diskwentulong/">DiskwenTulong Card</a> <a class="nav-link text-left py-3" href="/contact/">Contact Us</a>
+   </div>
+  </header>
+  <main class="pt-[112px]">
+
+    <section class="py-20">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 max-w-2xl">
+      <span class="eyebrow text-xs font-bold text-[#f7a81b]">Partner Counter Tool</span>
+      <h1 class="text-4xl font-bold text-[#0c3c7c] mt-3 mb-5">Verify a DiskwenTulong Card</h1>
+      <p class="text-slate-600 text-lg leading-8">Type the card number printed on the customer's DiskwenTulong Card, select your business, then verify. Always compare the name shown below against the physical card AND a valid government ID before honoring any discount.</p>
+
+      <form id="verify-form" class="mt-8 bg-white border rounded-2xl p-6 grid gap-4">
+       <div>
+        <label for="card-number-input" class="block font-semibold text-sm mb-1">Card Number</label>
+        <input id="card-number-input" type="text" required placeholder="DTC-2026-00001" class="w-full border rounded-lg px-4 py-3 text-lg" autocomplete="off">
+       </div>
+       <div>
+        <label for="merchant-select" class="block font-semibold text-sm mb-1">Which merchant are you at?</label>
+        <select id="merchant-select" required class="w-full border rounded-lg px-4 py-3">
+         <option value="">Loading merchants&hellip;</option>
+        </select>
+       </div>
+       <button type="submit" class="bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold py-3 rounded-full transition-colors">Verify Card</button>
+      </form>
+
+      <div id="verify-result" class="modal-hidden mt-8 bg-white border rounded-2xl p-6"></div>
+     </div>
+    </section>
+
+  </main>
+<footer id="global-footer" class="bg-[#071f47] text-white py-12">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+     <div>
+      <h3 class="text-[#f7a81b] font-bold text-xl mb-4">Address</h3>
+      <div class="flex items-start gap-3"><i data-lucide="map-pin" class="w-5 h-5 mt-1 text-[#f7a81b]"></i>
+       <div>
+        <p class="font-semibold">Club Meeting Venue</p>
+        <p class="text-blue-200 mt-1">Address Here</p>
+        <p class="text-blue-200 mt-1">Naga City, Camarines Sur</p>
+       </div>
+      </div>
+     </div>
+     <div>
+      <h3 class="text-[#f7a81b] font-bold text-xl mb-4">Contact</h3>
+      <div class="space-y-4">
+       <div class="flex items-start gap-3"><i data-lucide="mail" class="w-5 h-5 mt-1 text-[#f7a81b]"></i> <a href="mailto:info@rcnagaheights.org" class="text-blue-200 hover:text-white">info@rcnagaheights.org</a>
+       </div>
+       <div class="flex items-start gap-3"><i data-lucide="phone" class="w-5 h-5 mt-1 text-[#f7a81b]"></i> <a href="tel:+63XXXXXXXXXX" class="text-blue-200 hover:text-white">+63 XXX XXX XXXX</a>
+       </div>
+      </div>
+     </div>
+     <div>
+      <h3 class="text-[#f7a81b] font-bold text-xl mb-4">Social Media</h3>
+      <div class="flex gap-4"><a href="https://web.facebook.com/rotarynagaheights" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="w-11 h-11 rounded-full bg-[#1877f2] text-white grid place-items-center hover:scale-110 transition-transform">
+        <svg class="social-svg" viewBox="0 0 24 24" aria-hidden="true">
+         <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.025 4.388 11.016 10.125 11.927v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.696 4.533-4.696 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.089 24 18.098 24 12.073z"></path>
+        </svg></a> <a href="https://www.instagram.com/rc_nagaheights/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="w-11 h-11 rounded-full bg-gradient-to-br from-[#f7a81b] via-[#dc2743] to-[#405de6] text-white grid place-items-center hover:scale-110 transition-transform">
+        <svg class="social-svg" viewBox="0 0 24 24" aria-hidden="true">
+         <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2zm-.2 2A3.6 3.6 0 004 7.6v8.8A3.6 3.6 0 007.6 20h8.8a3.6 3.6 0 003.6-3.6V7.6A3.6 3.6 0 0016.4 4H7.6zm9.65 1.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5zM12 7a5 5 0 110 10 5 5 0 010-10zm0 2a3 3 0 100 6 3 3 0 000-6z"></path>
+        </svg></a>
+      </div>
+     </div>
+     <div>
+      <h3 class="text-[#f7a81b] font-bold text-xl mb-4">Site Map</h3>
+      <nav class="grid gap-2"><a class="text-left text-blue-200 hover:text-white" href="/">About Rotary</a> <a class="text-left text-blue-200 hover:text-white" href="/rotarians/">The Rotarians</a> <a class="text-left text-blue-200 hover:text-white" href="/projects/">Service Projects</a> <a class="text-left text-blue-200 hover:text-white" href="/diskwentulong/">DiskwenTulong Card</a> <a class="text-left text-blue-200 hover:text-white" href="/contact/">Contact Us</a>
+      </nav>
+     </div>
+    </div>
+    <div class="text-center border-t border-white/20 mt-10 pt-6">
+     <p>© 2026 Rotary Club of Naga Heights</p>
+     <p class="text-blue-200 mt-1">Service Above Self</p>
+    </div>
+   </div>
+  </footer>
+  <script>
+document.getElementById('menu-button').onclick=()=>document.getElementById('mobile-menu').classList.toggle('hidden');
+(function(){
+  document.querySelectorAll('a[href^="tel:"]').forEach(a=>{
+    if(a.getAttribute('href').includes('XXX')){
+      const span=document.createElement('span');
+      span.className=a.className;
+      span.textContent=a.textContent;
+      a.replaceWith(span);
+    }
+  });
+})();
+
+function escapeHtml(str){
+  const div=document.createElement('div');
+  div.textContent=str;
+  return div.innerHTML;
+}
+
+const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC/exec';
+
+const STATUS_STYLES = {
+  'ACTIVE': 'bg-green-50 text-green-700 border-green-200',
+  'EXPIRED': 'bg-amber-50 text-amber-700 border-amber-200',
+  'SUSPENDED': 'bg-red-50 text-red-700 border-red-200',
+  'UNREGISTERED': 'bg-slate-50 text-slate-600 border-slate-200',
+  'INVALID CARD': 'bg-red-50 text-red-700 border-red-200'
+};
+
+function populateMerchantOptions(names){
+  const select = document.getElementById('merchant-select');
+  select.innerHTML = '<option value="">Select a merchant&hellip;</option>' +
+    names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+}
+
+function loadMerchantNamesFromFlat(partners){
+  const names = [...new Set(partners.map(p => p.name).filter(Boolean))].sort();
+  populateMerchantOptions(names);
+}
+
+fetch(`${APPS_SCRIPT_URL}?action=partners`)
+  .then(r => r.json())
+  .then(grouped => {
+    const names = Object.values(grouped || {}).flat().map(p => p.name).filter(Boolean);
+    if (!names.length) throw new Error('Live partner list is empty');
+    populateMerchantOptions([...new Set(names)].sort());
+  })
+  .catch(() => {
+    fetch('/assets/merchants/partners.json')
+      .then(r => r.json())
+      .then(loadMerchantNamesFromFlat)
+      .catch(() => {
+        document.getElementById('merchant-select').innerHTML = '<option value="">Merchant list unavailable</option>';
+      });
+  });
+
+document.getElementById('verify-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const cardNumber = document.getElementById('card-number-input').value.trim();
+  const merchant = document.getElementById('merchant-select').value;
+  const resultBox = document.getElementById('verify-result');
+  resultBox.classList.remove('modal-hidden');
+  resultBox.innerHTML = '<p class="text-slate-500">Checking&hellip;</p>';
+
+  fetch(`${APPS_SCRIPT_URL}?action=verify&cardNumber=${encodeURIComponent(cardNumber)}&merchant=${encodeURIComponent(merchant)}`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) throw new Error(data.error);
+      const styles = STATUS_STYLES[data.status] || 'bg-slate-50 text-slate-600 border-slate-200';
+      resultBox.innerHTML = `
+        <div class="border rounded-xl p-5 ${styles}">
+         <p class="text-xs font-bold uppercase tracking-wide">Status</p>
+         <p class="text-2xl font-bold mt-1">${escapeHtml(data.status || 'UNKNOWN')}</p>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4 mt-4">
+         <div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Cardholder Name</p><p class="text-lg mt-1">${escapeHtml(data.cardholder_name || '—')}</p></div>
+         <div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Card Number</p><p class="text-lg mt-1">${escapeHtml(data.card_number || cardNumber)}</p></div>
+         <div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Registered</p><p class="text-lg mt-1">${escapeHtml(data.registered_date || '—')}</p></div>
+         <div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Expires</p><p class="text-lg mt-1">${escapeHtml(data.expiry_date || '—')}</p></div>
+        </div>
+        <p class="text-sm text-slate-500 mt-4">Compare this name against the physical card and a valid government ID before honoring any discount.</p>
+      `;
+    })
+    .catch(() => {
+      resultBox.innerHTML = '<p class="text-red-700">Could not verify this card right now. Please try again, or contact the club if this keeps happening.</p>';
+    });
+});
+
+lucide.createIcons();
+</script>
+ </body></html>

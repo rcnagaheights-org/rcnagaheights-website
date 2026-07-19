@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v2.1 · Last updated: 2026-07-19
+Version: v3.1 · Last updated: 2026-07-19
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -154,6 +154,24 @@ visit now 404s) and every page's nav/footer now links
 (see §4) — do not restructure this page's URL/structure again without
 explicit confirmation, per the QR-permanence note.
 
+## Status update — 2026-07-19: backend deployed, all 3 frontend pieces wired
+
+The Apps Script Web App is deployed and its `/exec` URL has been wired into
+the site:
+- `/diskwentulong/` now fetches `getPartners_()` live, falling back to the
+  static `assets/merchants/partners.json` if the live response errors OR
+  comes back empty (the Merchants tab has no data rows yet as of this
+  writing, so the static file is still what's actually showing).
+- `/verify/` built: card number + required merchant dropdown (per §4),
+  calls `?action=verify`, shows name/card_number/status/dates only.
+- `/register/` built: full name + card number only, POSTs to
+  `?action=register`.
+
+**None of this has been tested against the live endpoint** — this
+environment's network policy blocks `script.google.com` entirely, so
+Claude could not verify a single request/response end-to-end. See open
+items below for specific untested risks.
+
 ## Open items
 - [x] **Category assignments** — all 28 entries in
       assets/merchants/partners.json now user-confirmed (2026-07-19):
@@ -164,21 +182,81 @@ explicit confirmation, per the QR-permanence note.
       user to be Mendoza Law Office's logo. Moved to
       assets/merchants/mendozalaw.jpg and wired into partners.json.
 - [x] **Mendoza Law Office has no logo** — resolved 2026-07-19, see above.
+- [x] **Cards batch tab headers** — confirmed 2026-07-19: both `TEST` and
+      `2026` tabs have the correct 6-column header row.
+- [x] **getPartners endpoint + /verify/ page** — built 2026-07-19, see
+      status update above. Untested against the live backend (see below).
+- [ ] **UNTESTED, before any real card batch goes live: member auth on
+      /register/**. `registerCard_` in Code.gs identifies the registering
+      member via `Session.getActiveUser()`, which depends on the "Execute
+      as: User accessing the app" deployment setting. That's only
+      confirmed to work for a direct browser navigation to the `/exec`
+      URL while signed in to Google — a background `fetch()` POST from
+      a different origin (this site) may not carry that identity
+      correctly (third-party-cookie restrictions in modern browsers are
+      the specific risk). Test a real registration, with a real member
+      actually signed in, before trusting this for a real batch. If it
+      doesn't work, the fix is likely a client-side Google Identity
+      Services sign-in flow that gets an ID token and sends it
+      explicitly in the POST body, verified server-side — not something
+      Claude can deploy itself (see docs/BACKEND-CAPABILITY-TEST.md).
+- [x] **Public read access gated behind Google login** — resolved
+      2026-07-19: user redeployed the Web App as "Access: Anyone" (was
+      "Anyone with a Google account"), so `/diskwentulong/` and
+      `/verify/` no longer force a Google sign-in wall on ordinary
+      visitors/cashiers. Still untested against the live endpoint
+      (network blocked, see above).
+- [x] **Two separate Web App deployments, split by access level** —
+      resolved 2026-07-19. Same underlying Code.gs, two deployments:
+      - **Public deployment** ("Access: Anyone") — used by
+        `/diskwentulong/` (`?action=partners`) and `/verify/`
+        (`?action=verify`). No Google sign-in required; matches the
+        user's explicit call that requiring a Google account here would
+        just be friction for cashiers/clients who have nothing to do
+        with the club's Google Workspace.
+      - **Registration deployment** ("Access: Anyone within
+        rcnagaheights.org", domain-restricted) — used ONLY by
+        `/register/` (`?action=register`). Forces sign-in with an
+        @rcnagaheights.org account before `Session.getActiveUser()` ever
+        runs — a real access-level guarantee, on top of (not instead of)
+        the Members-sheet allowlist check `registerCard_` already does
+        internally.
+      `register/index.html`'s `APPS_SCRIPT_URL` now points at the
+      registration deployment; `/diskwentulong/` and `/verify/` remain on
+      the public deployment. Still untested against the live
+      endpoints — network blocked in this environment. Confirm a real
+      registration works, with a real @rcnagaheights.org member account
+      actually signed in, before trusting this for any real card batch.
+- [ ] **Merchant-selection tracking, documented but not implemented.**
+      §4 says the `/verify/` dropdown ("Which merchant are you at?") is
+      "for usage tracking" — but Code.gs v2's `verifyCard_`/
+      `logVerification_` never receives or stores the selected merchant
+      (the Verifications tab schema is just `timestamp, card_number,
+      result` — the `merchant_name_selected` column from the original
+      v1 design was dropped when v2 simplified the schema). `/verify/`'s
+      frontend still collects and sends `merchant` as a query param
+      (forward-compatible, harmless), but nothing on the backend uses it
+      today. Decide whether to add it back to Code.gs + the
+      Verifications tab, or drop the requirement from §4.
+- [ ] **Merchants tab needs the prepared CSV pasted in** — Claude
+      prepared a 28-row import (merchant_id/business_name/category/
+      offer_details/facebook_url/logo_file_id filled in;
+      contact_person/contact_number/website_url/address intentionally
+      blank per user decision; moa_start_date/date_added 2026-07-01,
+      status Active for all) — sent to the user 2026-07-19, not yet
+      confirmed pasted in.
 - [ ] **"What is DTC" section copy is a first draft** — written by
       Claude to get the page functional, not reviewed/approved wording
 - [ ] Nav label is currently "DiskwenTulong Card" (Claude's choice,
       live now) — confirm this wording or change it
-- [ ] Build: Cards batch tabs + Members sheet, getPartners endpoint,
-      /verify/ page (real backend — see docs/BACKEND-CAPABILITY-TEST.md
-      and the "DTC Backend — Guide & Requirements" doc + Code.gs in the
-      Drive "Backend (DiskwenTulong Card)" folder; Claude cannot deploy
-      Apps Script itself)
 - [ ] User is creating a `TEST` batch tab for testing before any real
-      batch goes live (per §2)
+      batch goes live (per §2) — header row confirmed, no card rows yet
 - [ ] Confirm the physical-card-+-ID check is written into partner
       onboarding/MOA materials as a required procedure — not yet formally
       confirmed as of this writing
-- [ ] Test /diskwentulong/ fully before any physical card printing run
+- [ ] Test /diskwentulong/, /verify/, and /register/ fully against the
+      live backend before any physical card printing run — nothing has
+      been end-to-end tested yet (see status update above)
 - [ ] dtc@rcnagaheights.org's remaining purpose, if any, now that client
       registration-confirmation emails are no longer part of the design
       (see §0)

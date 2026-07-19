@@ -221,29 +221,57 @@ function openCategory(cat, items){
   document.getElementById('merchant-modal').classList.remove('modal-hidden');
 }
 
-fetch('/assets/merchants/partners.json')
-  .then(r => r.json())
-  .then(partners => {
-    const grid = document.getElementById('category-grid');
-    grid.innerHTML = '';
-    let rendered = 0;
-    CATEGORY_ORDER.forEach(cat => {
-      const items = partners.filter(p => p.category === cat);
-      if (!items.length) return;
-      rendered++;
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'lift bg-white p-8 rounded-2xl border text-center';
-      btn.innerHTML = `<i data-lucide="${CATEGORY_ICONS[cat] || 'grid'}" class="w-10 h-10 mx-auto text-[#17458f] mb-4"></i><h3 class="font-bold text-lg text-[#0c3c7c]">${escapeHtml(cat)}</h3><p class="text-slate-500 mt-1 text-sm">${items.length} partner${items.length > 1 ? 's' : ''}</p>`;
-      btn.onclick = () => openCategory(cat, items);
-      grid.appendChild(btn);
-    });
-    if (!rendered) grid.innerHTML = '<p class="col-span-full text-center text-slate-500">No partners listed yet.</p>';
-    lucide.createIcons();
-  })
-  .catch(() => {
-    document.getElementById('category-grid').innerHTML = '<p class="col-span-full text-center text-slate-500">Partner list is temporarily unavailable.</p>';
+const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC/exec';
+
+function renderCategoryGrid(grouped){
+  const grid = document.getElementById('category-grid');
+  grid.innerHTML = '';
+  let rendered = 0;
+  CATEGORY_ORDER.forEach(cat => {
+    const items = grouped[cat] || [];
+    if (!items.length) return;
+    rendered++;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'lift bg-white p-8 rounded-2xl border text-center';
+    btn.innerHTML = `<i data-lucide="${CATEGORY_ICONS[cat] || 'grid'}" class="w-10 h-10 mx-auto text-[#17458f] mb-4"></i><h3 class="font-bold text-lg text-[#0c3c7c]">${escapeHtml(cat)}</h3><p class="text-slate-500 mt-1 text-sm">${items.length} partner${items.length > 1 ? 's' : ''}</p>`;
+    btn.onclick = () => openCategory(cat, items);
+    grid.appendChild(btn);
   });
+  if (!rendered) grid.innerHTML = '<p class="col-span-full text-center text-slate-500">No partners listed yet.</p>';
+  lucide.createIcons();
+}
+
+function groupByCategory(partners){
+  const grouped = {};
+  partners.forEach(p => {
+    const cat = p.category || 'Other';
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(p);
+  });
+  return grouped;
+}
+
+function isEmptyGrouped(grouped){
+  return !grouped || typeof grouped !== 'object' || Object.keys(grouped).every(k => !grouped[k] || !grouped[k].length);
+}
+
+function loadStaticPartners(){
+  fetch('/assets/merchants/partners.json')
+    .then(r => r.json())
+    .then(partners => renderCategoryGrid(groupByCategory(partners)))
+    .catch(() => {
+      document.getElementById('category-grid').innerHTML = '<p class="col-span-full text-center text-slate-500">Partner list is temporarily unavailable.</p>';
+    });
+}
+
+fetch(`${APPS_SCRIPT_URL}?action=partners`)
+  .then(r => r.json())
+  .then(grouped => {
+    if (isEmptyGrouped(grouped)) throw new Error('Live partner list is empty');
+    renderCategoryGrid(grouped);
+  })
+  .catch(loadStaticPartners);
 
 lucide.createIcons();
 </script>
