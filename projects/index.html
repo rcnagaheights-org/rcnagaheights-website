@@ -65,11 +65,13 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
        <div class="rounded-[2rem] overflow-hidden mt-3 bg-slate-100">
         <img id="featured-image" class="w-full aspect-video object-cover" src="" alt="">
        </div>
-       <div class="mt-6 max-w-2xl">
+       <div class="mt-6">
         <p id="featured-category" class="text-xs font-bold uppercase tracking-wide text-[#17458f] mb-2"></p>
-        <h1 id="featured-title" class="text-3xl sm:text-5xl font-bold text-[#0c3c7c]"></h1>
-        <p id="featured-desc" class="text-base sm:text-lg text-slate-600 mt-4"></p>
-        <button id="hero-share-btn" type="button" class="mt-5 inline-flex items-center gap-2 bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold px-5 py-2.5 rounded-full transition-colors"><i data-lucide="share-2" class="w-4 h-4"></i> Share</button>
+        <div class="flex items-center gap-4 flex-wrap">
+         <h1 id="featured-title" class="text-3xl sm:text-5xl font-bold text-[#0c3c7c]"></h1>
+         <button id="hero-share-btn" type="button" class="inline-flex items-center gap-2 bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold px-5 py-2.5 rounded-full transition-colors"><i data-lucide="share-2" class="w-4 h-4"></i> Share</button>
+        </div>
+        <p id="featured-desc" class="text-base sm:text-lg text-slate-600 mt-4 text-justify"></p>
        </div>
       </div>
       <p id="featured-empty" class="modal-hidden text-slate-500 py-10">No projects yet — check back soon.</p>
