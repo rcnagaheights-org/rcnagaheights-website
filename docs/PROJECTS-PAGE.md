@@ -1,12 +1,17 @@
-# Service Projects Page — Workflow & Design Detail
-Version: v1 · Last updated: 2026-07-20
+# Service Projects Page — Workflow & Design Detail (SUPERSEDED)
+Version: v1.1 · Last updated: 2026-07-20
 
 ## Status
-Layout/interaction decisions below are built and live. Content (real
-photos for the 5 archived projects) is still pending — see CLAUDE.md's
-Known Placeholders section.
+**SUPERSEDED as of 2026-07-20 by docs/SERVICE-PROJECTS-DESIGN.md.**
+§1-3 below describe a hand-coded single-hero + `archive-card`-grid
+design that no longer exists in `projects/index.html` — it was fully
+replaced by a data-driven page organized by Rotary's Areas of Focus /
+Avenues of Service. Kept here for history only; do not treat §1-3 as
+current. **§4 (Share button) and §5 still apply** — the new page
+carried forward the same `shareProject()` mechanism and lightbox
+pattern unchanged, just fed by different data.
 
-## 1. Succession/retirement workflow — manual, no CMS
+## 1. Succession/retirement workflow — manual, no CMS (HISTORICAL — see docs/SERVICE-PROJECTS-DESIGN.md §3-4 for the current logic)
 There is no data source or CMS for projects — the "Most Recent Service
 Project" hero and the "Other Projects" archive grid are both hand-
 written HTML in `projects/index.html`. When a new project launches:
@@ -22,7 +27,7 @@ the current scale (single digits of projects), but won't scale
 gracefully past roughly 15-20 without a real data source. Not a problem
 to solve now, just a known ceiling.
 
-## 2. Image sizing — one photo per project, two derived sizes
+## 2. Image sizing — one photo per project, two derived sizes (HISTORICAL)
 Each project is handed over as ONE raw photo. Two sizes are generated
 from it (by Claude, when adding the project) — the club never needs to
 prepare more than one file:
@@ -35,7 +40,7 @@ prepare more than one file:
   thumbnail would waste bandwidth on every visitor once a project
   retires into the archive grid, especially on mobile.
 
-## 3. Archive grid → lightbox on click
+## 3. Archive grid → lightbox on click (HISTORICAL — `.archive-card`/`data-title`/`data-img` no longer exist; current carousel markup is in docs/SERVICE-PROJECTS-DESIGN.md §2, §5)
 Each `.archive-card` div carries `data-title` and `data-img` (the
 thumbnail's full-size counterpart, not necessarily identical to the
 thumbnail file — see §2) and is keyboard-accessible (`role="button"
@@ -73,7 +78,13 @@ above.
 
 ## 5. Known test limitation (not a production issue)
 This repo's sandboxed dev environment blocks `images.pexels.com` (the
-placeholder stock photos still used in the archive grid) and
+placeholder stock photos this old design's archive grid used) and
 `cdn.jsdelivr.net` (Lucide icons), so neither renders when testing
 locally in that environment. Confirmed working with a real same-origin
-image (`/assets/service-projects/binhi-ng-kinabukasan.png`) instead.
+image instead — at the time this was written, that was
+`/assets/service-projects/binhi-ng-kinabukasan.png`; that exact file no
+longer exists (moved/renamed to
+`/assets/service-projects/areas-of-focus/binhi-ng-kinabukasan.jpg` as
+part of the 2026-07-20 rework), but the same testing approach (swap in
+any real same-origin image) still applies and was used again for the
+new design — see docs/SERVICE-PROJECTS-DESIGN.md.

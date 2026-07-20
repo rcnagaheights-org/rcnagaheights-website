@@ -1,5 +1,5 @@
 # Content Management — Google Drive Sync
-Version: v1.1 · Last updated: 2026-07-19
+Version: v1.2 · Last updated: 2026-07-20
 
 ## Availability
 A Google Drive connector IS available to you. Use it to read/pull
@@ -49,7 +49,7 @@ sync" or "scan drive." When asked to do this, follow the procedure below.
 | About Rotary | 1 |
 | Four-Way Test | 1 |
 | Recent Projects | 3 (homepage carousel) |
-| Projects Archive | 4 (Service Projects grid) |
+| Service Projects | No fixed count as of the 2026-07-20 data-driven rework — every project in the "Service Projects Tracker" Sheet with a `category` and `date` filled in renders somewhere on the page (Featured, or one of the two category carousels). See docs/SERVICE-PROJECTS-DESIGN.md, not this table, for the current logic. |
 | President | 1 |
 | Officer/Member headshots | 1:1 per person, no shared limit |
 | Merchant logos | 1:1 per business, no shared limit |
@@ -90,12 +90,18 @@ When a new upload would push a section past its slot count:
   assets/recent-projects/ as-is; no per-photo captions/titles exist or
   are needed.
 - "About Rotary" homepage photo — pulled into assets/about-rotary/.
-- Service Projects: "Service Projects.xlsx" lists 6 real projects, but
-  only one photo exists in the folder (a generic "Banner.png", matched
-  by its visible school signage to "BINHI ng Kinabukasan"). That one
-  project + photo is now live on /projects/'s "Most Recent Service
-  Project" slot; the other 5 projects have no photos yet and the archive
-  grid below is still placeholder.
+- Service Projects: superseded 2026-07-20 by a proper "Service Projects
+  Tracker" Google Sheet (columns: project_name, category, description,
+  date, image_filename) plus two Drive subfolders, "Areas of Focus" and
+  "Avenues of Service," matching Rotary's own classification — see
+  docs/SERVICE-PROJECTS-DESIGN.md for the full schema and logic, this
+  is Drive-sync context only. 6 real rows exist in the Tracker; only
+  BINHI NG KINABUKASAN has both `category` and `date` filled in (the
+  other 5 are missing one or both — NOT primarily a missing-photo
+  problem, see SERVICE-PROJECTS-DESIGN.md §6 for the exact per-row
+  gaps). BINHI's photo is pulled into
+  assets/service-projects/areas-of-focus/ and live on /projects/ as the
+  Featured project.
 - Contact Info folder was still empty as of last full scan — check
   again, this changes over time.
 
@@ -108,8 +114,10 @@ When a new upload would push a section past its slot count:
   docs describing this disagree on the exact target aspect ratio (4:5
   vs 1:1 square) — confirm with the user which is current before
   building anything.
-- [ ] 5 of the 6 real service projects in Service Projects.xlsx still
-  have no matching photo — archive grid on /projects/ is still
-  placeholder pending more uploads.
+- [ ] 5 of the 6 real service projects in the "Service Projects Tracker"
+  Sheet are missing `category` and/or `date` (not just a photo) — see
+  docs/SERVICE-PROJECTS-DESIGN.md §6 for the exact per-row punch list.
+  These fields need filling in by hand; no Sheets-cell-write tool is
+  available to do it from here.
 - [ ] Rotarians roster (29 people) is hardcoded HTML, not data-driven —
   same scaling concern flagged in CLAUDE.md for Service Projects.
