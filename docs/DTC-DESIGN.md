@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v5.1 · Last updated: 2026-07-19
+Version: v6 · Last updated: 2026-07-19
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -45,40 +45,60 @@ Each batch tab has the same columns:
 | `status` | UNREGISTERED / ACTIVE / SUSPENDED / EXPIRED |
 | `registered_date` | Set at registration |
 | `expiry_date` | Always the single fixed date from §1 |
-| `registered_by` | **No longer populated as of 2026-07-19 (v4) — see §3.** Column stays in the schema but is always left blank. |
+| `registered_by` | Email of the @rcnagaheights.org Google account that performed the registration — see §3. Internal audit only, never shown on the verify page. |
 
 There is intentionally no `cardholder_email` or `cardholder_phone`
 column — see §3.
 
-## 3. Registration — minimal client data, no DPO trigger, no member identity check
-Only the **client/cardholder** provides anything, directly on
-`/register/`: **Full Name** and the **Card Number** printed on their
-physical card. No client email, phone, or address is collected
-anywhere in this flow — deliberate, to stay under the data-collection
-threshold that would otherwise trigger a Data Protection Officer (DPO)
-registration requirement. **No confirmation email is sent to the
-client after registration** — there is no client email on file to send
-it to.
+## 3. Registration — minimal client data, no DPO trigger, domain-restricted sign-in
+Only the **client/cardholder** provides `/register/`'s two form fields:
+**Full Name** and the **Card Number** printed on their physical card. No
+client email, phone, or address is collected anywhere in this flow —
+deliberate, to stay under the data-collection threshold that would
+otherwise trigger a Data Protection Officer (DPO) registration
+requirement. **No confirmation email is sent to the client after
+registration** — there is no client email on file to send it to.
 
-**Member-accountability mechanism REMOVED, 2026-07-19 (accepted
-tradeoff, not an oversight).** The original design (and v2/v3 of this
-doc) required the registering member to sign in with Google — first via
-`Session.getActiveUser()` on a domain-restricted deployment, then via an
-explicit Google Identity Services Sign-In button with server-side ID
-token verification — checked against a **Members** sheet before
-allowing registration, with the member's email recorded in
-`registered_by` for internal audit. Both approaches were built and
-documented (see prior versions of this file), but the user judged the
-Google Cloud Console setup (OAuth Client ID, linking a GCP project to
-the Apps Script project) too much ongoing complexity to maintain, and
-explicitly chose to drop member identity capture entirely rather than
-pursue either mechanism further.
+**Member-accountability mechanism — history of 3 attempts, current state
+CONFIRMED WORKING as of 2026-07-19:**
+1. `Session.getActiveUser()` on a domain-restricted deployment — live-
+   tested and confirmed broken. A background `fetch()` POST can't
+   trigger the interactive Google sign-in a domain-restricted deployment
+   requires, so the request was rejected before Code.gs ever ran.
+2. An explicit Google Identity Services Sign-In button + server-side ID
+   token verification, checked against a **Members** sheet allowlist —
+   built and documented, but the user judged the Google Cloud Console
+   setup (OAuth Client ID, linking a GCP project to the Apps Script
+   project) too much ongoing complexity at the time, and dropped member
+   identity capture entirely instead (this was v4 — `/register/` briefly
+   had NO authentication of any kind).
+3. **Current, as of 2026-07-19: the user went through the Cloud Console
+   setup after all** (OAuth consent screen configured as "Internal" —
+   restricts to `@rcnagaheights.org` Workspace accounts only — plus a
+   Web application OAuth Client ID with Authorized JavaScript origin
+   `https://rcnagaheights.org`). `/register/` has the Sign In With
+   Google button again; `Code.gs` (v5) verifies the resulting ID token's
+   audience and `@rcnagaheights.org` domain via `verifyIdToken_()`. NO
+   separate Members-sheet allowlist this time — the "Internal" consent
+   screen setting itself is the domain restriction, so any
+   `@rcnagaheights.org` Workspace account can register a card, not just
+   a specific vetted subset. Add a Members-sheet check back later if
+   that finer restriction is ever wanted.
 
-**What this means in practice:** `/register/` has NO authentication of
-any kind. Anyone with the page's URL and an `UNREGISTERED` card number
-can register a card. The `Members` sheet and its allowlist check are
-gone from Code.gs entirely (v4). The only practical protections left
-are: (1) card numbers are pre-printed physical stock, not guessable or
+**Deployment note, important if this ever breaks again:** unlike
+attempt 2, this does NOT need a separate domain-restricted deployment.
+Real auth now happens INSIDE the script via `verifyIdToken_`, so the one
+existing "Access: Anyone" deployment (shared with `/diskwentulong/` and
+`/verify/`) works for `/register/` too — a domain-restricted deployment
+would reject the unauthenticated `fetch()` at Google's access layer
+before this code ever runs, which is exactly what broke attempt 1.
+
+**Historical note on the accepted-tradeoff window:** for a period on
+2026-07-19, between attempts 2 and 3, `/register/` had no authentication
+of any kind — anyone with the page's URL and an `UNREGISTERED` card
+number could register a card. That window is now closed. The only
+practical protections when un-authenticated were: (1) card numbers are
+pre-printed physical stock, not guessable or
 enumerable in bulk without an actual card in hand, and (2) `/register/`
 is not linked from site navigation (`noindex`, not in the nav — reached
 by whoever is told the URL). This is meaningfully weaker than the
@@ -212,26 +232,23 @@ items below for specific untested risks.
       first real confirmation any of the DTC backend actually works —
       previously only structurally verified, never live-tested (this
       environment's network policy blocks `script.google.com` entirely).
-- [x] **Member auth on /register/ — tried twice, then dropped entirely
-      (2026-07-19).** Full history moved to §3 (this item was getting
-      long enough to duplicate it here). Short version: `Session.
-      getActiveUser()` was confirmed broken for a cross-origin `fetch()`
-      call (live-tested, no sign-in prompt ever appeared); the follow-up
-      fix (Google Identity Services Sign-In button + server-side ID
-      token verification, Code.gs v3) was built and documented, but the
-      user then judged the Google Cloud Console setup (OAuth Client ID,
-      linking a GCP project) too much complexity to maintain, and chose
-      to drop member identity capture entirely instead (Code.gs v4). See
-      §3 for what this means in practice and the accepted tradeoff.
-      **Consolidation:** only ONE Web App deployment is needed now
-      ("Access: Anyone"), shared by all three actions — the separate
-      domain-restricted registration deployment from the v3 attempt is
-      no longer used by anything.
-      `register/index.html`'s `APPS_SCRIPT_URL` now points at the same
-      public deployment as `/diskwentulong/` and `/verify/`. Still
-      untested against the live endpoint (network blocked in this
-      environment) — confirm a real registration works before trusting
-      this for any real card batch.
+- [ ] **Member auth on /register/ — 3rd attempt built 2026-07-19, NOT
+      YET LIVE-TESTED.** Full history in §3 (this item was getting long
+      enough to duplicate it here). Short version: attempt 1
+      (`Session.getActiveUser()`) confirmed broken live; attempt 2
+      (Sign-In button + Members-sheet allowlist) was built but the
+      Cloud Console setup got dropped as too much complexity at the
+      time (Code.gs v4 had NO auth for a while, since confirmed working
+      live in that no-auth state); attempt 3 (current, Code.gs v5) —
+      user completed the Cloud Console setup after all, OAuth consent
+      screen set to "Internal" (restricts to `@rcnagaheights.org`),
+      Sign-In button back on `/register/`, `verifyIdToken_` checks the
+      token's audience + domain. **Only ONE Web App deployment
+      needed** ("Access: Anyone"), shared by all three actions — real
+      auth happens inside the code, not at Google's deployment-access
+      layer. **Not yet confirmed against the live backend** — user still
+      needs to paste Code.gs v5 in and redeploy the existing deployment
+      as a new version before this can be tested for real.
 - [ ] **Merchant-selection tracking, documented but not implemented.**
       §4 says the `/verify/` dropdown ("Which merchant are you at?") is
       "for usage tracking" — but Code.gs v2's `verifyCard_`/
