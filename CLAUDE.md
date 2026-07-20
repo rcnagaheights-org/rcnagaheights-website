@@ -58,9 +58,18 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   expected for future roster changes until/unless it's rebuilt data-driven.
 - Homepage hero is a rotating carousel of 3 real photos (confirmed with
   the user 2026-07-19 — earlier guidance calling it a single static image
-  was superseded). A Drive requirement doc (2026-07-19) asks for separate
-  mobile-crop exports of each hero photo via a `<picture>` element — not
-  built yet, no mobile crop images exist in Drive yet either.
+  was superseded). Each slide now renders as a single `object-cover`
+  image (2026-07-20) — the earlier treatment (a heavily blurred/scaled
+  duplicate layered behind an `object-contain` copy, plus a navy
+  gradient tint left over from when the hero still had overlaid text)
+  was removed after it caused visible blur bars on narrower viewports
+  and muted/darkened the photos with no text left to justify the tint.
+  Tradeoff: `object-cover` crops on narrow screens, so the "Create
+  Lasting Impact" branding baked into the bottom of each photo gets cut
+  off on mobile. A Drive requirement doc (2026-07-19) asks for separate
+  mobile-crop exports of each hero photo via a `<picture>` element,
+  which would properly solve this — not built yet, no mobile crop
+  images exist in Drive yet either.
 - Projects page has one real project (BINHI ng Kinabukasan) in the
   "Most Recent Service Project" slot; the archive grid below is still
   placeholder — 5 more real projects exist in the Drive summary sheet
