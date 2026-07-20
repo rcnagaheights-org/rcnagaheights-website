@@ -65,13 +65,15 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   authentication has been tried 3 times: Session.getActiveUser() (broken
   for cross-origin fetch), a Google Sign-In + ID-token flow (dropped as
   too much Cloud Console setup at the time, leaving a no-auth window),
-  then re-added a 3rd time (2026-07-19, current state): Google Sign-In
-  restricted to @rcnagaheights.org via the OAuth consent screen's
-  "Internal" setting + ID-token verification in Code.gs v5. See
-  docs/DTC-DESIGN.md §3 for the full history before assuming the
-  current state is a bug or changing it again. NOT yet
-  live-tested in this auth-restored state — user still needs to paste
-  Code.gs v5 into Apps Script and redeploy. Register + verify were
+  then re-added a 3rd time (2026-07-19): Google Sign-In restricted to
+  @rcnagaheights.org via the OAuth consent screen's "Internal" setting +
+  ID-token verification. Live-tested that attempt (Code.gs v5) — sign-in
+  worked but registration still failed on a `email_verified` boolean-vs-
+  string type mismatch inside `verifyIdToken_`; fixed in Code.gs v6
+  (current state, not yet re-tested — user still needs to paste v6 in
+  and redeploy). See docs/DTC-DESIGN.md §3 for the full history before
+  assuming the current state is a bug or changing it again. Register +
+  verify were
   confirmed working end-to-end 2026-07-19 in the prior no-auth state
   (real test: registered DTC-TEST-00001, then verified it showed ACTIVE
   with correct dates) — still worth a fuller pass (multiple cards,

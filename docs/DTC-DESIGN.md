@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v6 · Last updated: 2026-07-19
+Version: v6.1 · Last updated: 2026-07-19
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -232,23 +232,31 @@ items below for specific untested risks.
       first real confirmation any of the DTC backend actually works —
       previously only structurally verified, never live-tested (this
       environment's network policy blocks `script.google.com` entirely).
-- [ ] **Member auth on /register/ — 3rd attempt built 2026-07-19, NOT
-      YET LIVE-TESTED.** Full history in §3 (this item was getting long
-      enough to duplicate it here). Short version: attempt 1
-      (`Session.getActiveUser()`) confirmed broken live; attempt 2
-      (Sign-In button + Members-sheet allowlist) was built but the
-      Cloud Console setup got dropped as too much complexity at the
-      time (Code.gs v4 had NO auth for a while, since confirmed working
-      live in that no-auth state); attempt 3 (current, Code.gs v5) —
-      user completed the Cloud Console setup after all, OAuth consent
-      screen set to "Internal" (restricts to `@rcnagaheights.org`),
-      Sign-In button back on `/register/`, `verifyIdToken_` checks the
-      token's audience + domain. **Only ONE Web App deployment
-      needed** ("Access: Anyone"), shared by all three actions — real
-      auth happens inside the code, not at Google's deployment-access
-      layer. **Not yet confirmed against the live backend** — user still
-      needs to paste Code.gs v5 in and redeploy the existing deployment
-      as a new version before this can be tested for real.
+- [ ] **Member auth on /register/ — 3rd attempt, one live bug found +
+      fixed 2026-07-19 (Code.gs v6), re-test pending.** Full history in
+      §3 (this item was getting long enough to duplicate it here).
+      Short version: attempt 1 (`Session.getActiveUser()`) confirmed
+      broken live; attempt 2 (Sign-In button + Members-sheet allowlist)
+      was built but the Cloud Console setup got dropped as too much
+      complexity at the time (Code.gs v4 had NO auth for a while, since
+      confirmed working live in that no-auth state); attempt 3 (Code.gs
+      v5) — user completed the Cloud Console setup after all, OAuth
+      consent screen set to "Internal" (restricts to
+      `@rcnagaheights.org`), Sign-In button back on `/register/`.
+      **Live-tested 2026-07-19: sign-in itself worked (showed the
+      correct signed-in email), but registration still failed** with
+      "Could not verify your Google account" — root cause found:
+      Google's `tokeninfo` endpoint can return `email_verified` as a
+      real boolean `true` rather than the string `"true"`, and v5's
+      strict `!== 'true'` comparison rejected a genuinely verified token
+      purely on that type mismatch. **Fixed in Code.gs v6** (coerces
+      with `String(...)` before comparing) — also added `logAction_`
+      calls at every rejection branch inside `verifyIdToken_` so any
+      future failure can be diagnosed from the Logs tab instead of
+      guessing blind. **Only ONE Web App deployment needed** ("Access:
+      Anyone"), shared by all three actions. **Not yet re-tested** —
+      user still needs to paste Code.gs v6 in and redeploy the existing
+      deployment as a new version before this can be confirmed fixed.
 - [ ] **Merchant-selection tracking, documented but not implemented.**
       §4 says the `/verify/` dropdown ("Which merchant are you at?") is
       "for usage tracking" — but Code.gs v2's `verifyCard_`/
