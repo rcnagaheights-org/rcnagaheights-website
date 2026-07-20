@@ -1,5 +1,5 @@
 # Service Projects Page — Data-Driven Rework
-Version: v1.2 · Last updated: 2026-07-20
+Version: v1.3 · Last updated: 2026-07-20
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). Live at `/projects/`, rendering
@@ -139,7 +139,12 @@ below).
   show their empty state right now, not a bug.
 - Verified with temporary test-only entries (never committed) that
   carousels, prev/next scrolling, and the lightbox all work correctly
-  once more than one row exists per category.
+  once more than one row exists per category. **Caveat:** this is
+  sandbox-only verification (Playwright + a local Tailwind build,
+  network-blocked from the real deployed site) — unlike the BINHI
+  Featured display, no real multi-project carousel has been confirmed
+  live via a user screenshot yet, since only one real row exists so
+  far. Re-verify live once a 2nd real project with a real photo lands.
 
 **Not yet built — blocked on missing sheet fields, not photos:**
 | Project | Missing |

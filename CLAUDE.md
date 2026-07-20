@@ -25,13 +25,19 @@ assets/rotary-logo.png -> real logo file (was a Drive hotlink, now local)
 CNAME                  -> custom domain config, do not remove
 docs/DTC-DESIGN.md     -> full DiskwenTulong Card design detail
 docs/CONTENT-MANAGEMENT.md -> Google Drive content sync procedure
-docs/PROJECTS-PAGE.md  -> Service Projects page workflow (succession,
-                           image sizing, share button, lightbox) —
-                           superseded by the data-driven rework below,
-                           now live
+docs/PROJECTS-PAGE.md  -> Service Projects page workflow, HISTORICAL —
+                           superseded 2026-07-20 by the data-driven
+                           rework below (its Share-button section
+                           still applies, the rest does not)
 docs/SERVICE-PROJECTS-DESIGN.md -> data-driven Service Projects rework
                            (Areas of Focus / Avenues of Service), BUILT
-                           and live, currently one placeholder entry
+                           and live, one real project (BINHI) built so
+                           far, 5 more real rows blocked on missing
+                           sheet fields (not photos) — see its §6
+docs/QA-STATUS.md      -> what's actually confirmed live vs. only
+                           sandbox-tested, and the open DTC/QA risk list
+docs/BACKEND-CAPABILITY-TEST.md -> what Claude has actually tested (not
+                           assumed) it can/can't do against Drive/Sheets
 ```
 
 `foundation/` has been removed entirely (no redirect, deliberately a 404)
@@ -70,17 +76,11 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   mobile-crop exports of each hero photo via a `<picture>` element,
   which would properly solve this — not built yet, no mobile crop
   images exist in Drive yet either.
-- Projects page has one real project (BINHI ng Kinabukasan) in the
-  "Most Recent Service Project" slot; the archive grid below is still
-  placeholder — 5 more real projects exist in the Drive summary sheet
-  but have no matching photos yet. Hero image now sized to match the
-  homepage's "What We Do" carousel (`aspect-video`, contained in
-  `max-w-7xl`, no more full-bleed background); archive cards open a
-  click-to-popup lightbox; both hero and lightbox have a Share button
-  (Web Share API with the project's actual image file, not a Facebook
-  link — see docs/PROJECTS-PAGE.md §4 for why). Succession workflow
-  when a new project launches is manual (no CMS) — see
-  docs/PROJECTS-PAGE.md §1.
+- Projects page was rebuilt 2026-07-20 as fully data-driven — no more
+  manual "latest project" hero or hand-coded archive grid, that design
+  is retired (docs/PROJECTS-PAGE.md, marked historical, though its
+  Share-button section §4 still applies unchanged). See "Known
+  placeholders" below for exactly what's built vs. still missing.
 - DTC backend is now live: ONE Apps Script Web App deployment
   ("Access: Anyone", 2026-07-19), shared by `/diskwentulong/` (live
   getPartners, falls back to the static partners.json if empty/
@@ -100,15 +100,17 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   App request can't self-grant since it has no interactive session;
   fixed by manually running a one-time `authorizeExternalRequest()`
   helper from the Apps Script editor to trigger that consent screen.
-  Live-tested 2026-07-20: registered DTC-TEST-00002 while signed in as
-  admin@rcnagaheights.org, `registered_by` recorded correctly. See
-  docs/DTC-DESIGN.md §3 for the full history. Register + verify were
-  also confirmed working end-to-end 2026-07-19 in the prior no-auth
-  state (real test: registered DTC-TEST-00001, then verified it showed
-  ACTIVE with correct dates) — still worth a fuller pass (multiple
-  cards, invalid numbers, already-registered cards) before any real
-  physical card printing run. The "Digital Bulletin" nav link is still
-  deliberately absent — that backend doesn't exist.
+  Live-tested 2026-07-20: registered DTC-TEST-00002 and DTC-TEST-00003
+  while signed in as admin@rcnagaheights.org, `registered_by` recorded
+  correctly both times. See docs/DTC-DESIGN.md §3 for the full history.
+  Register + verify were also confirmed working end-to-end 2026-07-19
+  in the prior no-auth state (real test: registered DTC-TEST-00001,
+  then verified it showed ACTIVE with correct dates). See
+  docs/QA-STATUS.md for exactly which DTC edge cases (duplicate/invalid
+  cards, multiple batches, concurrent registration, a rejected non-
+  domain account) are still untested before any real physical card
+  printing run. The "Digital Bulletin" nav link is still deliberately
+  absent — that backend doesn't exist.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
@@ -131,6 +133,17 @@ doing any Drive-related content work.
   — check it before touching anything DTC-related
 
 ## Known placeholders / open TODOs
+- `bulletin/index.html`'s meta description/OG/Twitter tags promise "our
+  archive of past issues," but the page itself has no archive — just a
+  single placeholder "Latest Issue" (stock photo, dead `href="#"`
+  download link) and an empty "Flipbook Viewer" box. Meta overclaims
+  content that doesn't exist yet; low severity (SEO/social-preview
+  only, page isn't linked from nav) but worth fixing before this page
+  is ever actually linked or shared.
+- No automated test suite exists anywhere in this repo (confirmed via
+  audit 2026-07-20) — see docs/QA-STATUS.md for the full risk list,
+  including which "confirmed working" claims are backed by the user's
+  live screenshots vs. only sandbox-tested.
 - Confirm current status of logo/banner/Four-Way Test assets with the
   user rather than assuming — these have changed more than once
 - Site-wide max-width (1280px, `max-w-7xl` everywhere) leaves large empty

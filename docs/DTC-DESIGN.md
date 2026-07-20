@@ -1,12 +1,17 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v6.2 · Last updated: 2026-07-20
+Version: v7 · Last updated: 2026-07-20
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
 proceeding; this file may lag behind Drive updates.
 
 ## Status
-All decisions below are CONFIRMED (design-approved), not yet built.
+**BUILT and LIVE.** The "not yet built" status this section carried
+through earlier versions is stale and contradicted by the rest of this
+document — see the "Status update" sections below for what's actually
+deployed and confirmed working, and the Open items list for what's
+still outstanding. Kept as a heading only for historical continuity;
+do not read this line in isolation.
 
 ## 0. Email addresses — CONFIRMED, scope reduced as of v2
 - **dtc@rcnagaheights.org** — was originally meant to also send client
@@ -77,8 +82,9 @@ CONFIRMED WORKING as of 2026-07-19:**
    restricts to `@rcnagaheights.org` Workspace accounts only — plus a
    Web application OAuth Client ID with Authorized JavaScript origin
    `https://rcnagaheights.org`). `/register/` has the Sign In With
-   Google button again; `Code.gs` (v6) verifies the resulting ID token's
-   audience and `@rcnagaheights.org` domain via `verifyIdToken_()`. NO
+   Google button again; `Code.gs` (v7, live) verifies the resulting ID
+   token's audience and `@rcnagaheights.org` domain via
+   `verifyIdToken_()`. NO
    separate Members-sheet allowlist this time — the "Internal" consent
    screen setting itself is the domain restriction, so any
    `@rcnagaheights.org` Workspace account can register a card, not just
@@ -98,6 +104,12 @@ existing "Access: Anyone" deployment (shared with `/diskwentulong/` and
 would reject the unauthenticated `fetch()` at Google's access layer
 before this code ever runs, which is exactly what broke attempt 1.
 
+**Harmless leftover, in case it's confusing later:** the Sheet still has
+a `Members` tab (from attempt 2's `setupWorkbook()` run, with rows like
+`admin@rcnagaheights.org`). `Code.gs` v7 never reads it — the "Internal"
+consent screen setting alone is the domain restriction now. Safe to
+delete the tab, or leave it; not wired to anything.
+
 **Historical note on the accepted-tradeoff window:** for a period on
 2026-07-19, between attempts 2 and 3, `/register/` had no authentication
 of any kind — anyone with the page's URL and an `UNREGISTERED` card
@@ -116,6 +128,10 @@ real batch of cards.
    discovery only, no card number entry, no verification.
 2. **Printed at partner counters** -> `/verify/` — the real verification
    flow:
+   - A one-time Terms & Conditions modal blocks the page until accepted
+     (content copied verbatim from `/diskwentulong/`'s T&C — see
+     docs/PROJECTS-PAGE.md §4 note; keep both in sync if this text is
+     ever revised)
    - Customer scans, types their card number
    - **Required** dropdown: "Which merchant are you at?" (populated from
      Merchants sheet `business_name`) — for usage tracking, NOT security
@@ -141,9 +157,10 @@ explicit user confirmation.
 | `category` | Fixed dropdown, not free text — see list below |
 | `offer_details` | Discount/deal text, shown publicly |
 | `contact_person`, `contact_number` | Internal only, not shown publicly |
-| `facebook_url`, `website_url` | Shown publicly |
+| `facebook_url` | Shown publicly |
+| `website_url` | Captured in the schema/JSON but not currently rendered anywhere on `/diskwentulong/` — wire it in if/when merchants actually have a value here (all blank as of this writing, so the gap is invisible for now) |
 | `logo_file_id` | Reference to logo in Drive/repo |
-| `address` | Shown publicly |
+| `address` | Same as `website_url` — captured but not currently rendered on the page |
 | `moa_start_date` | Per-partner record-keeping only |
 | `status` | Active / Inactive / Pending — inactive auto-hides without deleting history |
 | `date_added` | Record-keeping |
@@ -158,10 +175,14 @@ Education · Other
 
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:
-1. "What is DTC" — informational section (copy not yet written)
+1. "What is DTC" — informational section (real copy written and live,
+   but still a first draft — see Open items; not reviewed/approved yet)
 2. Partner Merchants as **category thumbnails**
 3. Clicking a category opens a popup showing merchant thumbnails
    (logo + name) for that category only
+4. A Terms & Conditions modal (the same content described in §4's
+   `/verify/` note) auto-opens on page load — informational here, not
+   gating anything, unlike `/verify/`'s mandatory acceptance gate
 
 **Must be data-driven, not hardcoded HTML per merchant** — same
 reasoning as the Projects-page scaling problem (see main CLAUDE.md).
@@ -196,8 +217,10 @@ The Apps Script Web App is deployed and its `/exec` URL has been wired into
 the site:
 - `/diskwentulong/` now fetches `getPartners_()` live, falling back to the
   static `assets/merchants/partners.json` if the live response errors OR
-  comes back empty (the Merchants tab has no data rows yet as of this
-  writing, so the static file is still what's actually showing).
+  comes back empty. **Update:** the Merchants tab was empty when this was
+  first written; it now has all 28 real rows pasted in (confirmed live —
+  see Open items), so the live endpoint is what's actually showing, not
+  the static fallback.
 - `/verify/` built: card number + required merchant dropdown (per §4),
   calls `?action=verify`, shows name/card_number/status/dates only.
 - `/register/` built: full name + card number only, POSTs to
@@ -306,28 +329,34 @@ considered stable, not experimental.
       (forward-compatible, harmless), but nothing on the backend uses it
       today. Decide whether to add it back to Code.gs + the
       Verifications tab, or drop the requirement from §4.
-- [ ] **Merchants tab needs the prepared CSV pasted in** — Claude
-      prepared a 28-row import (merchant_id/business_name/category/
-      offer_details/facebook_url/logo_file_id filled in;
-      contact_person/contact_number/website_url/address intentionally
-      blank per user decision; moa_start_date/date_added 2026-07-01,
-      status Active for all) — sent to the user 2026-07-19, not yet
-      confirmed pasted in.
+- [x] **Merchants tab needs the prepared CSV pasted in** — confirmed
+      live: all 28 rows are in the Sheet exactly as Claude prepared them
+      (merchant_id/business_name/category/offer_details/facebook_url/
+      logo_file_id filled in; contact_person/contact_number/website_url/
+      address blank per user decision; moa_start_date/date_added
+      2026-07-01, status Active for all).
 - [ ] **"What is DTC" section copy is a first draft** — written by
       Claude to get the page functional, not reviewed/approved wording
 - [ ] Nav label is currently "DiskwenTulong Card" (Claude's choice,
       live now) — confirm this wording or change it
-- [ ] User is creating a `TEST` batch tab for testing before any real
-      batch goes live (per §2) — header row confirmed, no card rows yet
+- [x] **`TEST` batch tab** — confirmed live: 100 pre-populated
+      `UNREGISTERED` rows (`DTC-TEST-00001`-`00100`). Three are now
+      `ACTIVE` from live testing: `DTC-TEST-00001` (registered before
+      member auth existed, no `registered_by`), `DTC-TEST-00002` and
+      `DTC-TEST-00003` (both `registered_by: admin@rcnagaheights.org`).
 - [ ] Confirm the physical-card-+-ID check is written into partner
       onboarding/MOA materials as a required procedure — not yet formally
       confirmed as of this writing
 - [x] **Test /register/ and /verify/ against the live backend** —
-      confirmed working 2026-07-19, see the end-to-end test item above.
-      Still worth a fuller pass (multiple cards/batches, an
-      already-registered card, an invalid card number, `/diskwentulong/`
-      itself once the Merchants sheet CSV is pasted in) before any real
-      physical card printing run, but the core round trip works.
+      confirmed working 2026-07-19 and again 2026-07-20 (3 successful
+      registrations total, see the `TEST` batch tab item above), and
+      `/diskwentulong/` is now live against the real Merchants data (see
+      the 2026-07-19 status update above). Still worth a fuller pass
+      before any real physical card printing run — see
+      docs/QA-STATUS.md for the specific untested cases (duplicate/
+      already-registered card, invalid card number, multiple batches,
+      concurrent registrations, a non-`@rcnagaheights.org` account
+      attempting to sign in).
 - [ ] dtc@rcnagaheights.org's remaining purpose, if any, now that client
       registration-confirmation emails are no longer part of the design
       (see §0)
