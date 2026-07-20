@@ -29,25 +29,21 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
     <div class="w-full max-w-[336px]">
       <h1 class="text-2xl font-bold text-[#0c3c7c] mb-6 text-center">Register a DiskwenTulong Card</h1>
 
-      <div class="bg-white border rounded-2xl p-6">
-       <p class="font-semibold text-sm mb-3">Step 1: Sign in with your @rcnagaheights.org account</p>
-       <div id="g_id_onload"
-            data-client_id="503057261558-f5bbseei4a54qokrkumjntv2p6tpl471.apps.googleusercontent.com"
-            data-callback="handleCredentialResponse"
-            data-auto_prompt="false">
-       </div>
-       <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-size="large" data-text="signin_with"></div>
-       <p id="signin-status" class="mt-3 text-sm"></p>
-      </div>
+      <p id="signin-status" class="text-sm text-center mb-4"></p>
 
-      <form id="register-form" class="form-disabled mt-6 bg-white border rounded-2xl p-6 grid gap-4">
+      <form id="register-form" class="form-disabled bg-white border rounded-2xl p-6 grid gap-4">
        <div>
-        <label for="full-name-input" class="block font-semibold text-sm mb-1">Step 2: Client's Full Name</label>
+        <label for="full-name-input" class="block font-semibold text-sm mb-1">Client's Full Name</label>
         <input id="full-name-input" type="text" required placeholder="Juan Dela Cruz" class="w-full border rounded-lg px-4 py-3 text-lg" autocomplete="off">
        </div>
-       <div>
-        <label for="card-number-input" class="block font-semibold text-sm mb-1">Card Number</label>
-        <input id="card-number-input" type="text" required placeholder="DTC-2026-00001" class="w-full border rounded-lg px-4 py-3 text-lg" autocomplete="off">
+       <div class="min-w-0">
+        <label for="card-batch-input" class="block font-semibold text-sm mb-1">Card Number</label>
+        <div class="flex items-center gap-1.5">
+         <span class="font-semibold text-slate-500 text-lg select-none">DTC-</span>
+         <input id="card-batch-input" type="text" required placeholder="2026" class="flex-1 min-w-0 border rounded-lg px-2 py-3 text-lg text-center" autocomplete="off">
+         <span class="font-semibold text-slate-500 text-lg select-none">-</span>
+         <input id="card-serial-input" type="text" required placeholder="00001" inputmode="numeric" maxlength="5" class="flex-1 min-w-0 border rounded-lg px-2 py-3 text-lg text-center" autocomplete="off">
+        </div>
        </div>
        <button id="register-submit-btn" type="submit" disabled class="bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold py-3 rounded-full transition-colors disabled:opacity-50">Register Card</button>
       </form>
@@ -55,6 +51,24 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
       <div id="register-result" class="modal-hidden mt-8 rounded-xl p-5 border"></div>
     </div>
   </main>
+
+  <!-- Sign-in gate -- blocks the page until the member signs in. Deliberately
+       does not mention the required @rcnagaheights.org domain anywhere in the
+       UI copy, so an unauthorized visitor gets no hint about what account to
+       target; the domain restriction is still fully enforced server-side by
+       verifyIdToken_ in Code.gs (see docs/DTC-DESIGN.md section 3). -->
+  <div id="signin-modal" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4 py-8">
+   <div class="bg-white rounded-2xl p-6 w-full max-w-[336px] text-center">
+    <h2 class="text-xl font-bold text-[#0c3c7c] mb-5">Sign In</h2>
+    <div id="g_id_onload"
+         data-client_id="503057261558-f5bbseei4a54qokrkumjntv2p6tpl471.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin flex justify-center" data-type="standard" data-shape="rectangular" data-theme="outline" data-size="large" data-text="signin_with"></div>
+   </div>
+  </div>
+
   <script>
 function escapeHtml(str){
   const div=document.createElement('div');
@@ -86,6 +100,7 @@ function handleCredentialResponse(response){
   document.getElementById('signin-status').innerHTML = email
     ? `Signed in as <strong>${escapeHtml(email)}</strong>`
     : 'Signed in.';
+  document.getElementById('signin-modal').classList.add('modal-hidden');
   document.getElementById('register-form').classList.remove('form-disabled');
   document.getElementById('register-submit-btn').disabled = false;
 }
@@ -97,7 +112,9 @@ document.getElementById('register-form').addEventListener('submit', function(e){
     return;
   }
   const fullName = document.getElementById('full-name-input').value.trim();
-  const cardNumber = document.getElementById('card-number-input').value.trim();
+  const batch = document.getElementById('card-batch-input').value.trim();
+  const serial = document.getElementById('card-serial-input').value.trim().replace(/\D/g, '').padStart(5, '0');
+  const cardNumber = `DTC-${batch}-${serial}`;
   const resultBox = document.getElementById('register-result');
   resultBox.classList.remove('modal-hidden');
   resultBox.className = 'mt-8 rounded-xl p-5 border bg-slate-50 text-slate-600 border-slate-200';

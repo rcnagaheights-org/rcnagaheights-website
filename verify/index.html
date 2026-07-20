@@ -28,9 +28,14 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
       <h1 class="text-2xl font-bold text-[#0c3c7c] mb-6 text-center">Verify a DiskwenTulong Card</h1>
 
       <form id="verify-form" class="bg-white border rounded-2xl p-6 grid gap-4">
-       <div>
-        <label for="card-number-input" class="block font-semibold text-sm mb-1">Card Number</label>
-        <input id="card-number-input" type="text" required placeholder="DTC-2026-00001" class="w-full border rounded-lg px-4 py-3 text-lg" autocomplete="off">
+       <div class="min-w-0">
+        <label for="card-batch-input" class="block font-semibold text-sm mb-1">Card Number</label>
+        <div class="flex items-center gap-1.5">
+         <span class="font-semibold text-slate-500 text-lg select-none">DTC-</span>
+         <input id="card-batch-input" type="text" required placeholder="2026" class="flex-1 min-w-0 border rounded-lg px-2 py-3 text-lg text-center" autocomplete="off">
+         <span class="font-semibold text-slate-500 text-lg select-none">-</span>
+         <input id="card-serial-input" type="text" required placeholder="00001" inputmode="numeric" maxlength="5" class="flex-1 min-w-0 border rounded-lg px-2 py-3 text-lg text-center" autocomplete="off">
+        </div>
        </div>
        <div>
         <label for="merchant-select" class="block font-semibold text-sm mb-1">Which merchant are you at?</label>
@@ -118,7 +123,9 @@ fetch(`${APPS_SCRIPT_URL}?action=partners`)
 
 document.getElementById('verify-form').addEventListener('submit', function(e){
   e.preventDefault();
-  const cardNumber = document.getElementById('card-number-input').value.trim();
+  const batch = document.getElementById('card-batch-input').value.trim();
+  const serial = document.getElementById('card-serial-input').value.trim().replace(/\D/g, '').padStart(5, '0');
+  const cardNumber = `DTC-${batch}-${serial}`;
   const merchant = document.getElementById('merchant-select').value;
   const resultBox = document.getElementById('verify-result');
   resultBox.classList.remove('modal-hidden');
