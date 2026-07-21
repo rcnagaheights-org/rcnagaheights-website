@@ -38,6 +38,9 @@ docs/QA-STATUS.md      -> what's actually confirmed live vs. only
                            sandbox-tested, and the open DTC/QA risk list
 docs/BACKEND-CAPABILITY-TEST.md -> what Claude has actually tested (not
                            assumed) it can/can't do against Drive/Sheets
+docs/Rotarians.md      -> /rotarians/ roster rules, incl. the Council of
+                           Presidents section (added 2026-07-21) and how
+                           to update it each Rotary Year
 ```
 
 `foundation/` has been removed entirely (no redirect, deliberately a 404)
