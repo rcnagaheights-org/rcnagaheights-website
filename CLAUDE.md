@@ -58,13 +58,32 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
 
 ## Current status
 - Site is live on GitHub Pages, DNS + HTTPS confirmed working.
-- Phase 1 (public site) in progress — most sections still have PLACEHOLDER
-  data (check for literal text like "Address Here", "XXX" in phone
-  numbers before assuming content is real).
+- Phase 1 (public site) in progress — some sections still have PLACEHOLDER
+  data (e.g. bulletin content). The "Address Here"/`XXX` phone placeholder
+  that used to appear on every page's footer is RESOLVED as of 2026-07-21
+  — all page footers now show the real venue (Dy Viajero, CBD Terminal,
+  Naga City) and have no phone number (none on file, so it was removed
+  rather than left fake).
+- A scrolling DTC support banner sits above the header on index,
+  rotarians, projects, bulletin, and contact (deliberately not on
+  diskwentulong, verify, or register — see docs/DTC-DESIGN.md). Links to
+  /diskwentulong/, repeats 4x so the motion stays visible on wide desktop
+  screens, includes a "Learn More" pill that scrolls with the ticker
+  (not a separate static button).
+- Every page's social-share preview image (`og:image`/`twitter:image`)
+  is now a real photo of the club (`assets/social/og-share.jpg`,
+  self-hosted), replacing a generic Pexels stock placeholder that was
+  live on every page until 2026-07-21.
 - Rotarians page now has the full real roster (29 people, from a Drive
   membership sheet) instead of 4 hardcoded name slots — still plain
   hardcoded HTML, not data-driven; re-editing this file by hand is
   expected for future roster changes until/unless it's rebuilt data-driven.
+  A "Council of Presidents" section (added 2026-07-21) lists everyone
+  with a Charter/Immediate Past/Past President designation — Ghiel
+  Rosales (Charter President) always pinned first, then newest-first by
+  Rotary Year. Each of those 5 people's card now lives ONLY in this
+  section (removed from Officers/Members to avoid duplication) and shows
+  their current officer title if they have one. See docs/Rotarians.md.
 - Homepage hero is a rotating carousel of 3 real photos (confirmed with
   the user 2026-07-19 — earlier guidance calling it a single static image
   was superseded). Each slide now renders as a single `object-cover`
@@ -114,6 +133,13 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   domain account) are still untested before any real physical card
   printing run. The "Digital Bulletin" nav link is still deliberately
   absent — that backend doesn't exist.
+- `/diskwentulong/`'s Terms & Conditions modal is now a MANDATORY gate
+  (2026-07-21) — the X button, click-outside, and Escape-to-close were
+  all removed; only clicking "I Understand" dismisses it, matching
+  `/verify/`. Also added a self-rendered sample card graphic (real
+  card number format `DTC-2026-00001`, no "Valid Until", transparent
+  PNG background, not a photo) beside the "What is DTC" description.
+  See docs/DTC-DESIGN.md §6.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v1 · Last updated: 2026-07-20
+Version: v1.1 · Last updated: 2026-07-21
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -49,6 +49,19 @@ Sign-In/Apps Script flow.
   self-verified end-to-end before being handed to the user — this is a
   structural limitation (script.google.com is unreachable), not
   specific to any one change.
+- Everything shipped 2026-07-21 — the DTC support banner (including the
+  wide-desktop motion fix and the "Learn More" pill scrolling with the
+  ticker), the real self-hosted `og:image` replacing the Pexels
+  placeholder, the self-rendered DTC sample card graphic, the
+  Contact-page/global-footer address+phone content fix and centered
+  formatting, the mandatory T&C gate on `/diskwentulong/`, and the
+  Rotarians page's Council of Presidents section — all verified only via
+  local Tailwind build + Playwright screenshots in this sandbox, never
+  against the real deployed site. One user report did come in
+  mid-session (a screenshot showing the old Pexels image in a real
+  Messenger link-share preview, which is what prompted the `og:image`
+  fix) — that confirms the *problem* was real, not that the *fix* has
+  been re-verified live yet.
 
 ## 3. DTC — open edge cases, explicitly not yet tested
 Per docs/DTC-DESIGN.md's own open items, the live round trip works, but

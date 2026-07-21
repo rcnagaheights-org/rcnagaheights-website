@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v7.1 · Last updated: 2026-07-21
+Version: v7.2 · Last updated: 2026-07-21
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -176,7 +176,13 @@ Education · Other
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:
 1. "What is DTC" — informational section (real copy written and live,
-   but still a first draft — see Open items; not reviewed/approved yet)
+   but still a first draft — see Open items; not reviewed/approved yet).
+   As of 2026-07-21, a sample card graphic sits beside this text —
+   self-rendered (HTML/CSS composited to a transparent PNG, not a
+   photo), showing the real `DTC-{BATCH}-{NNNNN}` number format
+   (`DTC-2026-00001`) rather than an earlier photographed mockup's
+   placeholder number, and with no "Valid Until" line (removed —
+   showing a fixed date on a generic sample card was misleading).
 2. Partner Merchants as **category thumbnails**
 3. Clicking a category opens a popup showing merchant thumbnails
    (logo + name) for that category only
