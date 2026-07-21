@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v7.3 · Last updated: 2026-07-21
+Version: v7.4 · Last updated: 2026-07-21
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -329,23 +329,21 @@ considered stable, not experimental.
       by all three actions. Live-tested 2026-07-20: `DTC-TEST-00002`
       registered successfully with `registered_by: admin@rcnagaheights.org`
       recorded correctly in the Sheet.
-- [x] **Merchant-selection tracking — implemented in Code.gs v8
-      (2026-07-21), not yet deployed.** This was tracked separately for
-      a nonprofit partner-analytics strategy discussion: the plan is an
+- [x] **Merchant-selection tracking — implemented in Code.gs v8 and
+      DEPLOYED (2026-07-21).** This was tracked separately for a
+      nonprofit partner-analytics strategy discussion: the plan is an
       internal-only Looker Studio/Sheet view for the club (never shared
       directly with partners), feeding a periodic one-pager report per
       partner. That report needs a real data source, which is what this
-      closes out. `doGet`/`verifyCard_`/`logVerification_` now thread
-      the `/verify/` frontend's already-sent `merchant` query param
-      through to a 4th Verifications column, `merchant_name_selected`.
-      **Two manual steps still needed before this is live** (Claude
-      cannot do either): (1) add the header
-      `merchant_name_selected` to cell D1 of the live Verifications
-      tab by hand — Code.gs can't edit an existing sheet's cells; (2)
-      paste Code.gs v8 into the Apps Script editor and redeploy the
-      existing "Access: Anyone" Web App as a new version. No new OAuth
-      consent, no frontend change (verify/index.html already sends
-      `merchant`, has since the page was first built).
+      closes out. `doGet`/`verifyCard_`/`logVerification_` thread the
+      `/verify/` frontend's already-sent `merchant` query param through
+      to a 4th Verifications column, `merchant_name_selected`. The two
+      manual steps (adding the column header to the live Sheet, pasting
+      Code.gs v8 into Apps Script and redeploying) are both done per
+      the user, 2026-07-21. **Not yet independently verified end-to-end**
+      — nobody has done a real `/verify/` call with a merchant selected
+      and checked that the row in the Sheet actually shows the merchant
+      name in column D; see docs/QA-STATUS.md.
 - [x] **Merchants tab needs the prepared CSV pasted in** — confirmed
       live: all 28 rows are in the Sheet exactly as Claude prepared them
       (merchant_id/business_name/category/offer_details/facebook_url/

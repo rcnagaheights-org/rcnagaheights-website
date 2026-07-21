@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v1.1 · Last updated: 2026-07-21
+Version: v1.2 · Last updated: 2026-07-21
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -62,6 +62,13 @@ Sign-In/Apps Script flow.
   Messenger link-share preview, which is what prompted the `og:image`
   fix) — that confirms the *problem* was real, not that the *fix* has
   been re-verified live yet.
+- Code.gs v8's merchant-selection tracking (see docs/DTC-DESIGN.md's
+  Open items) — the user has confirmed both manual deployment steps
+  are done (Sheet column header added, v8 pasted in and redeployed),
+  but nobody has yet done a real `/verify/` call with a merchant
+  selected and checked that the Verifications row actually shows the
+  merchant name in column D. Deployed and reported done ≠
+  end-to-end verified.
 
 ## 3. DTC — open edge cases, explicitly not yet tested
 Per docs/DTC-DESIGN.md's own open items, the live round trip works, but
