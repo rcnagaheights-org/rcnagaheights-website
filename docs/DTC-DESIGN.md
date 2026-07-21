@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v7 · Last updated: 2026-07-20
+Version: v7.1 · Last updated: 2026-07-21
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -181,8 +181,13 @@ Structure:
 3. Clicking a category opens a popup showing merchant thumbnails
    (logo + name) for that category only
 4. A Terms & Conditions modal (the same content described in §4's
-   `/verify/` note) auto-opens on page load — informational here, not
-   gating anything, unlike `/verify/`'s mandatory acceptance gate
+   `/verify/` note) auto-opens on page load — **updated: now a
+   mandatory gate, matching `/verify/`.** Originally informational
+   (closable via an X button, clicking the scrim, or Escape) — changed
+   per explicit user request since a closable T&C defeats the point of
+   having one. The only way to dismiss it now is the "I Understand"
+   button; the X button and the scrim-click/Escape handlers were
+   removed from the page's JS.
 
 **Must be data-driven, not hardcoded HTML per merchant** — same
 reasoning as the Projects-page scaling problem (see main CLAUDE.md).

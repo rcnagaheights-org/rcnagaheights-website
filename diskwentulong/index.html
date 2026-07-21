@@ -90,7 +90,6 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
 
   <div id="terms-modal" class="modal-hidden fixed inset-0 z-[70] bg-black/60 grid place-items-center p-4">
    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-8 relative">
-    <button onclick="closeTermsModal()" aria-label="Close" class="absolute top-4 right-4 w-9 h-9 rounded-full grid place-items-center hover:bg-slate-100"><i data-lucide="x"></i></button>
     <span class="eyebrow text-xs font-bold text-[#f7a81b]">DiskwenTulong Card (DTC)</span>
     <h3 class="text-2xl font-bold text-[#0c3c7c] mt-2 mb-5">Terms and Conditions</h3>
     <div class="space-y-4 text-slate-600 text-justify leading-7">
@@ -178,11 +177,8 @@ function closeTermsModal(){
 document.getElementById('merchant-modal').addEventListener('click', e => {
   if (e.target.id === 'merchant-modal') closeMerchantModal();
 });
-document.getElementById('terms-modal').addEventListener('click', e => {
-  if (e.target.id === 'terms-modal') closeTermsModal();
-});
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeMerchantModal(); closeTermsModal(); }
+  if (e.key === 'Escape') { closeMerchantModal(); }
 });
 
 document.getElementById('terms-modal').classList.remove('modal-hidden');
