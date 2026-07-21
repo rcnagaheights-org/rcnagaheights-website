@@ -1,5 +1,5 @@
 # Rotarians Page — Roster & Council of Presidents
-Version: v1.3 · Last updated: 2026-07-21
+Version: v1.4 · Last updated: 2026-07-21
 
 ## Status
 Live at `/rotarians/`. Still plain hardcoded HTML per person, not
@@ -17,6 +17,8 @@ a roster change comes in.
 3. **Club Officers & Committee Chairs** — grid of cards, one per
    officer/chair, each showing name + current role(s).
 4. **Members** — grid of cards for members without an officer role.
+   Cards here show only the name — no "Member" label, since the
+   section heading already says so (redundant text removed 2026-07-21).
 
 ## Council of Presidents (COP) — the rule
 **Any Rotarian carrying the designation Immediate Past President or
@@ -50,24 +52,25 @@ leadership record.
 **Card contents:** Name, the designation label (styled the same gold
 `text-[#f7a81b]` as the small tags already used elsewhere on this
 page), their presidential theme + Rotary Year on its own line (e.g.
-"The Magic of Rotary (RY 2024-25)"), and their CURRENT officer/member
-role as a fourth, bolded line at the bottom (e.g. "Club Learning
-Facilitator", or plain "Member" for those with no officer role) — this
-is the only place that role is now shown, since their card was removed
-from Officers/Members.
+"The Magic of Rotary (RY 2024-25)"), and — ONLY if they currently hold
+an actual officer/chair title — that title as a fourth, bolded line at
+the bottom (e.g. "Club Learning Facilitator"). If their current role is
+just plain membership, no fourth line is added at all (updated
+2026-07-21 — "Member" was removed as redundant/self-evident, matching
+the same cleanup in the Members grid).
 
 **Sort order:** Charter President always first (pinned, not part of the
 chronological sort), then Immediate Past President, then Past
 Presidents in descending Rotary Year order.
 
 ## Current roster (as of 2026-07-21)
-| Name | Current role | COP designation | Theme (RY) |
+| Name | Current role (shown on card?) | COP designation | Theme (RY) |
 |---|---|---|---|
-| Ghiel Rosales | The Rotary Foundation Chair | Charter President | Serve to Change Lives (2021-22) |
-| Dannin Joy Labordo | Club Learning Facilitator | Immediate Past President | Unite For Good (2025-26) |
-| Carlo Ricardo Sierra | Member | Past President | The Magic of Rotary (2024-25) |
-| Brian Kierby Felipe | Member | Past President | Create Hope in the World (2023-24) |
-| Jason Bagadiong | Member | Past President | Imagine Rotary (2022-23) |
+| Ghiel Rosales | The Rotary Foundation Chair (yes) | Charter President | Serve to Change Lives (2021-22) |
+| Dannin Joy Labordo | Club Learning Facilitator (yes) | Immediate Past President | Unite For Good (2025-26) |
+| Carlo Ricardo Sierra | Member (not shown) | Past President | The Magic of Rotary (2024-25) |
+| Brian Kierby Felipe | Member (not shown) | Past President | Create Hope in the World (2023-24) |
+| Jason Bagadiong | Member (not shown) | Past President | Imagine Rotary (2022-23) |
 
 All other officers/members (Kathleen Felipe, Charles Oliver Dadua III,
 Nelvin Charles Crescini, Jose Leo Raphaello Del Rosario, Odessa Balmes,
