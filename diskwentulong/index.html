@@ -91,30 +91,34 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
   </main>
 
   <div id="merchant-modal" class="modal-hidden fixed inset-0 z-[60] bg-black/60 grid place-items-center p-4">
-   <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-8 relative">
-    <button onclick="closeMerchantModal()" aria-label="Close" class="absolute top-4 right-4 w-9 h-9 rounded-full grid place-items-center hover:bg-slate-100"><i data-lucide="x"></i></button>
-    <h3 id="modal-title" class="text-2xl font-bold text-[#0c3c7c] mb-6"></h3>
-    <div id="modal-list" class="grid gap-4"></div>
+   <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden relative">
+    <div class="max-h-[80vh] overflow-y-auto p-8">
+     <button onclick="closeMerchantModal()" aria-label="Close" class="absolute top-4 right-4 w-9 h-9 rounded-full grid place-items-center hover:bg-slate-100"><i data-lucide="x"></i></button>
+     <h3 id="modal-title" class="text-2xl font-bold text-[#0c3c7c] mb-6"></h3>
+     <div id="modal-list" class="grid gap-4"></div>
+    </div>
    </div>
   </div>
 
   <div id="terms-modal" class="modal-hidden fixed inset-0 z-[70] bg-black/60 grid place-items-center p-4">
-   <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-8 relative">
-    <span class="eyebrow text-xs font-bold text-[#f7a81b]">DiskwenTulong Card (DTC)</span>
-    <h3 class="text-2xl font-bold text-[#0c3c7c] mt-2 mb-5">Terms and Conditions</h3>
-    <div class="space-y-4 text-slate-600 text-justify leading-7">
-     <p>a. The DiskwenTulong Card (DTC) is non-transferable and may only be used by the registered cardholder.</p>
-     <p>b. The cardholder must present the original DTC together with one (1) valid government-issued identification card bearing the same name before availing of any discount or privilege.</p>
-     <p>c. The discounts and privileges offered by the DTC are valid only at participating partner establishments and are subject to the specific terms and conditions of each partner establishment.</p>
-     <p>d. Unless expressly permitted by the partner establishment, DTC discounts and privileges cannot be combined with any other ongoing promotion, discount, voucher, coupon, loyalty program, package, senior citizen or PWD discount, or any other promotional offer.</p>
-     <p>e. The partner establishment reserves the right to impose reasonable limitations, exclusions, blackout dates, minimum purchase requirements, or other conditions applicable to the discounts and privileges offered.</p>
-     <p>f. The partner establishment may refuse to honor the DTC if the cardholder fails to present the required card and valid identification, if the card has expired, has been altered or damaged, or if fraudulent or unauthorized use is reasonably suspected.</p>
-     <p>g. The DTC remains the property of the Rotary Club of Naga Heights and may be suspended, revoked, or cancelled in cases of misuse, fraud, or violation of these Terms and Conditions.</p>
-     <p>h. The Rotary Club of Naga Heights reserves the right to amend, modify, suspend, or terminate the DTC program, including its participating establishments, discounts, privileges, and these Terms and Conditions, without prior notice, provided that such changes shall apply prospectively.</p>
-     <p>i. The Rotary Club of Naga Heights shall not be liable for any product or service provided by partner establishments. Any concern relating to the quality, availability, or delivery of products or services shall be addressed directly to the concerned partner establishment.</p>
-     <p>j. By using the DiskwenTulong Card, the cardholder acknowledges that he or she has read, understood, and agreed to be bound by these Terms and Conditions.</p>
+   <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden relative">
+    <div class="max-h-[85vh] overflow-y-auto p-8">
+     <span class="eyebrow text-xs font-bold text-[#f7a81b]">DiskwenTulong Card (DTC)</span>
+     <h3 class="text-2xl font-bold text-[#0c3c7c] mt-2 mb-5">Terms and Conditions</h3>
+     <div class="space-y-4 text-slate-600 text-justify leading-7">
+      <p>a. The DiskwenTulong Card (DTC) is non-transferable and may only be used by the registered cardholder.</p>
+      <p>b. The cardholder must present the original DTC together with one (1) valid government-issued identification card bearing the same name before availing of any discount or privilege.</p>
+      <p>c. The discounts and privileges offered by the DTC are valid only at participating partner establishments and are subject to the specific terms and conditions of each partner establishment.</p>
+      <p>d. Unless expressly permitted by the partner establishment, DTC discounts and privileges cannot be combined with any other ongoing promotion, discount, voucher, coupon, loyalty program, package, senior citizen or PWD discount, or any other promotional offer.</p>
+      <p>e. The partner establishment reserves the right to impose reasonable limitations, exclusions, blackout dates, minimum purchase requirements, or other conditions applicable to the discounts and privileges offered.</p>
+      <p>f. The partner establishment may refuse to honor the DTC if the cardholder fails to present the required card and valid identification, if the card has expired, has been altered or damaged, or if fraudulent or unauthorized use is reasonably suspected.</p>
+      <p>g. The DTC remains the property of the Rotary Club of Naga Heights and may be suspended, revoked, or cancelled in cases of misuse, fraud, or violation of these Terms and Conditions.</p>
+      <p>h. The Rotary Club of Naga Heights reserves the right to amend, modify, suspend, or terminate the DTC program, including its participating establishments, discounts, privileges, and these Terms and Conditions, without prior notice, provided that such changes shall apply prospectively.</p>
+      <p>i. The Rotary Club of Naga Heights shall not be liable for any product or service provided by partner establishments. Any concern relating to the quality, availability, or delivery of products or services shall be addressed directly to the concerned partner establishment.</p>
+      <p>j. By using the DiskwenTulong Card, the cardholder acknowledges that he or she has read, understood, and agreed to be bound by these Terms and Conditions.</p>
+     </div>
+     <button onclick="closeTermsModal()" class="mt-6 w-full bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold py-3 rounded-full transition-colors">I Understand</button>
     </div>
-    <button onclick="closeTermsModal()" class="mt-6 w-full bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold py-3 rounded-full transition-colors">I Understand</button>
    </div>
   </div>
 
@@ -124,9 +128,6 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
      <div>
       <h3 class="text-[#f7a81b] font-bold text-xl mb-4">Meet</h3>
       <div class="flex flex-col items-center gap-1"><i data-lucide="map-pin" class="w-5 h-5 mb-1 text-[#f7a81b]"></i>
-       <p class="font-semibold">Club Meeting Venue</p>
-       <p class="text-blue-200">DyViajero Transient Hotel Conference Room, CBD Terminal</p>
-       <p class="text-blue-200">Naga City, Camarines Sur</p>
       </div>
      </div>
      <div>
