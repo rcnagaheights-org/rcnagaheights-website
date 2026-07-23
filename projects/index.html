@@ -300,7 +300,7 @@ function renderCarousel(key, items){
 
   track.innerHTML = items.map(function(p){
     return `<div class="carousel-card lift rounded-2xl overflow-hidden border cursor-pointer shrink-0 snap-start w-64" role="button" tabindex="0" data-title="${escapeHtml(p.project_name)}" data-img="${escapeHtml(p.image)}">
-      <img class="w-full h-40 object-cover" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.project_name)}">
+      <img class="w-full h-40 object-cover" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.project_name)}" loading="lazy">
       <div class="p-4">
        <b class="block text-sm text-[#17324d]">${escapeHtml(p.project_name)}</b>
        <span class="text-xs text-slate-500">${escapeHtml(p.category)}</span>
