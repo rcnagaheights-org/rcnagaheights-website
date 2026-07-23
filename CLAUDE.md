@@ -165,10 +165,10 @@ doing any Drive-related content work.
 - `bulletin/index.html`'s meta description/OG/Twitter tags promise "our
   archive of past issues," but the page itself has no archive — just a
   single placeholder "Latest Issue" (stock photo, dead `href="#"`
-  download link) and an empty "Flipbook Viewer" box. Meta overclaims
-  content that doesn't exist yet; low severity (SEO/social-preview
-  only, page isn't linked from nav) but worth fixing before this page
-  is ever actually linked or shared.
+  download link) and an empty "Flipbook Viewer" box. Now `noindex`ed
+  and removed from `sitemap.xml` (2026-07-23) specifically because of
+  this — remove the `noindex` once real bulletin content replaces the
+  placeholder.
 - No automated test suite exists anywhere in this repo (confirmed via
   audit 2026-07-20) — see docs/QA-STATUS.md for the full risk list,
   including which "confirmed working" claims are backed by the user's
