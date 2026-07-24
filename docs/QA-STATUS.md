@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v1.2 · Last updated: 2026-07-21
+Version: v1.3 · Last updated: 2026-07-24
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -69,6 +69,39 @@ Sign-In/Apps Script flow.
   selected and checked that the Verifications row actually shows the
   merchant name in column D. Deployed and reported done ≠
   end-to-end verified.
+
+**A third tier, distinct from both of the above (2026-07-24):** a
+session with real network access (unlike the sandboxed session that
+built the `/verify/` redesign in PRs #68-71, entirely blind) confirmed
+that redesign renders and functions correctly — but not via a real
+device, via a local Playwright/Chromium render of the actual deployed
+`rcnagaheights.org/verify/` HTML. Chromium in that session's own sandbox
+still couldn't make outbound HTTPS connections directly (same class of
+restriction as before, confirmed by testing plain `https://example.com`
+too, not just the site), so external requests (`cdn.tailwindcss.com`,
+Google Fonts, and the Apps Script backend) were routed through Node's
+`fetch`, which does reach the real internet, and the responses handed
+back into the page. Net effect: real Tailwind CSS, real fonts, and a
+real live Apps Script round trip, but not literally "opened Chrome on a
+phone and looked at it" — treat it as stronger than sandbox-only,
+weaker than the user's own device confirmation. Confirmed this way:
+card proportions read as landscape, logo sized correctly top-right, no
+digit-field clipping on `2026`/`00001`, typing `TEST` in the batch field
+works, the serial field still strips symbols, the merchant dropdown
+loads live data with the chevron aligned correctly, the T&C modal's
+corners are rounded on all four corners and only "I Accept" dismisses
+it, and a live `action=verify` call for `DTC-TEST-00001` returned
+`ACTIVE` with the correct name/dates — same for an invalid card number
+correctly returning `INVALID CARD` styled with the red stamp.
+
+**New finding from that same pass:** the live `getPartners` response
+has a real double-encoding bug on at least one merchant name — "White
+Bean Café" comes back as `White Bean CafÃ©` (confirmed via a direct
+`curl` of the Apps Script endpoint, not a rendering artifact of the
+test setup). This is a Code.gs/Sheet data issue, not a `/verify/` page
+bug — the frontend just displays whatever string it's given. Not fixed
+as part of this pass since it's outside `/verify/`'s scope; see
+docs/DTC-DESIGN.md's Open items.
 
 ## 3. DTC — open edge cases, explicitly not yet tested
 Per docs/DTC-DESIGN.md's own open items, the live round trip works, but
