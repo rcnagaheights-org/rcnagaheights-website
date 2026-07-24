@@ -36,6 +36,8 @@ docs/SERVICE-PROJECTS-DESIGN.md -> data-driven Service Projects rework
                            sheet fields (not photos) — see its §6
 docs/QA-STATUS.md      -> what's actually confirmed live vs. only
                            sandbox-tested, and the open DTC/QA risk list
+docs/SEO.md            -> SEO checklist to run on any copy-changing
+                           commit, per-page audit state, audit history
 docs/BACKEND-CAPABILITY-TEST.md -> what Claude has actually tested (not
                            assumed) it can/can't do against Drive/Sheets
 docs/Rotarians.md      -> /rotarians/ roster rules, incl. the Council of
@@ -234,6 +236,11 @@ No build step, no test suite. Before considering an HTML edit done:
 - Grep for `canva://` and `drive.google.com` — neither should ever appear
 - Confirm internal links use trailing-slash paths (`/rotarians/`, not
   `/rotarians`) to match the folder+index.html structure GitHub Pages uses
+- Consider SEO impact on every commit, not just content-heavy ones — see
+  docs/SEO.md for the checklist. This was skipped for a while (see PR
+  #72) — a stale sitemap and a Contact-page description promising a
+  phone number the page didn't have both went unnoticed until an
+  explicit SEO audit caught them.
 
 `index.html` and `rotarians/index.html` (only) still carry harmless
 leftover Canva-export markup — `class="canva-text"`/`canva-button`/
