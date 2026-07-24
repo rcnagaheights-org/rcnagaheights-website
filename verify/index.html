@@ -47,7 +47,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
          <label for="card-batch-input" class="block text-[0.68rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Card Number</label>
          <div class="flex items-baseline justify-center gap-1.5">
           <span class="font-bold text-blue-100/70 text-lg tabular-nums select-none">DTC-</span>
-          <input id="card-batch-input" type="text" required placeholder="2026" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" class="w-16 bg-transparent border-0 border-b-[1.5px] border-white/30 focus:border-[#f7a81b] outline-none text-white text-lg font-bold tabular-nums py-1 px-0.5">
+          <input id="card-batch-input" type="text" required placeholder="2026" maxlength="10" autocomplete="off" class="w-16 bg-transparent border-0 border-b-[1.5px] border-white/30 focus:border-[#f7a81b] outline-none text-white text-lg font-bold tabular-nums py-1 px-0.5">
           <span class="font-bold text-blue-100/70 text-lg tabular-nums select-none">-</span>
           <input id="card-serial-input" type="text" required placeholder="00001" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" class="w-20 bg-transparent border-0 border-b-[1.5px] border-white/30 focus:border-[#f7a81b] outline-none text-white text-lg font-bold tabular-nums py-1 px-0.5">
          </div>
@@ -55,8 +55,8 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
 
         <div class="text-center">
          <label for="merchant-select" class="block text-[0.68rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Verifying at</label>
-         <div class="relative inline-block max-w-full">
-          <select id="merchant-select" required class="appearance-none bg-white/[0.06] border-[1.5px] border-white/20 focus:border-[#f7a81b] rounded-xl text-white text-sm font-semibold pl-4 pr-9 py-2.5 outline-none">
+         <div class="relative w-full">
+          <select id="merchant-select" required class="w-full appearance-none bg-white/[0.06] border-[1.5px] border-white/20 focus:border-[#f7a81b] rounded-xl text-white text-sm font-semibold pl-4 pr-9 py-2.5 outline-none">
            <option value="">Loading merchants&hellip;</option>
           </select>
           <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-200" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -112,10 +112,8 @@ document.getElementById('tc-accept-btn').addEventListener('click', function(){
   document.getElementById('tc-modal').classList.add('modal-hidden');
 });
 
-['card-batch-input', 'card-serial-input'].forEach(function(id){
-  document.getElementById(id).addEventListener('input', function(){
-    this.value = this.value.replace(/\D/g, '');
-  });
+document.getElementById('card-serial-input').addEventListener('input', function(){
+  this.value = this.value.replace(/\D/g, '');
 });
 
 const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC/exec';
