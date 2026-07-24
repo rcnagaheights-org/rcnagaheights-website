@@ -32,29 +32,46 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
  </head>
  <body data-template-id="__page-root" style="background: rgb(255, 255, 255);">
   <main class="min-h-screen flex items-center justify-center px-4 py-12">
-    <div class="w-full max-w-[336px]">
+    <div class="w-full max-w-[380px]">
       <h1 class="text-2xl font-bold text-[#0c3c7c] mb-6 text-center">Verify a DiskwenTulong Card</h1>
 
-      <form id="verify-form" class="bg-white border rounded-2xl p-6 grid gap-4">
-       <div class="min-w-0">
-        <label for="card-batch-input" class="block font-semibold text-sm mb-1">Card Number</label>
-        <div class="flex items-center gap-1.5">
-         <span class="font-semibold text-slate-500 text-lg select-none">DTC-</span>
-         <input id="card-batch-input" type="text" required placeholder="2026" class="flex-1 min-w-0 border rounded-lg px-2 py-3 text-lg text-center" autocomplete="off">
-         <span class="font-semibold text-slate-500 text-lg select-none">-</span>
-         <input id="card-serial-input" type="text" required placeholder="00001" inputmode="numeric" maxlength="5" class="flex-1 min-w-0 border rounded-lg px-2 py-3 text-lg text-center" autocomplete="off">
-        </div>
+      <div id="verify-card" class="relative rounded-[1.75rem] p-6 text-white shadow-xl overflow-hidden bg-gradient-to-br from-[#123f80] via-[#0c3c7c] to-[#071f47]">
+       <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+        <span class="inline-flex items-center text-[0.62rem] font-bold uppercase tracking-widest text-[#f7a81b] bg-[#f7a81b]/15 border border-[#f7a81b]/40 px-3 py-1 rounded-full">Card Verification</span>
+        <img src="/assets/header-logo-white.png" alt="Rotary Club of Naga Heights" class="h-[3.15rem] w-auto max-w-full drop-shadow-md">
        </div>
-       <div>
-        <label for="merchant-select" class="block font-semibold text-sm mb-1">Which merchant are you at?</label>
-        <select id="merchant-select" required class="w-full border rounded-lg px-4 py-3">
-         <option value="">Loading merchants&hellip;</option>
-        </select>
-       </div>
-       <button type="submit" class="bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold py-3 rounded-full transition-colors">Verify Card</button>
-      </form>
 
-      <div id="verify-result" class="modal-hidden mt-8 bg-white border rounded-2xl p-6"></div>
+       <form id="verify-form" class="grid gap-3">
+        <div class="text-center">
+         <label for="card-batch-input" class="block text-[0.68rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Card Number</label>
+         <div class="flex items-baseline justify-center gap-1.5">
+          <span class="font-bold text-blue-100/70 text-lg tabular-nums select-none">DTC-</span>
+          <input id="card-batch-input" type="text" required placeholder="2026" inputmode="numeric" maxlength="4" autocomplete="off" class="w-12 bg-transparent border-0 border-b-[1.5px] border-white/30 focus:border-[#f7a81b] outline-none text-white text-lg font-bold tabular-nums py-1 px-0.5">
+          <span class="font-bold text-blue-100/70 text-lg tabular-nums select-none">-</span>
+          <input id="card-serial-input" type="text" required placeholder="00001" inputmode="numeric" maxlength="5" autocomplete="off" class="w-16 bg-transparent border-0 border-b-[1.5px] border-white/30 focus:border-[#f7a81b] outline-none text-white text-lg font-bold tabular-nums py-1 px-0.5">
+         </div>
+        </div>
+
+        <div class="text-center">
+         <label for="merchant-select" class="block text-[0.68rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Verifying at</label>
+         <div class="relative inline-block max-w-full">
+          <select id="merchant-select" required class="appearance-none bg-white/[0.06] border-[1.5px] border-white/20 focus:border-[#f7a81b] rounded-xl text-white text-sm font-semibold pl-4 pr-9 py-2.5 outline-none">
+           <option value="">Loading merchants&hellip;</option>
+          </select>
+          <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-200" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+         </div>
+        </div>
+
+        <svg class="w-full h-3.5 text-white/20 mb-1" viewBox="0 0 300 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 7c25-10 50 10 75 0s50-10 75 0 50 10 75 0 50-10 75 0" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+
+        <button id="verify-submit-btn" type="submit" class="block w-fit mx-auto bg-[#f7a81b] hover:brightness-105 disabled:opacity-70 text-[#432c04] font-extrabold text-sm px-11 py-2.5 rounded-full transition-[filter] active:translate-y-px">Verify Card</button>
+        <p id="verify-error" class="modal-hidden text-red-300 text-sm text-center -mt-1"></p>
+       </form>
+
+       <div id="verify-result" class="modal-hidden"></div>
+      </div>
+
+      <p class="text-slate-500 text-sm mt-4 text-center">Compare this name against the physical card and a valid government ID before honoring any discount.</p>
     </div>
   </main>
 
@@ -94,12 +111,19 @@ document.getElementById('tc-accept-btn').addEventListener('click', function(){
 
 const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC/exec';
 
-const STATUS_STYLES = {
-  'ACTIVE': 'bg-green-50 text-green-700 border-green-200',
-  'EXPIRED': 'bg-amber-50 text-amber-700 border-amber-200',
-  'SUSPENDED': 'bg-red-50 text-red-700 border-red-200',
-  'UNREGISTERED': 'bg-slate-50 text-slate-600 border-slate-200',
-  'INVALID CARD': 'bg-red-50 text-red-700 border-red-200'
+const STATUS_STAMP = {
+  'ACTIVE':        { classes: 'bg-[#4fd58a]/15 text-[#8bf0b3] border-[#4fd58a]/40', icon: 'check' },
+  'EXPIRED':       { classes: 'bg-[#f0b23e]/15 text-[#ffce7a] border-[#f0b23e]/40', icon: 'clock' },
+  'SUSPENDED':     { classes: 'bg-[#f0716e]/15 text-[#ffaba8] border-[#f0716e]/40', icon: 'x' },
+  'INVALID CARD':  { classes: 'bg-[#f0716e]/15 text-[#ffaba8] border-[#f0716e]/40', icon: 'x' },
+  'UNREGISTERED':  { classes: 'bg-white/10 text-blue-100 border-white/25', icon: 'dash' }
+};
+const DEFAULT_STAMP = { classes: 'bg-white/10 text-blue-100 border-white/25', icon: 'dash' };
+const STAMP_ICONS = {
+  check: '<path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>',
+  clock: '<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"></circle><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>',
+  x: '<path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>',
+  dash: '<path d="M6 12h12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>'
 };
 
 function populateMerchantOptions(names){
@@ -129,37 +153,57 @@ fetch(`${APPS_SCRIPT_URL}?action=partners`)
       });
   });
 
-document.getElementById('verify-form').addEventListener('submit', function(e){
+const verifyForm = document.getElementById('verify-form');
+const verifyResult = document.getElementById('verify-result');
+const verifyError = document.getElementById('verify-error');
+const verifySubmitBtn = document.getElementById('verify-submit-btn');
+
+function showResult(data, cardNumber){
+  const stamp = STATUS_STAMP[data.status] || DEFAULT_STAMP;
+  verifyResult.innerHTML = `
+    <div class="flex items-end justify-between gap-3 mb-3">
+     <div class="text-left min-w-0"><p class="text-[0.64rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Card Number</p><p class="text-base font-bold tabular-nums">${escapeHtml(data.card_number || cardNumber)}</p></div>
+     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-extrabold border ${stamp.classes}"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">${STAMP_ICONS[stamp.icon]}</svg>${escapeHtml(data.status || 'UNKNOWN')}</span>
+    </div>
+    <p class="text-2xl font-bold mb-3" style="font-family:'Playfair Display',serif">${escapeHtml(data.cardholder_name || '—')}</p>
+    <div class="grid grid-cols-2 gap-4 mb-4">
+     <div><p class="text-[0.64rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Registered</p><p class="text-base font-bold tabular-nums">${escapeHtml(data.registered_date || '—')}</p></div>
+     <div><p class="text-[0.64rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Expires</p><p class="text-base font-bold tabular-nums">${escapeHtml(data.expiry_date || '—')}</p></div>
+    </div>
+    <button id="verify-reset-btn" type="button" class="block w-full border-[1.5px] border-white/35 hover:bg-white/10 text-white font-bold text-sm py-2.5 rounded-full transition-colors">Verify another card</button>
+  `;
+  verifyForm.classList.add('modal-hidden');
+  verifyResult.classList.remove('modal-hidden');
+  document.getElementById('verify-reset-btn').addEventListener('click', function(){
+    verifyResult.classList.add('modal-hidden');
+    verifyForm.classList.remove('modal-hidden');
+  });
+}
+
+verifyForm.addEventListener('submit', function(e){
   e.preventDefault();
   const batch = document.getElementById('card-batch-input').value.trim();
   const serial = document.getElementById('card-serial-input').value.trim().replace(/\D/g, '').padStart(5, '0');
   const cardNumber = `DTC-${batch}-${serial}`;
   const merchant = document.getElementById('merchant-select').value;
-  const resultBox = document.getElementById('verify-result');
-  resultBox.classList.remove('modal-hidden');
-  resultBox.innerHTML = '<p class="text-slate-500">Checking&hellip;</p>';
+
+  verifyError.classList.add('modal-hidden');
+  verifySubmitBtn.disabled = true;
+  verifySubmitBtn.textContent = 'Checking…';
 
   fetch(`${APPS_SCRIPT_URL}?action=verify&cardNumber=${encodeURIComponent(cardNumber)}&merchant=${encodeURIComponent(merchant)}`)
     .then(r => r.json())
     .then(data => {
       if (data.error) throw new Error(data.error);
-      const styles = STATUS_STYLES[data.status] || 'bg-slate-50 text-slate-600 border-slate-200';
-      resultBox.innerHTML = `
-        <div class="border rounded-xl p-5 ${styles}">
-         <p class="text-xs font-bold uppercase tracking-wide">Status</p>
-         <p class="text-2xl font-bold mt-1">${escapeHtml(data.status || 'UNKNOWN')}</p>
-        </div>
-        <div class="grid sm:grid-cols-2 gap-4 mt-4">
-         <div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Cardholder Name</p><p class="text-lg mt-1">${escapeHtml(data.cardholder_name || '—')}</p></div>
-         <div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Card Number</p><p class="text-lg mt-1">${escapeHtml(data.card_number || cardNumber)}</p></div>
-         <div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Registered</p><p class="text-lg mt-1">${escapeHtml(data.registered_date || '—')}</p></div>
-         <div><p class="text-xs font-bold uppercase tracking-wide text-slate-500">Expires</p><p class="text-lg mt-1">${escapeHtml(data.expiry_date || '—')}</p></div>
-        </div>
-        <p class="text-sm text-slate-500 mt-4">Compare this name against the physical card and a valid government ID before honoring any discount.</p>
-      `;
+      showResult(data, cardNumber);
     })
     .catch(() => {
-      resultBox.innerHTML = '<p class="text-red-700">Could not verify this card right now. Please try again, or contact the club if this keeps happening.</p>';
+      verifyError.textContent = 'Could not verify this card right now. Please try again, or contact the club if this keeps happening.';
+      verifyError.classList.remove('modal-hidden');
+    })
+    .finally(() => {
+      verifySubmitBtn.disabled = false;
+      verifySubmitBtn.textContent = 'Verify Card';
     });
 });
 </script>
