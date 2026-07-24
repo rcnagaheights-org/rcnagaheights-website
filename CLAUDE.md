@@ -80,6 +80,18 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   is now a real photo of the club (`assets/social/og-share.jpg`,
   self-hosted), replacing a generic Pexels stock placeholder that was
   live on every page until 2026-07-21.
+- `/verify/` was rebuilt (PRs #68-71) as a single card-styled form/result
+  component matching the physical DTC card's navy/gold branding, fixing
+  several rounds of real device bugs along the way (font-metric field
+  clipping, native `<option>` popup styling, `inputmode` not actually
+  restricting input, a batch-field regression that broke typing `TEST`).
+  Built blind (no working `cdn.tailwindcss.com` access that session) and
+  validated only by the human's live-device testing — confirmed
+  2026-07-24, with real network access, still renders and functions
+  correctly end-to-end: card proportions, logo sizing, field widths, the
+  mandatory T&C gate, and a live Apps Script verify call all check out.
+  See docs/QA-STATUS.md for exactly how that check was done (not the same
+  as a live device test) and one new finding it turned up.
 - Rotarians page now has the full real roster (29 people, from a Drive
   membership sheet) instead of 4 hardcoded name slots — still plain
   hardcoded HTML, not data-driven; re-editing this file by hand is

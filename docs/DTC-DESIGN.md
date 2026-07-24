@@ -375,3 +375,12 @@ considered stable, not experimental.
 - [ ] dtc@rcnagaheights.org's remaining purpose, if any, now that client
       registration-confirmation emails are no longer part of the design
       (see §0)
+- [ ] **`getPartners` double-encoding bug, found 2026-07-24** — at least
+      one merchant name comes back from the live Apps Script endpoint
+      mis-encoded: "White Bean Café" as `White Bean CafÃ©`. Confirmed via
+      a direct `curl` of the endpoint, so it's a real Code.gs/Sheet data
+      issue, not a `/verify/` or `/diskwentulong/` frontend bug — those
+      pages just render whatever string they're given. Not fixed yet;
+      likely worth checking whether the Sheet cell itself is
+      double-encoded or Code.gs is re-encoding an already-UTF-8 string
+      somewhere before returning it. See docs/QA-STATUS.md.

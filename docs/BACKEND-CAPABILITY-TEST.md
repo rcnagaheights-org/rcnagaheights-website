@@ -1,5 +1,5 @@
 # Claude Backend Capability Test — Results
-Version: v1 · Last updated: 2026-07-18
+Version: v1.1 · Last updated: 2026-07-24
 
 Reference doc recording what Claude actually tested (not assumed) about its
 ability to build the DiskwenTulong Card backend described in
@@ -90,3 +90,14 @@ Apps Script editor and deploys it themselves.
 4. Any Sheet data edits after Claude's initial one-shot creation
 5. Deleting any Drive file Claude creates, including test artifacts like the
    one from this check
+
+## Reconfirmation — 2026-07-24
+Re-checked per this doc's own instruction ("re-run these checks... if
+the available connectors change"). The connector set is unchanged: still
+`create_file`/`copy_file`/`download_file_content`/`get_file_metadata`/
+`get_file_permissions`/`list_recent_files`/`read_file_content`/
+`search_files`, no update-in-place, no delete/trash, no Apps Script tool
+of any kind. All findings above still hold. (Separately, this session
+also confirmed GitHub push access and outbound web access both work —
+see docs/QA-STATUS.md — but that's a network-egress question, not a
+connector-capability one, and doesn't change anything in this file.)
