@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v1.3 · Last updated: 2026-07-24
+Version: v1.4 · Last updated: 2026-07-29
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -103,14 +103,31 @@ bug — the frontend just displays whatever string it's given. Not fixed
 as part of this pass since it's outside `/verify/`'s scope; see
 docs/DTC-DESIGN.md's Open items.
 
+**Resolved data bug, found and fixed 2026-07-29:** the `2026` batch tab
+had a completely blank `status` column on every row (unlike `TEST`,
+where every row is explicitly `UNREGISTERED` until registered). This
+made every card in the `2026` batch simultaneously un-registerable
+(`/register/` refused it with the misleading "already registered or is
+not available for registration (status: )." — blank ≠ `UNREGISTERED`)
+and un-verifiable as a real status (`/verify/` showed `UNKNOWN`, since
+blank isn't a key in the frontend's status-badge map). Neither
+`Code.gs` nor the frontend had a bug — both behaved exactly as designed
+given the data they read. Confirmed fixed the same day: every row
+`DTC-2026-00001`-`00414` now reads `status = UNREGISTERED`. See
+docs/DTC-DESIGN.md's Open items for full detail. Not yet re-verified
+with an actual `/register/` + `/verify/` round trip on a `2026` card
+now that the data's corrected.
+
 ## 3. DTC — open edge cases, explicitly not yet tested
 Per docs/DTC-DESIGN.md's own open items, the live round trip works, but
 these specific cases have NOT been exercised:
 - An already-registered card being re-submitted (does it correctly
   reject, or misbehave?).
 - An invalid/non-existent card number.
-- Multiple batches at once (only the `TEST` batch tab has ever been
-  used; `2026` has never had a real registration).
+- Multiple batches at once (only the `TEST` batch tab has ever had a
+  real registration; `2026`'s blank-`status` bug — see above, now
+  fixed — meant no `2026` card could be registered at all until
+  2026-07-29, so this is still genuinely untested).
 - Concurrent registration attempts (the `LockService` lock exists in
   `Code.gs`, but its actual behavior under real concurrent requests has
   never been observed).

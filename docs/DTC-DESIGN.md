@@ -375,6 +375,23 @@ considered stable, not experimental.
 - [ ] dtc@rcnagaheights.org's remaining purpose, if any, now that client
       registration-confirmation emails are no longer part of the design
       (see §0)
+- [x] **`2026` batch tab had a blank `status` column, found and fixed
+      2026-07-29.** Unlike `TEST` (every row explicitly `UNREGISTERED`
+      until registered), every row in `2026` had `card_number` filled in
+      but `status` completely blank. This broke both flows for every
+      card in the batch: `/register/` on e.g. `DTC-2026-00010` returned
+      "This card is already registered or is not available for
+      registration (status: )." (blank ≠ `UNREGISTERED`, so
+      `registerCard_` refused it), and `/verify/` showed status
+      `UNKNOWN` (blank isn't a key in the frontend's `STATUS_STAMP` map,
+      so it fell through to the default and rendered `data.status ||
+      'UNKNOWN'`). Not a Code.gs or frontend bug — both were behaving
+      exactly as designed given the data they read. Confirmed fixed
+      2026-07-29: re-read the live Sheet and every row `DTC-2026-00001`
+      through at least `00414` now has `status = UNREGISTERED`, matching
+      `TEST`'s convention. Worth one real `/register/` + `/verify/`
+      round trip on a `2026` card to confirm end-to-end now that the
+      data's corrected — not yet done.
 - [ ] **`getPartners` double-encoding bug, found 2026-07-24** — at least
       one merchant name comes back from the live Apps Script endpoint
       mis-encoded: "White Bean Café" as `White Bean CafÃ©`. Confirmed via
