@@ -60,6 +60,31 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
     </div>
   </main>
 
+  <!-- Confirm modal -- lets the registering member review the name/card
+       number they typed before it's actually submitted, so a typo can be
+       caught and fixed here instead of needing a manual Sheets edit after
+       the fact (see docs/DTC-DESIGN.md's Open items). -->
+  <div id="confirm-modal" class="modal-hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4 py-8">
+   <div class="bg-white rounded-2xl p-6 w-full max-w-[336px]">
+    <h2 class="text-xl font-bold text-[#0c3c7c] mb-2 text-center">Confirm Registration</h2>
+    <p class="text-sm text-slate-500 text-center mb-5">Please review before registering — this cannot be undone from this page.</p>
+    <div class="bg-slate-50 border rounded-xl p-4 mb-6 grid gap-3">
+     <div>
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Client's Full Name</p>
+      <p id="confirm-name" class="text-lg font-semibold text-[#17324d]"></p>
+     </div>
+     <div>
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Card Number</p>
+      <p id="confirm-card-number" class="text-lg font-semibold text-[#17324d] tabular-nums"></p>
+     </div>
+    </div>
+    <div class="grid gap-2">
+     <button id="confirm-register-btn" type="button" class="bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold py-3 rounded-full transition-colors">Yes, Register This Card</button>
+     <button id="confirm-edit-btn" type="button" class="border border-slate-300 hover:bg-slate-50 text-slate-600 font-semibold py-3 rounded-full transition-colors">Go Back and Edit</button>
+    </div>
+   </div>
+  </div>
+
   <!-- Sign-in gate -- blocks the page until the member signs in. Deliberately
        does not mention the required @rcnagaheights.org domain anywhere in the
        UI copy, so an unauthorized visitor gets no hint about what account to
@@ -113,6 +138,8 @@ function handleCredentialResponse(response){
   document.getElementById('register-submit-btn').disabled = false;
 }
 
+let pendingRegistration = null;
+
 document.getElementById('register-form').addEventListener('submit', function(e){
   e.preventDefault();
   if (!idToken) {
@@ -123,6 +150,24 @@ document.getElementById('register-form').addEventListener('submit', function(e){
   const batch = document.getElementById('card-batch-input').value.trim();
   const serial = document.getElementById('card-serial-input').value.trim().replace(/\D/g, '').padStart(5, '0');
   const cardNumber = `DTC-${batch}-${serial}`;
+
+  pendingRegistration = { fullName, cardNumber };
+  document.getElementById('confirm-name').textContent = fullName;
+  document.getElementById('confirm-card-number').textContent = cardNumber;
+  document.getElementById('confirm-modal').classList.remove('modal-hidden');
+});
+
+document.getElementById('confirm-edit-btn').addEventListener('click', function(){
+  document.getElementById('confirm-modal').classList.add('modal-hidden');
+  pendingRegistration = null;
+});
+
+document.getElementById('confirm-register-btn').addEventListener('click', function(){
+  document.getElementById('confirm-modal').classList.add('modal-hidden');
+  if (!pendingRegistration) return;
+  const { fullName, cardNumber } = pendingRegistration;
+  pendingRegistration = null;
+
   const resultBox = document.getElementById('register-result');
   resultBox.classList.remove('modal-hidden');
   resultBox.className = 'mt-8 rounded-xl p-5 border bg-slate-50 text-slate-600 border-slate-200';
