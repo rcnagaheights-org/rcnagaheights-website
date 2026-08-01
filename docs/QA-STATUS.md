@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v1.4 · Last updated: 2026-07-29
+Version: v1.5 · Last updated: 2026-07-30
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -119,25 +119,20 @@ with an actual `/register/` + `/verify/` round trip on a `2026` card
 now that the data's corrected.
 
 ## 3. DTC — open edge cases, explicitly not yet tested
-Per docs/DTC-DESIGN.md's own open items, the live round trip works, but
-these specific cases have NOT been exercised:
-- An already-registered card being re-submitted (does it correctly
-  reject, or misbehave?).
-- An invalid/non-existent card number.
-- Multiple batches at once (only the `TEST` batch tab has ever had a
-  real registration; `2026`'s blank-`status` bug — see above, now
-  fixed — meant no `2026` card could be registered at all until
-  2026-07-29, so this is still genuinely untested).
-- Concurrent registration attempts (the `LockService` lock exists in
-  `Code.gs`, but its actual behavior under real concurrent requests has
-  never been observed).
-- A non-`@rcnagaheights.org` account attempting to sign in/register —
-  only the success path has been tested; the "Internal" OAuth
-  restriction is configured but its rejection behavior is unverified.
-- The `/verify/` dropdown's merchant selection is sent by the frontend
-  but silently dropped by the backend (no column stores it) — a known,
-  accepted no-op, not a bug, but worth remembering it's not actually
-  tracking anything yet.
+The live round trip works, but several specific edge cases (duplicate/
+concurrent registration attempts, non-domain sign-in rejection, and a
+couple of others) have not been exercised end-to-end yet. **Full list
+intentionally kept out of this public repo as of 2026-07-30** — it
+doubled as a punch list of exactly which paths are least hardened,
+which isn't useful to publish. The complete, current list is
+maintained in the Drive-only "QA Status & Known Risks" doc (Project
+Architecture folder) — check there before any real physical card
+printing run, and update it there (not here) as each case gets
+exercised.
+
+The `/verify/` dropdown's merchant selection (added in Code.gs v8) is
+confirmed working end-to-end — real merchant names now appear in the
+Verifications sheet's `merchant_name_selected` column on live requests.
 
 ## 4. Cross-browser / cross-device coverage gap
 All testing this session used Chromium via Playwright at two fixed

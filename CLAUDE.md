@@ -94,6 +94,19 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   mandatory T&C gate, and a live Apps Script verify call all check out.
   See docs/QA-STATUS.md for exactly how that check was done (not the same
   as a live device test) and one new finding it turned up.
+- `/register/` gained a "Confirm Registration" review step (2026-07-29)
+  — shows the typed name/card number and requires an explicit "Yes,
+  Register" click before the request fires, so a typo can be caught
+  before it's written to the Sheet (there's still no edit-registration
+  feature, so a typo after the fact means a manual Sheets edit).
+- `/verify/` now also requires the cardholder's name, matched
+  server-side against the name on file, before returning any real
+  status/details (closes a card-number-enumeration gap — see
+  docs/DTC-DESIGN.md's Open items). **`verify/index.html` is live with
+  the new field, but `Code.gs` still needs its manual paste-in +
+  redeploy step (v9, written 2026-07-30, sitting in Drive) before the
+  actual check is enforced — until that happens the live backend is
+  still v8 and does NOT require a name match yet.**
 - Rotarians page now has the full real roster (29 people, from a Drive
   membership sheet) instead of 4 hardcoded name slots — still plain
   hardcoded HTML, not data-driven; re-editing this file by hand is
