@@ -1,22 +1,31 @@
-# Rurok (Digital Bulletin) — Design Detail
-Version: v1.2 · Last updated: 2026-08-01
+# Rurok — Design Detail
+Version: v2 · Last updated: 2026-08-01
 Mirrors Google Drive's "PROPOSAL - Digital Bulletin Publishing
 Workflow.txt" (Digital Bulletin folder) — read that first for the full
 publishing-cadence rationale; this file covers how it's actually built
 on the site.
 
 ## Status
-**BUILT and LIVE.** `bulletin/index.html` (URL stays `/bulletin/` —
-deliberately not renamed to match the display name, see "Naming" below)
-now shows the real first issue instead of placeholder content.
+**BUILT and LIVE.** `rurok/index.html`, serving `/rurok/`, now shows the
+real first issue instead of placeholder content.
 
 ## Naming
 The page's public-facing name is **"Rurok"** — `<title>`, `<h1>`, meta
 description/OG/Twitter tags, the flipbook `<iframe>`'s `title`
 attribute, and the nav link all say "Rurok," not "Digital Bulletin."
-The file path (`bulletin/index.html`) and URL (`/bulletin/`)
-intentionally did NOT change — this is a display-name change only, not
-a URL change.
+
+**URL history:** originally kept at `bulletin/index.html` / `/bulletin/`
+as a display-name-only change (2026-08-01, earlier the same day) — the
+file path and URL were deliberately NOT renamed at first, per an
+explicit instruction. That decision was reversed later the same day:
+the file/URL were renamed to `rurok/index.html` / `/rurok/` to match
+the display name everywhere, including the address bar. **No redirect**
+exists from the old `/bulletin/` path — it 404s — matching this site's
+established `/foundation/`->`/diskwentulong/` precedent (CLAUDE.md:
+"no redirect... deliberately a 404"), on the reasoning that there's no
+meaningful existing traffic to the old URL to break. If a nav link is
+ever changed, update `data-template-id="nav-rurok"` and its `href`
+together across all 6 nav-bearing pages (see "Nav" below).
 
 **The `<h1>` is visually hidden (`sr-only`), not deleted**, per an
 explicit request to strip the visible on-page headings (the visible
@@ -64,20 +73,21 @@ to retire in the first place.
 Per the proposal doc's yearly workflow: when a Rotary Year ends and a
 new flipbook replaces the featured one, take that retired year's same
 PDF and add it as a thumbnail card in the Past Issues section (replace
-the empty-state div in `bulletin/index.html`) — image/cover, issue
+the empty-state div in `rurok/index.html`) — image/cover, issue
 label, and a direct link to the PDF file (not another flipbook embed;
 flipbook embeds are for the current live issue only, per the proposal
 doc's reasoning about keeping only one flipbook active at a time).
 
-## Nav (added 2026-08-01)
-"Rurok" now links to `/bulletin/` in the desktop nav, mobile menu, and
-footer Site Map on all 6 nav-bearing pages (index, rotarians, projects,
-diskwentulong, bulletin itself, contact), positioned between
-"DiskwenTulong Card" and "Contact Us." `/verify/` and `/register/` have
-no nav chrome by design (utility pages) and were left untouched.
-`sitemap.xml`'s `lastmod` was bumped across all 6 URLs to match, per
-docs/SEO.md's checklist (visible copy — the nav — changed on all of
-them).
+## Nav (added 2026-08-01, updated same day for the URL rename)
+"Rurok" links to `/rurok/` in the desktop nav, mobile menu, and footer
+Site Map on all 6 nav-bearing pages (index, rotarians, projects,
+diskwentulong, rurok itself, contact), positioned between "DiskwenTulong
+Card" and "Contact Us." `/verify/` and `/register/` have no nav chrome
+by design (utility pages) and were left untouched. `sitemap.xml`'s
+`lastmod` was bumped across all 6 URLs to match, per docs/SEO.md's
+checklist (visible copy — the nav — changed on all of them), and its
+`<loc>` for this page updated from `/bulletin/` to `/rurok/` when the
+URL was renamed.
 
 ## Not done / explicitly out of scope
 - No Heyzine account/upload access exists in this environment (no

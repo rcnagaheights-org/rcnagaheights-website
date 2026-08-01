@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v1.5 · Last updated: 2026-07-30
+Version: v1.6 · Last updated: 2026-08-01
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -144,12 +144,13 @@ gap, not a blocker.
 
 ## 5. Link/reference integrity — checked, clean
 Grepped every `href=` across all 8 HTML pages: no link points at the
-removed `/foundation/` page, no `canva://` or `drive.google.com` URLs
-anywhere, all internal links consistently use trailing-slash paths, and
-`/bulletin/` is correctly absent from every page's nav (matches its
-documented "not linked yet" status). No action needed here — this is a
-clean bill of health, recorded so it doesn't need re-checking from
-scratch next time.
+removed `/foundation/` page, no link points at the retired `/bulletin/`
+path (renamed to `/rurok/` 2026-08-01, see docs/RUROK-DESIGN.md — the
+old path 404s on purpose, no redirect), no `canva://` or
+`drive.google.com` URLs anywhere, and all internal links consistently
+use trailing-slash paths. No action needed here — this is a clean bill
+of health, recorded so it doesn't need re-checking from scratch next
+time.
 
 ## When to revisit this file
 Update it whenever: a new page/feature ships that hasn't been

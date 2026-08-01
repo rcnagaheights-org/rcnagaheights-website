@@ -1,5 +1,5 @@
 # SEO — Status & Checklist
-Version: v1 · Last updated: 2026-07-24
+Version: v1.1 · Last updated: 2026-08-01
 
 Pulled out of CLAUDE.md's "Verifying changes" section per this repo's own
 convention (small checklist items stay in CLAUDE.md; anything needing more
@@ -21,11 +21,11 @@ than a few lines gets its own file). CLAUDE.md links here.
 - **One `<h1>` per page.**
 - **Internal links**: trailing-slash paths (`/rotarians/`, not
   `/rotarians`), matching the folder+index.html structure GitHub Pages uses.
-- **`noindex` pages** (`/verify/`, `/register/`, `/bulletin/` — see below)
-  stay out of `sitemap.xml` and keep their `<meta name="robots"
+- **`noindex` pages** (`/verify/`, `/register/` — see below) stay out
+  of `sitemap.xml` and keep their `<meta name="robots"
   content="noindex">` tag.
 
-## Per-page state (last full audit: 2026-07-24)
+## Per-page state (last full audit: 2026-07-24; `/rurok/` entry updated 2026-08-01)
 | Page | Title (chars) | Description (chars) | Indexed? |
 |---|---|---|---|
 | `/` | 48 | 141 | yes |
@@ -33,9 +33,9 @@ than a few lines gets its own file). CLAUDE.md links here.
 | `/projects/` | 46 | 125 | yes |
 | `/diskwentulong/` | 48 | 147 | yes |
 | `/contact/` | 40 | 90 | yes |
+| `/rurok/` | 35 | 93 | yes |
 | `/verify/` | 57 | 107 | no (`noindex`) |
 | `/register/` | 59 | 81 | no (`noindex`) |
-| `/bulletin/` | 46 | 103 | no (`noindex`) |
 
 All 8 pages: unique title/description, single `<h1>`, `lang="en"`, viewport
 tag present, no missing `alt` attributes. All 6 indexable pages carry valid
@@ -43,20 +43,21 @@ tag present, no missing `alt` attributes. All 6 indexable pages carry valid
 `og:image:height` (1200×630) on every page that has one.
 
 `robots.txt` + `sitemap.xml` are consistent with each other and with each
-page's own `noindex` tag — the 3 `noindex` pages are correctly absent from
-`sitemap.xml`.
+page's own `noindex` tag — the 2 `noindex` pages (`/verify/`,
+`/register/`) are correctly absent from `sitemap.xml`.
 
 Live redirect behavior (checked 2026-07-24, real network access): all pages
 return 200; `www` → apex, `http` → `https`, and no-trailing-slash → trailing
 slash all resolve in a single hop.
 
 ## Known intentional exception
-`/bulletin/`'s meta description/OG/Twitter tags still promise "our archive
-of past issues," which doesn't exist yet (the page is placeholder content —
-see CLAUDE.md's "Known placeholders"). This is why it's `noindex`ed and
-excluded from `sitemap.xml` rather than treated as a copy bug to fix here —
-fix the copy once real bulletin content replaces the placeholder, not
-before.
+None currently open. (Formerly: `/bulletin/`'s meta tags promised "our
+archive of past issues" while the page was still placeholder content —
+resolved 2026-08-01 when the page, renamed "Rurok" and moved to
+`/rurok/`, got real content, an accurate description, and was un-noindexed.
+See docs/RUROK-DESIGN.md. The description still doesn't mention an
+archive — accurately, since only one issue exists — re-word it once a
+second issue actually exists.)
 
 ## Audit history
 - **2026-07-24 (first full audit)** — found two real issues, both fixed in
