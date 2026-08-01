@@ -19,7 +19,11 @@ register/index.html     -> /register/ (no-index: register a client's
                              card — Google Sign-In restricted to
                              @rcnagaheights.org, confirmed working live
                              as of 2026-07-20, see docs/DTC-DESIGN.md §3)
-bulletin/index.html      -> /bulletin/   (exists, not linked in nav yet)
+bulletin/index.html      -> /bulletin/   (displayed name is "Rurok" as
+                             of 2026-08-01 — URL/file path deliberately
+                             unchanged; now linked in nav as "Rurok" on
+                             all 6 nav-bearing pages; see
+                             docs/RUROK-DESIGN.md)
 contact/index.html       -> /contact/    (also holds "Get Involved")
 assets/rotary-logo.png -> real logo file (was a Drive hotlink, now local)
 CNAME                  -> custom domain config, do not remove
@@ -36,6 +40,9 @@ docs/SERVICE-PROJECTS-DESIGN.md -> data-driven Service Projects rework
                            sheet fields (not photos) — see its §6
 docs/QA-STATUS.md      -> what's actually confirmed live vs. only
                            sandbox-tested, and the open DTC/QA risk list
+docs/RUROK-DESIGN.md   -> Rurok (Digital Bulletin) page design: naming,
+                           featured/past-issues structure, current data
+                           state
 docs/SEO.md            -> SEO checklist to run on any copy-changing
                            commit, per-page audit state, audit history
 docs/BACKEND-CAPABILITY-TEST.md -> what Claude has actually tested (not
@@ -195,13 +202,26 @@ doing any Drive-related content work.
   — check it before touching anything DTC-related
 
 ## Known placeholders / open TODOs
-- `bulletin/index.html`'s meta description/OG/Twitter tags promise "our
-  archive of past issues," but the page itself has no archive — just a
-  single placeholder "Latest Issue" (stock photo, dead `href="#"`
-  download link) and an empty "Flipbook Viewer" box. Now `noindex`ed
-  and removed from `sitemap.xml` (2026-07-23) specifically because of
-  this — remove the `noindex` once real bulletin content replaces the
-  placeholder.
+- **RESOLVED 2026-08-01**: `/bulletin/` now embeds the real first issue
+  — "Rurok," Volume 1: June Issue (Rotary Year 2026-27), via a Heyzine
+  flipbook iframe embed. The old stock-photo cover + dead `href="#"`
+  download link were removed rather than kept as fake content; an
+  "Open Full Flipbook" link (real, opens the actual Heyzine page) takes
+  its place. `noindex` removed, `/bulletin/` added back to
+  `sitemap.xml`, and the meta description/OG/Twitter tags no longer
+  promise an "archive" that doesn't exist yet — just describes this one
+  issue. Same day, the page's display name was changed from "Digital
+  Bulletin" to "Rurok" (title/`<h1>`/meta tags — URL/file path stayed
+  `/bulletin/` on purpose) and a "Past Issues" section was added below
+  the featured flipbook — currently an honest empty state, since Rurok
+  Volume 1 is the only issue that exists. **Also 2026-08-01**: added
+  "Rurok" to the nav (desktop, mobile menu, and footer Site Map) on all
+  6 nav-bearing pages, between "DiskwenTulong Card" and "Contact Us"
+  (`/verify/` and `/register/` have no nav chrome by design, untouched)
+  — `sitemap.xml`'s `lastmod` bumped across all 6 to match. See
+  docs/RUROK-DESIGN.md. Only one issue exists so far; re-word the
+  description back to mentioning an archive once a second issue
+  actually exists.
 - No automated test suite exists anywhere in this repo (confirmed via
   audit 2026-07-20) — see docs/QA-STATUS.md for the full risk list,
   including which "confirmed working" claims are backed by the user's
