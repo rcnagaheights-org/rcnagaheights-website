@@ -79,17 +79,19 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
 
     <section class="py-20 bg-[#f4f7fc]">
      <div class="max-w-7xl mx-auto px-4 sm:px-6">
-      <h1 data-template-id="bulletin-heading" class="canva-text text-center text-4xl font-bold text-[#0c3c7c] mb-3" style="color: rgb(12, 60, 124); font-weight: 700; font-style: normal; font-size: 36px;">Rurok</h1>
-      <p class="text-center text-slate-500 mb-10">The official bulletin of the Rotary Club of Naga Heights</p>
+      <h1 class="sr-only">Rurok — Rotary Club of Naga Heights Bulletin</h1>
 
       <!-- FEATURED: latest issue, embedded flipbook (per the Drive
            "PROPOSAL - Digital Bulletin Publishing Workflow" doc's
-           one-live-flipbook-per-Rotary-Year approach). -->
+           one-live-flipbook-per-Rotary-Year approach). Heading/label
+           text above the iframe was removed 2026-08-01 per explicit
+           request (visual clutter -- Heyzine's own widget already
+           shows the issue title internally); the page's H1 heading is
+           kept but visually hidden via sr-only (not deleted) so the
+           page still has exactly one real heading for SEO/
+           accessibility, matching every other page on this site. -->
       <div class="max-w-4xl mx-auto bg-white rounded-[2rem] p-4 sm:p-6">
-       <p class="text-center text-sm font-bold uppercase tracking-wide text-[#f7a81b] mb-1">Latest Issue</p>
-       <p class="text-center text-slate-500 mb-5">Volume 1: June Issue (Rotary Year 2026-27)</p>
        <iframe src="https://heyzine.com/flip-book/1f2a839135.html" title="Rurok - Rotary Club of Naga Heights Bulletin, Volume 1: June Issue" class="w-full rounded-2xl border" style="height: 640px;" allowfullscreen loading="lazy"></iframe>
-       <a href="https://heyzine.com/flip-book/1f2a839135.html" target="_blank" rel="noopener noreferrer" class="block text-center mt-5 py-3 rounded-full bg-[#17458f] hover:bg-[#0c3c7c] text-white font-bold transition-colors">Open Full Flipbook</a>
       </div>
 
       <!-- PAST ISSUES: per the proposal doc, a retired Rotary Year's
@@ -98,13 +100,12 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
            above. No past issues exist yet -- Rurok Volume 1 is the
            first issue ever published, so this is an honest empty state,
            not a bug. Add a thumbnail card here (image + issue label +
-           PDF link) per retired issue once one actually exists. -->
+           PDF link) per retired issue once one actually exists. Heading/
+           description text removed 2026-08-01 per explicit request --
+           just the icon remains as a visual placeholder. -->
       <div class="max-w-4xl mx-auto mt-16">
-       <h2 class="text-2xl font-bold text-center mb-2">Past Issues</h2>
-       <p class="text-center text-slate-500 mb-8">Archived issues from previous Rotary Years will appear here.</p>
        <div class="rounded-[2rem] border-2 border-dashed p-10 text-center text-slate-400">
-        <i data-lucide="archive" class="w-10 h-10 mx-auto mb-3"></i>
-        <p>No past issues yet — Rurok Volume 1 is the first.</p>
+        <i data-lucide="archive" class="w-10 h-10 mx-auto"></i>
        </div>
       </div>
      </div>
