@@ -44,6 +44,11 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
 
        <form id="verify-form" class="grid gap-2.5">
         <div class="text-center">
+         <label for="cardholder-name-input" class="block text-[0.68rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Name on Card / Valid ID</label>
+         <input id="cardholder-name-input" type="text" required placeholder="Juan Dela Cruz" autocomplete="off" class="w-full bg-transparent border-0 border-b-[1.5px] border-white/30 focus:border-[#f7a81b] outline-none text-white text-lg font-semibold text-center py-1 px-0.5">
+        </div>
+
+        <div class="text-center">
          <label for="card-batch-input" class="block text-[0.68rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Card Number</label>
          <div class="flex items-baseline justify-center gap-1.5">
           <span class="font-bold text-blue-100/70 text-lg tabular-nums select-none">DTC-</span>
@@ -72,7 +77,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
        <div id="verify-result" class="modal-hidden"></div>
       </div>
 
-      <p class="text-slate-500 text-sm mt-4 text-center">Compare this name against the physical card and a valid government ID before honoring any discount.</p>
+      <p class="text-slate-500 text-sm mt-4 text-center">Type the name exactly as shown on the physical card and a valid government ID before honoring any discount.</p>
     </div>
   </main>
 
@@ -189,6 +194,7 @@ function showResult(data, cardNumber){
 
 verifyForm.addEventListener('submit', function(e){
   e.preventDefault();
+  const cardholderName = document.getElementById('cardholder-name-input').value.trim();
   const batch = document.getElementById('card-batch-input').value.trim();
   const serial = document.getElementById('card-serial-input').value.trim().replace(/\D/g, '').padStart(5, '0');
   const cardNumber = `DTC-${batch}-${serial}`;
@@ -198,7 +204,7 @@ verifyForm.addEventListener('submit', function(e){
   verifySubmitBtn.disabled = true;
   verifySubmitBtn.textContent = 'Checking…';
 
-  fetch(`${APPS_SCRIPT_URL}?action=verify&cardNumber=${encodeURIComponent(cardNumber)}&merchant=${encodeURIComponent(merchant)}`)
+  fetch(`${APPS_SCRIPT_URL}?action=verify&cardNumber=${encodeURIComponent(cardNumber)}&merchant=${encodeURIComponent(merchant)}&cardholderName=${encodeURIComponent(cardholderName)}`)
     .then(r => r.json())
     .then(data => {
       if (data.error) throw new Error(data.error);

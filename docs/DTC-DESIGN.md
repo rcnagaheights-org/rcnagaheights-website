@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v7.4 · Last updated: 2026-07-21
+Version: v7.5 · Last updated: 2026-07-30
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -132,14 +132,19 @@ real batch of cards.
      (content copied verbatim from `/diskwentulong/`'s T&C — see
      docs/PROJECTS-PAGE.md §4 note; keep both in sync if this text is
      ever revised)
-   - Customer scans, types their card number
+   - Customer scans; cashier types the name on the card/ID and the card
+     number (as of the 2026-07-30 anti-enumeration fix, the name is
+     REQUIRED server-side, not just a manual visual check — see Open
+     items below; full mechanics intentionally not spelled out here,
+     see the Drive-only backend reference)
    - **Required** dropdown: "Which merchant are you at?" (populated from
      Merchants sheet `business_name`) — for usage tracking, NOT security
    - Page shows cardholder name, card number, status ONLY — never email/
      phone/address
-   - Cashier manually compares the name against the physical card AND a
-     valid government ID — **this manual step is the real fraud control,
-     not enforced by software in any way**
+   - Cashier still manually compares the typed name against the
+     physical card AND a valid government ID as a second, human check —
+     the software check and the manual check are complementary, neither
+     replaces the other
 
 The verify link/QR is deliberately public and non-secret (no per-partner
 tokens) — the manual ID check does the security work, so link secrecy
@@ -401,3 +406,16 @@ considered stable, not experimental.
       likely worth checking whether the Sheet cell itself is
       double-encoded or Code.gs is re-encoding an already-UTF-8 string
       somewhere before returning it. See docs/QA-STATUS.md.
+- [ ] **`/verify/` anti-enumeration fix — written 2026-07-30, NOT YET
+      DEPLOYED.** `/verify/` now also requires the cardholder's name
+      (matched server-side against the name on file) before returning
+      any real status/details, closing a card-number-enumeration gap.
+      `verify/index.html` has the new field and is live; the matching
+      `Code.gs v9` has been written and uploaded to Drive but still
+      needs the two manual steps every Code.gs update needs: paste it
+      into the Apps Script editor (replacing v8) and redeploy the
+      existing Web App as a new version. Until that redeploy happens,
+      the live backend is still running v8, which does NOT have this
+      check — deploy it before relying on it. Exact matching mechanics
+      deliberately not spelled out in this public doc; see the
+      Drive-only `Code.gs (v9)` file itself for full detail.
