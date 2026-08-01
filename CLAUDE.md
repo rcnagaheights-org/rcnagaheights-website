@@ -94,7 +94,12 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
 - Every page's social-share preview image (`og:image`/`twitter:image`)
   is now a real photo of the club (`assets/social/og-share.jpg`,
   self-hosted), replacing a generic Pexels stock placeholder that was
-  live on every page until 2026-07-21.
+  live on every page until 2026-07-21. Two pages use their own
+  dedicated image instead of the shared one: `/diskwentulong/`
+  (`assets/diskwentulong/dtc-card-og.jpg`) and `/rurok/`
+  (`assets/rurok/rurok-og.jpg`, a crop of the current issue's own
+  cover — see docs/RUROK-DESIGN.md for why this needs manual updating
+  each time the featured issue changes).
 - `/verify/` was rebuilt (PRs #68-71) as a single card-styled form/result
   component matching the physical DTC card's navy/gold branding, fixing
   several rounds of real device bugs along the way (font-metric field
