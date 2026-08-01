@@ -1,5 +1,5 @@
 # Rurok — Design Detail
-Version: v2 · Last updated: 2026-08-01
+Version: v2.1 · Last updated: 2026-08-01
 Mirrors Google Drive's "PROPOSAL - Digital Bulletin Publishing
 Workflow.txt" (Digital Bulletin folder) — read that first for the full
 publishing-cadence rationale; this file covers how it's actually built
@@ -77,6 +77,23 @@ the empty-state div in `rurok/index.html`) — image/cover, issue
 label, and a direct link to the PDF file (not another flipbook embed;
 flipbook embeds are for the current live issue only, per the proposal
 doc's reasoning about keeping only one flipbook active at a time).
+**Also update the social-share image at that time** — see "Social-share
+image" below.
+
+## Social-share image (added 2026-08-01)
+`og:image`/`twitter:image` use a dedicated image
+(`assets/rurok/rurok-og.jpg`, 1200x630, self-hosted) instead of the
+site-wide generic `assets/social/og-share.jpg` — a real crop of Rurok
+Volume 1's own cover (captured from the live Heyzine embed via a
+headless-browser screenshot, since no separate source file for the
+cover art exists anywhere; cropped to the top portion — title, Rotary
+wordmark, mountain scene — landscape-framed for the 1200x630 spec
+rather than shrinking the full portrait cover with big empty margins).
+**This is a static file, not automatically "the latest issue"** — when
+a new Rotary Year's flipbook replaces this one as the featured issue,
+someone needs to manually capture that new cover and replace this file
+the same way (or the share preview will keep showing Volume 1's cover
+after it's no longer current).
 
 ## Nav (added 2026-08-01, updated same day for the URL rename)
 "Rurok" links to `/rurok/` in the desktop nav, mobile menu, and footer
