@@ -19,9 +19,13 @@ register/index.html     -> /register/ (no-index: register a client's
                              card — Google Sign-In restricted to
                              @rcnagaheights.org, confirmed working live
                              as of 2026-07-20, see docs/DTC-DESIGN.md §3)
-bulletin/index.html      -> /bulletin/   (displayed name is "Rurok" as
-                             of 2026-08-01 — URL/file path deliberately
-                             unchanged; now linked in nav as "Rurok" on
+rurok/index.html         -> /rurok/   ("Rurok" bulletin — was
+                             bulletin/index.html at /bulletin/ until
+                             2026-08-01, when the URL was renamed to
+                             match the display name (no redirect from
+                             the old /bulletin/ path, matching this
+                             site's /foundation/->/diskwentulong/
+                             precedent); linked in nav as "Rurok" on
                              all 6 nav-bearing pages; see
                              docs/RUROK-DESIGN.md)
 contact/index.html       -> /contact/    (also holds "Get Involved")
@@ -74,13 +78,15 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
 ## Current status
 - Site is live on GitHub Pages, DNS + HTTPS confirmed working.
 - Phase 1 (public site) in progress — some sections still have PLACEHOLDER
-  data (e.g. bulletin content). The "Address Here"/`XXX` phone placeholder
+  data (see "Known placeholders" below for what's actually still open —
+  the bulletin/Rurok content itself was resolved 2026-08-01). The
+  "Address Here"/`XXX` phone placeholder
   that used to appear on every page's footer is RESOLVED as of 2026-07-21
   — all page footers now show the real venue (Dy Viajero, CBD Terminal,
   Naga City) and have no phone number (none on file, so it was removed
   rather than left fake).
 - A scrolling DTC support banner sits above the header on index,
-  rotarians, projects, bulletin, and contact (deliberately not on
+  rotarians, projects, rurok, and contact (deliberately not on
   diskwentulong, verify, or register — see docs/DTC-DESIGN.md). Links to
   /diskwentulong/, repeats 4x so the motion stays visible on wide desktop
   screens, includes a "Learn More" pill that scrolls with the ticker
@@ -202,26 +208,24 @@ doing any Drive-related content work.
   — check it before touching anything DTC-related
 
 ## Known placeholders / open TODOs
-- **RESOLVED 2026-08-01**: `/bulletin/` now embeds the real first issue
-  — "Rurok," Volume 1: June Issue (Rotary Year 2026-27), via a Heyzine
-  flipbook iframe embed. The old stock-photo cover + dead `href="#"`
-  download link were removed rather than kept as fake content; an
-  "Open Full Flipbook" link (real, opens the actual Heyzine page) takes
-  its place. `noindex` removed, `/bulletin/` added back to
-  `sitemap.xml`, and the meta description/OG/Twitter tags no longer
-  promise an "archive" that doesn't exist yet — just describes this one
-  issue. Same day, the page's display name was changed from "Digital
-  Bulletin" to "Rurok" (title/`<h1>`/meta tags — URL/file path stayed
-  `/bulletin/` on purpose) and a "Past Issues" section was added below
-  the featured flipbook — currently an honest empty state, since Rurok
-  Volume 1 is the only issue that exists. **Also 2026-08-01**: added
-  "Rurok" to the nav (desktop, mobile menu, and footer Site Map) on all
-  6 nav-bearing pages, between "DiskwenTulong Card" and "Contact Us"
-  (`/verify/` and `/register/` have no nav chrome by design, untouched)
-  — `sitemap.xml`'s `lastmod` bumped across all 6 to match. See
-  docs/RUROK-DESIGN.md. Only one issue exists so far; re-word the
-  description back to mentioning an archive once a second issue
-  actually exists.
+- **RESOLVED 2026-08-01**: the old `/bulletin/` placeholder (stock-photo
+  cover, dead `href="#"` download link, empty flipbook box) is gone.
+  The page — renamed "Rurok" and now living at **`/rurok/`** (URL
+  renamed same day; old `/bulletin/` path 404s, no redirect, matching
+  this site's `/foundation/`->`/diskwentulong/` precedent) — now embeds
+  the real first issue (Rurok, Volume 1: June Issue, Rotary Year
+  2026-27) via a Heyzine flipbook iframe, plus a "Past Issues" section
+  below it (currently an honest empty state — Volume 1 is the only
+  issue that exists so far). `noindex` removed, `/rurok/` is in
+  `sitemap.xml`, and it's linked in the nav (desktop, mobile menu,
+  footer Site Map) on all 6 nav-bearing pages, between "DiskwenTulong
+  Card" and "Contact Us" (`/verify/`/`/register/` have no nav chrome by
+  design, untouched). Visible on-page headings ("Rurok" title, "Latest
+  Issue" label, "Past Issues" heading) were later stripped as redundant
+  clutter — the `<h1>` stays in the DOM but visually hidden (`sr-only`)
+  for SEO. See docs/RUROK-DESIGN.md for the full history. Only one
+  issue exists so far; re-word the meta description back to mentioning
+  an archive once a second issue actually exists.
 - No automated test suite exists anywhere in this repo (confirmed via
   audit 2026-07-20) — see docs/QA-STATUS.md for the full risk list,
   including which "confirmed working" claims are backed by the user's
