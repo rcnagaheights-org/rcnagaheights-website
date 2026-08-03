@@ -187,10 +187,14 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
 - `/diskwentulong/`'s Terms & Conditions modal is now a MANDATORY gate
   (2026-07-21) — the X button, click-outside, and Escape-to-close were
   all removed; only clicking "I Understand" dismisses it, matching
-  `/verify/`. Also added a self-rendered sample card graphic (real
-  card number format `DTC-2026-00001`, no "Valid Until", transparent
-  PNG background, not a photo) beside the "What is DTC" description.
-  See docs/DTC-DESIGN.md §6.
+  `/verify/`. Also added a sample card graphic (real card number format
+  `DTC-2026-00001`, transparent PNG background, not a photo) beside the
+  "What is DTC" description. **Updated 2026-08-03**: swapped in the
+  club's official card artwork — fixes a stray "A PROJECT OF" line and
+  a hand-drawn gear icon (now the real Rotary logo). A "Valid Until
+  12/31/2027" line was added and then removed again same day, per the
+  original 2026-07-21 no-date reasoning. See docs/DTC-DESIGN.md §6's
+  sample-card note for the full history.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
