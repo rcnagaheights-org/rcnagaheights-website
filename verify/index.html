@@ -34,7 +34,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
  <body data-template-id="__page-root" style="background: rgb(255, 255, 255);">
   <main class="min-h-screen flex items-center justify-center px-4 py-12">
     <div class="w-full max-w-[440px]">
-      <h1 class="text-2xl font-bold text-[#0c3c7c] mb-6 text-center">Verify a DiskwenTulong Card</h1>
+      <h1 class="sr-only">Verify a DiskwenTulong Card</h1>
 
       <div id="verify-card" class="relative rounded-[1.75rem] p-6 text-white shadow-xl overflow-hidden bg-gradient-to-br from-[#123f80] via-[#0c3c7c] to-[#071f47]">
        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
@@ -44,7 +44,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
 
        <form id="verify-form" class="grid gap-2.5">
         <div class="text-center">
-         <label for="cardholder-name-input" class="block text-[0.68rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Name on Card / Valid ID</label>
+         <label for="cardholder-name-input" class="block text-[0.68rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Name</label>
          <input id="cardholder-name-input" type="text" required placeholder="Juan Dela Cruz" autocomplete="off" class="w-full bg-transparent border-0 border-b-[1.5px] border-white/30 focus:border-[#f7a81b] outline-none text-white text-lg font-semibold text-center py-1 px-0.5">
         </div>
 
@@ -76,8 +76,6 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
 
        <div id="verify-result" class="modal-hidden"></div>
       </div>
-
-      <p class="text-slate-500 text-sm mt-4 text-center">Type the name exactly as shown on the physical card and a valid government ID before honoring any discount.</p>
     </div>
   </main>
 
