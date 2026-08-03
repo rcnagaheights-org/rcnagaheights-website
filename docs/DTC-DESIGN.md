@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v7.5 · Last updated: 2026-07-30
+Version: v7.7 · Last updated: 2026-08-03
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -182,12 +182,26 @@ Education · Other
 Structure:
 1. "What is DTC" — informational section (real copy written and live,
    but still a first draft — see Open items; not reviewed/approved yet).
-   As of 2026-07-21, a sample card graphic sits beside this text —
-   self-rendered (HTML/CSS composited to a transparent PNG, not a
-   photo), showing the real `DTC-{BATCH}-{NNNNN}` number format
+   As of 2026-07-21, a sample card graphic sits beside this text,
+   showing the real `DTC-{BATCH}-{NNNNN}` number format
    (`DTC-2026-00001`) rather than an earlier photographed mockup's
-   placeholder number, and with no "Valid Until" line (removed —
-   showing a fixed date on a generic sample card was misleading).
+   placeholder number. **Updated 2026-08-03**: replaced with the
+   club's official card artwork (supplied directly by the user, not
+   self-rendered) — also fixed a stray "A PROJECT OF" line and
+   swapped a hand-drawn gear icon for the real Rotary International
+   logo (`assets/rotary-logo.png`, same file the site nav uses). The
+   official artwork's "Valid Until 12/31/2027" line/calendar icon was
+   tried briefly the same day, then removed again at the user's
+   request — back to the original 2026-07-21 no-date reasoning (a
+   generic sample card pairing an arbitrary sample number with a real
+   fixed expiration date reads as misleading). The card's decorative
+   background wave line, which passed behind that icon/text, was
+   redrawn by hand to stay continuous after the removal — a minor
+   background flourish, not pixel-perfect but close. Still a
+   transparent PNG
+   (`assets/diskwentulong/dtc-card.png`, cropped from the supplied
+   artwork with the background flood-filled to transparent, not a
+   photo).
 2. Partner Merchants as **category thumbnails**
 3. Clicking a category opens a popup showing merchant thumbnails
    (logo + name) for that category only
