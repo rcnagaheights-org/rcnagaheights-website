@@ -189,6 +189,34 @@
     "logo": "villacaceres.jpg"
   },
   {
+    "name": "R98 Driving Academy",
+    "category": "Services",
+    "commitment": "20% Discount - 15-hr. Theoretical Driving Course",
+    "facebook_url": "https://www.facebook.com/r98.drivingacademy",
+    "logo": "r98drivingacademy.jpg"
+  },
+  {
+    "name": "Santigwar",
+    "category": "Food & Dining",
+    "commitment": "5% Discount",
+    "facebook_url": "https://www.facebook.com/share/1Jpzw5tTxf/?mibextid=wwXIfr",
+    "logo": "santigwar.jpg"
+  },
+  {
+    "name": "Southern Crate",
+    "category": "Services",
+    "commitment": "2% OFF on a minimum single-receipt purchase of ₱2,500",
+    "facebook_url": "https://www.facebook.com/southerncrate",
+    "logo": "southerncrate.jpg"
+  },
+  {
+    "name": "Rebel Coffee",
+    "category": "Food & Dining",
+    "commitment": "5% OFF on a minimum single-receipt purchase of ₱1,000 and FREE Cookie during the cardholder's birthday month",
+    "facebook_url": "https://www.facebook.com/rebelcoffeeroasters.ph",
+    "logo": "rebelcoffee.jpg"
+  },
+  {
     "name": "White Bean Café",
     "category": "Food & Dining",
     "commitment": "5% Discount",
