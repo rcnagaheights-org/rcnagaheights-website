@@ -291,22 +291,36 @@ function isEmptyGrouped(grouped){
   return !grouped || typeof grouped !== 'object' || Object.keys(grouped).every(k => !grouped[k] || !grouped[k].length);
 }
 
+let livePartnersRendered = false;
+
 function loadStaticPartners(){
   fetch('/assets/merchants/partners.json')
     .then(r => r.json())
-    .then(partners => renderCategoryGrid(groupByCategory(partners)))
+    .then(partners => {
+      if (!livePartnersRendered) renderCategoryGrid(groupByCategory(partners));
+    })
     .catch(() => {
-      document.getElementById('category-grid').innerHTML = '<p class="col-span-full text-center text-slate-500">Partner list is temporarily unavailable.</p>';
+      if (!livePartnersRendered) document.getElementById('category-grid').innerHTML = '<p class="col-span-full text-center text-slate-500">Partner list is temporarily unavailable.</p>';
     });
 }
+
+// The live Apps Script call is the source of truth but routinely takes
+// 2-3s (Apps Script Web App overhead, not something this frontend can
+// fix). Firing the same-origin static fallback in parallel instead of
+// waiting on it to fail means visitors see partner tiles almost
+// instantly; the live call still wins and re-renders on top of it once
+// it resolves, so nothing about which data source is authoritative
+// changes, only how long the wait feels.
+loadStaticPartners();
 
 fetch(`${APPS_SCRIPT_URL}?action=partners`)
   .then(r => r.json())
   .then(grouped => {
     if (isEmptyGrouped(grouped)) throw new Error('Live partner list is empty');
+    livePartnersRendered = true;
     renderCategoryGrid(grouped);
   })
-  .catch(loadStaticPartners);
+  .catch(() => {});
 
 lucide.createIcons();
 </script>
