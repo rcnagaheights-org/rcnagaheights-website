@@ -215,15 +215,20 @@ document.addEventListener('keydown', e => {
 document.getElementById('terms-modal').classList.remove('modal-hidden');
 
 const CATEGORY_ICONS = {
-  'Health & Wellness': 'heart',
-  'Hospitality': 'building',
-  'Food & Dining': 'utensils',
-  'Retail': 'shopping-bag',
-  'Services': 'briefcase',
-  'Education': 'graduation-cap',
+  'Cafe Partners': 'coffee',
+  'Hospitality Partners': 'building',
+  'Self Care Partners': 'sparkles',
+  'Medical & Dental Partners': 'stethoscope',
+  'Hair Grooming Partners': 'scissors',
+  'Legal Partners': 'scale',
+  'Home and Car Maintenance Partners': 'wrench',
+  'Supplies Partners': 'package',
+  'Multimedia Partners': 'camera',
+  'Entertainment Partners': 'party-popper',
+  'Educational Partners': 'graduation-cap',
   'Other': 'grid'
 };
-const CATEGORY_ORDER = ['Health & Wellness', 'Hospitality', 'Food & Dining', 'Retail', 'Services', 'Education', 'Other'];
+const CATEGORY_ORDER = ['Cafe Partners', 'Hospitality Partners', 'Self Care Partners', 'Medical & Dental Partners', 'Hair Grooming Partners', 'Legal Partners', 'Home and Car Maintenance Partners', 'Supplies Partners', 'Multimedia Partners', 'Entertainment Partners', 'Educational Partners', 'Other'];
 
 function openCategory(cat, items){
   document.getElementById('modal-title').textContent = cat;

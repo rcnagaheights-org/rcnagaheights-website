@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v7.9 · Last updated: 2026-08-04
+Version: v7.11 · Last updated: 2026-08-04
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -174,9 +174,23 @@ No `moa_end_date` per row and no `verification_access_code` column —
 both were in earlier drafts and are no longer needed (one shared MOA
 date; no per-partner tokens, see Section 4).
 
-**Category list — still open, confirm with user before locking in:**
-Health & Wellness · Hospitality · Food & Dining · Retail · Services ·
-Education · Other
+**Category list, updated 2026-08-04** to match the granular
+classifications the "DTC Partners.xlsx" source sheet actually uses
+(the earlier 7-bucket list above was Claude's own simplification,
+never locked in, and was replaced once the live Merchants tab started
+using these instead): Cafe Partners · Hospitality Partners · Self Care
+Partners · Medical & Dental Partners · Hair Grooming Partners · Legal
+Partners · Home and Car Maintenance Partners · Supplies Partners ·
+Multimedia Partners · Entertainment Partners · Educational Partners ·
+Other (fallback for anything unmatched). `CATEGORY_ICONS`/
+`CATEGORY_ORDER` in `diskwentulong/index.html` and every `category`
+value in `assets/merchants/partners.json` were updated together to
+match — `renderCategoryGrid()` only ever draws tiles for categories in
+`CATEGORY_ORDER`, so a category value that doesn't match anything in
+that list silently renders zero partners with no error, which is
+exactly what happened live on 2026-08-04 when the Sheet's categories
+changed out from under the old 7-bucket list (confirmed via a live
+render against the real endpoint, not just inferred from code).
 
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:
@@ -440,16 +454,24 @@ considered stable, not experimental.
       tool is available from this environment (same limitation noted in
       docs/CONTENT-MANAGEMENT.md), so this needs a human with Sheet
       access. See docs/QA-STATUS.md.
-- [ ] **`/verify/` anti-enumeration fix — written 2026-07-30, NOT YET
-      DEPLOYED.** `/verify/` now also requires the cardholder's name
-      (matched server-side against the name on file) before returning
-      any real status/details, closing a card-number-enumeration gap.
-      `verify/index.html` has the new field and is live; the matching
-      `Code.gs v9` has been written and uploaded to Drive but still
-      needs the two manual steps every Code.gs update needs: paste it
-      into the Apps Script editor (replacing v8) and redeploy the
-      existing Web App as a new version. Until that redeploy happens,
-      the live backend is still running v8, which does NOT have this
-      check — deploy it before relying on it. Exact matching mechanics
+- [x] **`/verify/` anti-enumeration fix — written 2026-07-30, DEPLOYED
+      and CONFIRMED LIVE 2026-08-04.** `Code.gs v9` has been pasted into
+      the Apps Script editor and redeployed, per the user. Independently
+      confirmed via three live black-box calls to the real endpoint
+      (not just taking the redeploy report at face value): (1)
+      `DTC-TEST-00002` (a real ACTIVE card) with a deliberately wrong
+      name, and again with no name at all, both returned the generic
+      `{"card_number":...,"status":"INVALID CARD"}` shape — under v8
+      this card would have returned its real name/status/dates
+      regardless of any name parameter, since v8 never reads
+      `cardholderName` at all; (2) `DTC-TEST-00050`, an UNREGISTERED
+      card, still returned the full `UNREGISTERED` shape with any name,
+      matching v9's designed exemption for cards with nothing on file
+      to protect; (3) a bogus card number still correctly returned
+      `INVALID CARD`. Together these rule out v8 behavior and confirm
+      v9's name-match gate is active. Not tested: an actual *correct*
+      name succeeding (would need a real registered cardholder name,
+      not available from here) — but the rejection-path behavior alone
+      is conclusive that the check is live. Exact matching mechanics
       deliberately not spelled out in this public doc; see the
       Drive-only `Code.gs (v9)` file itself for full detail.
