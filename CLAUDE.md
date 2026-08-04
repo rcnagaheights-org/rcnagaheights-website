@@ -120,11 +120,11 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
 - `/verify/` now also requires the cardholder's name, matched
   server-side against the name on file, before returning any real
   status/details (closes a card-number-enumeration gap — see
-  docs/DTC-DESIGN.md's Open items). **`verify/index.html` is live with
-  the new field, but `Code.gs` still needs its manual paste-in +
-  redeploy step (v9, written 2026-07-30, sitting in Drive) before the
-  actual check is enforced — until that happens the live backend is
-  still v8 and does NOT require a name match yet.**
+  docs/DTC-DESIGN.md's Open items). `Code.gs v9` (written 2026-07-30)
+  has been deployed and confirmed live 2026-08-04 via direct black-box
+  testing of the real endpoint — the name-match gate is actually
+  enforced now, not just in the frontend. See docs/DTC-DESIGN.md's
+  Open items for exactly how this was confirmed.
 - Rotarians page now has the full real roster (29 people, from a Drive
   membership sheet) instead of 4 hardcoded name slots — still plain
   hardcoded HTML, not data-driven; re-editing this file by hand is
@@ -195,6 +195,16 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   12/31/2027" line was added and then removed again same day, per the
   original 2026-07-21 no-date reasoning. See docs/DTC-DESIGN.md §6's
   sample-card note for the full history.
+- Partner Merchants category taxonomy changed 2026-08-04 to match the
+  granular classifications the Drive source sheet actually uses (Cafe
+  Partners, Legal Partners, etc. — 11 categories, replacing the earlier
+  7-bucket simplification that was never actually locked in). This was
+  a live-breaking change until fixed same day: the frontend only draws
+  tiles for categories in its own hardcoded list, so when the backend
+  Sheet's categories changed out from under it, `/diskwentulong/`
+  briefly showed zero partners live. `diskwentulong/index.html` and
+  `assets/merchants/partners.json` are now updated to match. See
+  docs/DTC-DESIGN.md §5.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
