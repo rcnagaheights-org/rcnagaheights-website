@@ -1,5 +1,5 @@
 # Content Management — Google Drive Sync
-Version: v1.2 · Last updated: 2026-07-20
+Version: v1.3 · Last updated: 2026-08-04
 
 ## Availability
 A Google Drive connector IS available to you. Use it to read/pull
@@ -64,11 +64,20 @@ When a new upload would push a section past its slot count:
    what's actually been pulled into the repo so far
 
 ## Known real content already in Drive (as of 2026-07-19)
-- Partner Merchants: "DTC Partners.xlsx" (28 partners) + logo files for
-  all 28, including Mendoza Law Office (was missing a logo — resolved
-  2026-07-19, see Open items). Jamer Law's logo was replaced 2026-07-19
-  with a newer upload. Pulled into repo assets/merchants/ (logos +
-  partners.json), and wired live on /diskwentulong/.
+- Partner Merchants: "DTC Partners.xlsx" (32 partners as of 2026-08-04) +
+  logo files for all of them, including Mendoza Law Office (was missing a
+  logo — resolved 2026-07-19, see Open items). Jamer Law's logo was
+  replaced 2026-07-19 with a newer upload. Pulled into repo
+  assets/merchants/ (logos + partners.json), and wired live on
+  /diskwentulong/. **2026-08-04**: 4 new partners appeared in the sheet
+  since the last sync — R98 Driving Academy, Santigwar, Southern Crate,
+  Rebel Coffee — logos downloaded and all 4 added to partners.json (the
+  fallback data path). **Not yet live**: the site's primary path reads
+  from the backend Sheet's Merchants tab (see docs/DTC-DESIGN.md §5),
+  which still only has the original 28 rows — someone with Sheet access
+  needs to paste in the 4 new rows before these show on the live site;
+  until then they only appear if the live endpoint is ever down and the
+  page falls back to this repo's JSON.
 - President: real photo (assets/president/president.png) plus a full
   "Presidential Message.txt" (name, credentials, and welcome message —
   pulled into assets/president/presidential-message.txt) — both now live

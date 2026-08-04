@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v1.6 · Last updated: 2026-08-01
+Version: v1.8 · Last updated: 2026-08-04
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -98,10 +98,24 @@ correctly returning `INVALID CARD` styled with the red stamp.
 has a real double-encoding bug on at least one merchant name — "White
 Bean Café" comes back as `White Bean CafÃ©` (confirmed via a direct
 `curl` of the Apps Script endpoint, not a rendering artifact of the
-test setup). This is a Code.gs/Sheet data issue, not a `/verify/` page
-bug — the frontend just displays whatever string it's given. Not fixed
-as part of this pass since it's outside `/verify/`'s scope; see
-docs/DTC-DESIGN.md's Open items.
+test setup). Not fixed as part of that pass since it's outside
+`/verify/`'s scope; see docs/DTC-DESIGN.md's Open items. **Confirmed
+via the user's own live screenshot 2026-08-04**, and **root cause
+confirmed the same day by reading the live "DTC Card Database" Sheet
+directly**: the Merchants tab's row M-0028 already stores the literal
+mojibake string `White Bean CafÃ©` in its `business_name` cell — this
+is a **pure Sheet data bug, not a Code.gs bug**; the corrected
+description above (Code.gs/Sheet data issue) undersold it — the code
+is fine, only the stored cell is wrong. This also settles a question
+raised during that day's partner sync (the source "DTC Partners.xlsx"
+sheet spells it "White Bean Cafe," no accent, while this repo's
+partners.json has "White Bean Café," accented): the stored cell is a
+mangled accented name, not an unaccented one — so the repo's accented
+spelling is correct and was left unchanged. **Fix is a one-cell Sheet
+edit** (retype row M-0028's `business_name` as `White Bean Café`, no
+code change or redeploy needed) — nobody has done this yet; no
+Sheets-cell-write tool is available from this environment, so it
+needs a human with Sheet access. See docs/DTC-DESIGN.md's Open items.
 
 **Resolved data bug, found and fixed 2026-07-29:** the `2026` batch tab
 had a completely blank `status` column on every row (unlike `TEST`,
