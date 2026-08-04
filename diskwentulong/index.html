@@ -230,8 +230,15 @@ const CATEGORY_ICONS = {
 };
 const CATEGORY_ORDER = ['Cafe Partners', 'Hospitality Partners', 'Self Care Partners', 'Medical & Dental Partners', 'Hair Grooming Partners', 'Legal Partners', 'Home and Car Maintenance Partners', 'Supplies Partners', 'Multimedia Partners', 'Entertainment Partners', 'Educational Partners', 'Other'];
 
+// Category keys keep the "Partners" suffix (matching the Sheet's own
+// classification strings, used for grouping/icon lookup); this strips
+// it for display only, e.g. "Cafe Partners" -> "Cafe".
+function displayCategory(cat){
+  return cat.replace(/ Partners$/, '');
+}
+
 function openCategory(cat, items){
-  document.getElementById('modal-title').textContent = cat;
+  document.getElementById('modal-title').textContent = displayCategory(cat);
   const list = document.getElementById('modal-list');
   list.innerHTML = '';
   items.forEach(p => {
@@ -262,7 +269,7 @@ function renderCategoryGrid(grouped){
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'lift bg-white p-8 rounded-2xl border text-center';
-    btn.innerHTML = `<i data-lucide="${CATEGORY_ICONS[cat] || 'grid'}" class="w-10 h-10 mx-auto text-[#17458f] mb-4"></i><h3 class="font-bold text-lg text-[#0c3c7c]">${escapeHtml(cat)}</h3><p class="text-slate-500 mt-1 text-sm">${items.length} partner${items.length > 1 ? 's' : ''}</p>`;
+    btn.innerHTML = `<i data-lucide="${CATEGORY_ICONS[cat] || 'grid'}" class="w-10 h-10 mx-auto text-[#17458f] mb-4"></i><h3 class="font-bold text-lg text-[#0c3c7c]">${escapeHtml(displayCategory(cat))}</h3><p class="text-slate-500 mt-1 text-sm">${items.length} partner${items.length > 1 ? 's' : ''}</p>`;
     btn.onclick = () => openCategory(cat, items);
     grid.appendChild(btn);
   });
