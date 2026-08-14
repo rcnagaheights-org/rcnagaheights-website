@@ -39,9 +39,9 @@ docs/PROJECTS-PAGE.md  -> Service Projects page workflow, HISTORICAL —
                            still applies, the rest does not)
 docs/SERVICE-PROJECTS-DESIGN.md -> data-driven Service Projects rework
                            (Areas of Focus / Avenues of Service), BUILT
-                           and live, one real project (BINHI) built so
-                           far, 5 more real rows blocked on missing
-                           sheet fields (not photos) — see its §6
+                           and live, 12 real projects built as of
+                           2026-08-14 — see its §6 for the 2 rows still
+                           excluded and why
 docs/QA-STATUS.md      -> what's actually confirmed live vs. only
                            sandbox-tested, and the open DTC/QA risk list
 docs/RUROK-DESIGN.md   -> Rurok (Digital Bulletin) page design: naming,
@@ -256,16 +256,18 @@ doing any Drive-related content work.
   must be done consistently across ALL sections if done at all
 - Projects page rebuilt 2026-07-20 as data-driven, organized by
   Rotary's Areas of Focus / Avenues of Service (see
-  docs/SERVICE-PROJECTS-DESIGN.md) — Featured/Latest is now sorted by
-  the Drive Tracker sheet's own `date` column, not manually curated.
-  One real project is now live (BINHI NG KINABUKASAN, real photo
-  resized/optimized). 5 more real Tracker rows exist (real names +
-  descriptions) but are NOT yet built — each is missing `category`
-  and/or `date` in the sheet (not just a missing photo), and those
-  fields were deliberately not guessed since category is a permanent
-  public label and date drives the Featured sort — see design doc §6
-  for exactly what's missing per row. Homepage's separate "What We Do"
-  carousel (`assets/recent-projects/`) is untouched by this rework.
+  docs/SERVICE-PROJECTS-DESIGN.md) — Featured/Latest is sorted by each
+  row's own `date`, not manually curated. **Updated 2026-08-14**: the
+  Drive Tracker Sheet was replaced by "Service Projects.xlsx" (now
+  including `Start Date:`/`End Date:` columns), and 11 more real
+  projects were built alongside the original BINHI NG KINABUKASAN — 12
+  total live now. 2 rows were deliberately excluded, not guessed
+  around: BRIGADA ESKWELA (its sheet-specified photo filename doesn't
+  match any file actually in Drive) and GOVERNOR'S VISIT (fully
+  specified with a real photo, but every download attempt on that one
+  file failed — a tooling gap, not a data gap). See design doc §6.
+  Homepage's separate "What We Do" carousel
+  (`assets/recent-projects/`) is untouched by this rework.
 
 ## Keep this file updated
 After a change affecting "Current status" or "Known placeholders," update
