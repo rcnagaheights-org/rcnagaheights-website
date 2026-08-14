@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v8 · Last updated: 2026-08-14
+Version: v8.1 · Last updated: 2026-08-14
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -259,7 +259,36 @@ the user's attention before it's relied on for anything printed or
 circulated. The two newest Mental Health partners' `logo_file_id`
 values (`Logo.NagaSlides.jpg`, `Logo.SouthernCrate.JPG`) are part of
 this same pattern, not real assignments — confirmed via a Drive search
-that no file actually named for either business exists.
+that no file actually named for either business exists. **Resolved by
+the user directly in the Sheet, confirmed 2026-08-14**: re-checked all
+44 rows, the swapped-pair pattern is gone (Patron CamSur/R&Y Laundry
+Shop, MVisions, Sorsogon's Psychological Center all point at their own
+correct logo file now).
+
+**Separate, more fundamental bug found and fixed client-side,
+2026-08-14**: even with `logo_file_id` values now correct, the live
+`getPartners` call was still never usable as an image path directly —
+it returns each partner's `logo` field as the *raw* `logo_file_id`
+string from the Sheet (e.g. `Logo.Aran&Co.JPG`), which has never
+matched this repo's actual filenames in `assets/merchants/` (simplified
+names like `aranco.jpg`, chosen independently when each logo was
+downloaded and added). Confirmed by querying the live endpoint
+directly: `curl ".../exec?action=partners"` really does return
+`"logo":"Logo.Aran&Co.JPG"` for Aran & Co. Since `openCategory()` in
+`diskwentulong/index.html` built the `<img src>` straight from
+whatever `p.logo` said, every partner's logo 404'd a few seconds after
+page load — right after the live call overwrote the initially-correct
+static-fallback render (see the parallel-fetch comment above
+`loadStaticPartners()`). Fixed by having the page build a
+`localLogoByName` lookup from the same-origin `partners.json` fetch
+(completes in milliseconds) and always resolving the displayed image
+through that, regardless of what the live call's `logo` field says.
+Verified by feeding the exact broken live value through the real
+`openCategory()` function and confirming it rendered the correct file.
+This is a workaround, not a fix to `Code.gs` itself — `logo_file_id`
+was never designed to double as a usable path into this repo's asset
+folder, and that mismatch will resurface if the client-side lookup is
+ever removed without addressing it at the backend.
 
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:
