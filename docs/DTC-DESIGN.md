@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v7.11 · Last updated: 2026-08-04
+Version: v7.12 · Last updated: 2026-08-14
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -191,6 +191,37 @@ that list silently renders zero partners with no error, which is
 exactly what happened live on 2026-08-04 when the Sheet's categories
 changed out from under the old 7-bucket list (confirmed via a live
 render against the real endpoint, not just inferred from code).
+
+**2026-08-14 sync**: "DTC Partners.xlsx" grew from 32 to 41 rows and
+gained a `Location` column. 9 new partners (RJ's Buffet, Rolando's,
+Bistro Roberto, BNPL Ant-Rabies Animal Bite Center, CABS Medical and
+Diagnostic Clinic, LEX Press, Gluta Nail & Lashes Aesthetic Clinic, VCH
+Health Resort Club, Smesh) were added to `assets/merchants/
+partners.json`; Villa Caceres Hotel's commitment was simplified to
+"10% Discount" (now that RJ's Buffet and Rolando's are split out as
+separate listings) and "Knopper Pharmacy" was renamed to "Knopper" to
+match. The staging xlsx renames some categories (`Cafes and Restaurant
+Partners`, `Hotel Partners`) — deliberately NOT adopted here, since the
+live Merchants Sheet still uses the old names (`Cafe Partners`,
+`Hospitality Partners`) and the 2026-08-04 incident above is exactly
+what happens when the two drift apart; the 9 new rows were mapped back
+onto the existing `CATEGORY_ORDER` taxonomy instead. Logos: 6 of 9 were
+downloaded and added (`rjsbuffet.jpg`, `bnpl.jpg`, `cabs.jpg`,
+`lexpress.jpg`, `glutanaillashes.jpg`, `smesh.jpg`); Rolando's, Bistro
+Roberto, and VCH Health Resort Club have no `logo` field yet — every
+attempt to download their files hit a technical limitation (Drive
+returned their content inline as raw base64 rather than saving it to a
+file, and hand-transcribing a 10k+ character blob corrupted the
+compressed image data every time) — they render with the page's
+existing fallback initial-letter avatar in the meantime. Also swapped
+Caltex AutoPro's logo for a new wide banner-style image found in Drive
+(`caltexautopro.jpg`, was 1000×1000, now 1600×661) at the user's
+confirmation. **None of this is live yet** — the live "DTC Card
+Database" → Merchants tab still only has the original 32 rows under the
+old category names; a human with Sheet access needs to manually add
+the 9 new rows (business_name/category/offer_details/facebook_url,
+using the category names above, not the xlsx's renamed ones) plus the
+Villa Caceres/Knopper text edits.
 
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:

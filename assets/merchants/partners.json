@@ -91,7 +91,7 @@
     "logo": "kmeightcoffee.jpg"
   },
   {
-    "name": "Knopper Pharmacy",
+    "name": "Knopper",
     "category": "Medical & Dental Partners",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/knopperpharmacy",
@@ -184,7 +184,7 @@
   {
     "name": "Villa Caceres Hotel",
     "category": "Hospitality Partners",
-    "commitment": "10% on all outlets (HRC, Bistro, Hotel, RJs and Rolando's Cafe)",
+    "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity",
     "logo": "villacaceres.jpg"
   },
@@ -222,5 +222,65 @@
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/whitebeancafe",
     "logo": "whitebeancafe.png"
+  },
+  {
+    "name": "RJ's Buffet",
+    "category": "Cafe Partners",
+    "commitment": "10% Discount",
+    "facebook_url": "https://www.facebook.com/RJsBuffet",
+    "logo": "rjsbuffet.jpg"
+  },
+  {
+    "name": "Rolando's",
+    "category": "Cafe Partners",
+    "commitment": "10% Discount",
+    "facebook_url": "https://www.facebook.com/profile.php?id=61584270377141"
+  },
+  {
+    "name": "Smesh",
+    "category": "Cafe Partners",
+    "commitment": "5% Discount",
+    "facebook_url": "https://www.facebook.com/smash.burgers4400",
+    "logo": "smesh.jpg"
+  },
+  {
+    "name": "Bistro Roberto",
+    "category": "Entertainment Partners",
+    "commitment": "10% Discount",
+    "facebook_url": "https://www.facebook.com/VCHBistroRoberto"
+  },
+  {
+    "name": "BNPL Ant-Rabies Animal Bite Center",
+    "category": "Medical & Dental Partners",
+    "commitment": "20% Discount; Free Vaccine for Category 3 Animal Bite if also a PhilHealth Member",
+    "facebook_url": "https://www.facebook.com/share/1CdRbpftGy/",
+    "logo": "bnpl.jpg"
+  },
+  {
+    "name": "CABS Medical and Diagnostic Clinic",
+    "category": "Medical & Dental Partners",
+    "commitment": "10% Discount; Free Vaccine for Category 3 Animal Bite if also a PhilHealth Member",
+    "facebook_url": "https://www.facebook.com/share/19XDJyBZmP/",
+    "logo": "cabs.jpg"
+  },
+  {
+    "name": "LEX Press",
+    "category": "Multimedia Partners",
+    "commitment": "10% Discount",
+    "facebook_url": "https://www.facebook.com/profile.php?id=61555187114287",
+    "logo": "lexpress.jpg"
+  },
+  {
+    "name": "Gluta Nail & Lashes Aesthetic Clinic",
+    "category": "Self Care Partners",
+    "commitment": "20% Discount",
+    "facebook_url": "https://www.facebook.com/share/1DaoBdRU8n/",
+    "logo": "glutanaillashes.jpg"
+  },
+  {
+    "name": "VCH Health Resort Club",
+    "category": "Self Care Partners",
+    "commitment": "10% Discount",
+    "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity"
   }
 ]
