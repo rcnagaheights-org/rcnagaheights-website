@@ -215,10 +215,11 @@ document.addEventListener('keydown', e => {
 document.getElementById('terms-modal').classList.remove('modal-hidden');
 
 const CATEGORY_ICONS = {
-  'Cafe Partners': 'coffee',
-  'Hospitality Partners': 'building',
+  'Cafes and Restaurant Partners': 'coffee',
+  'Hotel Partners': 'building',
   'Self Care Partners': 'sparkles',
   'Medical & Dental Partners': 'stethoscope',
+  'Mental Health Partners': 'brain',
   'Hair Grooming Partners': 'scissors',
   'Legal Partners': 'scale',
   'Home and Car Maintenance Partners': 'wrench',
@@ -228,7 +229,7 @@ const CATEGORY_ICONS = {
   'Educational Partners': 'graduation-cap',
   'Other': 'grid'
 };
-const CATEGORY_ORDER = ['Cafe Partners', 'Hospitality Partners', 'Self Care Partners', 'Medical & Dental Partners', 'Hair Grooming Partners', 'Legal Partners', 'Home and Car Maintenance Partners', 'Supplies Partners', 'Multimedia Partners', 'Entertainment Partners', 'Educational Partners', 'Other'];
+const CATEGORY_ORDER = ['Cafes and Restaurant Partners', 'Hotel Partners', 'Self Care Partners', 'Medical & Dental Partners', 'Mental Health Partners', 'Hair Grooming Partners', 'Legal Partners', 'Home and Car Maintenance Partners', 'Supplies Partners', 'Multimedia Partners', 'Entertainment Partners', 'Educational Partners', 'Other'];
 
 // Category keys keep the "Partners" suffix (matching the Sheet's own
 // classification strings, used for grouping/icon lookup); this strips

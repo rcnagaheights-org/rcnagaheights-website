@@ -8,7 +8,7 @@
   },
   {
     "name": "Aran & Co.",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/helloaran.co",
     "logo": "aranco.jpg"
@@ -58,13 +58,13 @@
   {
     "name": "Gentry Barbers",
     "category": "Hair Grooming Partners",
-    "commitment": "10% Discount for Online Booking. Use CODE: DISKWENTULONG on checkout",
+    "commitment": "10% Discount for Online Booking",
     "facebook_url": "https://www.facebook.com/gentrybarbersph",
     "logo": "gentrybarbers.jpg"
   },
   {
     "name": "J. Emmanuel Pastries - the House of Pili",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/houseofpili",
     "logo": "jemmanuelpastries.jpg"
@@ -85,7 +85,7 @@
   },
   {
     "name": "Km.eight coffee",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/km8.coffee",
     "logo": "kmeightcoffee.jpg"
@@ -113,8 +113,8 @@
   },
   {
     "name": "Magayon Coffee",
-    "category": "Cafe Partners",
-    "commitment": "Buy 1, Get 1 at Php 50 off (Valid Monday-Thursday. One redemption per visit; for every Php 1,000 purchase, get a free Php 100 gift certificate.)",
+    "category": "Cafes and Restaurant Partners",
+    "commitment": "Buy 1, Get 1 at Php 50 off (Valid Monday-Thursday. One redemption per visit; for every Php 1,000 purchase, get a free Php 100 gift certificate.",
     "facebook_url": "https://www.facebook.com/magayoncoffee",
     "logo": "magayoncoffee.jpg"
   },
@@ -127,14 +127,14 @@
   },
   {
     "name": "Nagaland Hotel",
-    "category": "Hospitality Partners",
+    "category": "Hotel Partners",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/NagalandHotel",
     "logo": "nagalandhotel.jpg"
   },
   {
     "name": "Patron CamSur",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/patronfelipecamsur",
     "logo": "patroncamsur.jpg"
@@ -169,8 +169,8 @@
   },
   {
     "name": "Sundaze Hotel",
-    "category": "Hospitality Partners",
-    "commitment": "Enjoy 10% Room Discount for Cardholders. ID verification required upon check-in.",
+    "category": "Hotel Partners",
+    "commitment": "Enjoy 10% Room Discount for Cardholders.  ID verification required upon check-in.",
     "facebook_url": "https://www.facebook.com/sundazehotel",
     "logo": "sundazehotel.jpg"
   },
@@ -183,7 +183,7 @@
   },
   {
     "name": "Villa Caceres Hotel",
-    "category": "Hospitality Partners",
+    "category": "Hotel Partners",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity",
     "logo": "villacaceres.jpg"
@@ -197,7 +197,7 @@
   },
   {
     "name": "Santigwar",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/share/1Jpzw5tTxf/?mibextid=wwXIfr",
     "logo": "Sntgwr.jpg"
@@ -211,34 +211,34 @@
   },
   {
     "name": "Rebel Coffee",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "5% OFF on a minimum single-receipt purchase of ₱1,000 and FREE Cookie during the cardholder's birthday month",
     "facebook_url": "https://www.facebook.com/rebelcoffeeroasters.ph",
     "logo": "Rebel.jpg"
   },
   {
     "name": "White Bean Café",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/whitebeancafe",
     "logo": "whitebeancafe.png"
   },
   {
     "name": "RJ's Buffet",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/RJsBuffet",
     "logo": "rjsbuffet.jpg"
   },
   {
     "name": "Rolando's",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/profile.php?id=61584270377141"
   },
   {
     "name": "Smesh",
-    "category": "Cafe Partners",
+    "category": "Cafes and Restaurant Partners",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/smash.burgers4400",
     "logo": "smesh.jpg"
@@ -282,5 +282,24 @@
     "category": "Self Care Partners",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity"
+  },
+  {
+    "name": "Mi Panda Naga",
+    "category": "Cafes and Restaurant Partners",
+    "commitment": "5% Discount",
+    "facebook_url": "https://www.facebook.com/mipandanaga",
+    "logo": "mipandanaga.jpg"
+  },
+  {
+    "name": "MVisions Diagnostic Center & Psychological Services",
+    "category": "Mental Health Partners",
+    "commitment": "10% Discount",
+    "facebook_url": "https://www.facebook.com/mvisionsdiagnosticcenter"
+  },
+  {
+    "name": "Sorsogon's Psychological Center",
+    "category": "Mental Health Partners",
+    "commitment": "10% Discount",
+    "facebook_url": "https://www.facebook.com/profile.php?id=61590541211510"
   }
 ]
