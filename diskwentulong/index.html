@@ -245,7 +245,7 @@ function openCategory(cat, items){
   items.forEach(p => {
     const card = document.createElement('div');
     card.className = 'border rounded-xl p-4 flex items-start gap-4';
-    const logoFile = localLogoByName[p.name];
+    const logoFile = localLogoByName[normalizeName(p.name)];
     const logoHtml = logoFile
       ? `<img src="/assets/merchants/${encodeURIComponent(logoFile)}" alt="${escapeHtml(p.name)}" class="w-14 h-14 rounded-lg object-contain bg-white border p-1 shrink-0" loading="lazy">`
       : `<div class="w-14 h-14 rounded-lg bg-[#17458f] text-white grid place-items-center font-bold text-lg shrink-0">${escapeHtml(p.name.charAt(0))}</div>`;
@@ -301,13 +301,21 @@ let livePartnersRendered = false;
 // simplified names like "aranco.jpg") -- every image tag would 404.
 // Built from the same-origin partners.json fetch, which completes in
 // milliseconds, well before a user can click into a category tile.
+// Keyed by a normalized name (case/accent/whitespace-insensitive): the
+// Sheet's stored name can drift from this repo's copy in exactly those
+// ways -- e.g. the live Sheet has "White Bean Cafe" where this repo has
+// "White Bean Café" -- and an exact-string lookup would silently miss it.
 let localLogoByName = {};
+
+function normalizeName(name){
+  return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/\s+/g, ' ');
+}
 
 function loadStaticPartners(){
   fetch('/assets/merchants/partners.json')
     .then(r => r.json())
     .then(partners => {
-      partners.forEach(p => { if (p.logo) localLogoByName[p.name] = p.logo; });
+      partners.forEach(p => { if (p.logo) localLogoByName[normalizeName(p.name)] = p.logo; });
       if (!livePartnersRendered) renderCategoryGrid(groupByCategory(partners));
     })
     .catch(() => {
