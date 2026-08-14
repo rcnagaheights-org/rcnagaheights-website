@@ -259,13 +259,15 @@ doing any Drive-related content work.
   docs/SERVICE-PROJECTS-DESIGN.md) — Featured/Latest is sorted by each
   row's own `date`, not manually curated. **Updated 2026-08-14**: the
   Drive Tracker Sheet was replaced by "Service Projects.xlsx" (now
-  including `Start Date:`/`End Date:` columns), and 11 more real
-  projects were built alongside the original BINHI NG KINABUKASAN — 12
-  total live now. 2 rows were deliberately excluded, not guessed
-  around: BRIGADA ESKWELA (its sheet-specified photo filename doesn't
-  match any file actually in Drive) and GOVERNOR'S VISIT (fully
-  specified with a real photo, but every download attempt on that one
-  file failed — a tooling gap, not a data gap). See design doc §6.
+  including `Start Date:`/`End Date:` columns), and 12 more real
+  projects were built alongside the original BINHI NG KINABUKASAN — 13
+  total live now, including BRIGADA ESKWELA once its photo appeared in
+  Drive later the same day (its sheet-specified filename was `BEMD.png`;
+  the actual upload was `BEMD.jpg` — used anyway, only one candidate
+  file existed). Only GOVERNOR'S VISIT remains unbuilt: fully specified
+  with a real photo, but every download attempt on that one file (the
+  largest of the 14, 7.4MB) has failed across two sessions — a tooling
+  gap, not a data gap. See design doc §6.
   Homepage's separate "What We Do" carousel
   (`assets/recent-projects/`) is untouched by this rework.
 
