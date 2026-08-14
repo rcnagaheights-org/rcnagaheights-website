@@ -234,7 +234,8 @@
     "name": "Rolando's",
     "category": "Cafes and Restaurant Partners",
     "commitment": "10% Discount",
-    "facebook_url": "https://www.facebook.com/profile.php?id=61584270377141"
+    "facebook_url": "https://www.facebook.com/profile.php?id=61584270377141",
+    "logo": "rolandos.jpg"
   },
   {
     "name": "Smesh",
@@ -294,12 +295,14 @@
     "name": "MVisions Diagnostic Center & Psychological Services",
     "category": "Mental Health Partners",
     "commitment": "10% Discount",
-    "facebook_url": "https://www.facebook.com/mvisionsdiagnosticcenter"
+    "facebook_url": "https://www.facebook.com/mvisionsdiagnosticcenter",
+    "logo": "mvisions.jpg"
   },
   {
     "name": "Sorsogon's Psychological Center",
     "category": "Mental Health Partners",
     "commitment": "10% Discount",
-    "facebook_url": "https://www.facebook.com/profile.php?id=61590541211510"
+    "facebook_url": "https://www.facebook.com/profile.php?id=61590541211510",
+    "logo": "sorsogonpsych.jpg"
   }
 ]

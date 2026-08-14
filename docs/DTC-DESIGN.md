@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v8.1 · Last updated: 2026-08-14
+Version: v8.2 · Last updated: 2026-08-14
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -238,9 +238,24 @@ to match (see the category list above). 3 more partners appeared in the
 live Sheet beyond the 9 already known: Mi Panda Naga (Cafes and
 Restaurant Partners, real logo downloaded and added —
 `mipandanaga.jpg`), MVisions Diagnostic Center & Psychological Services
-and Sorsogon's Psychological Center (both Mental Health Partners, no
-`logo` field — Drive has no dedicated logo file for either, see next
-paragraph).
+and Sorsogon's Psychological Center (both Mental Health Partners).
+
+**Resolved 2026-08-14, later still — 3 of 5 missing logos added.** New
+logo files appeared in Drive for Rolando's, Bistro Roberto, MVisions,
+Sorsogon's Psychological Center, and VCH Health Resort Club (re-exported
+as `.jpg`, replacing whatever they were before). Rolando's, MVisions
+(`mvisions.jpg`), and Sorsogon's Psychological Center
+(`sorsogonpsych.jpg`) downloaded and verified cleanly — all 3 were large
+enough that Drive auto-saved the response to a file instead of
+returning it inline, avoiding the transcription risk below entirely.
+**Bistro Roberto and VCH Health Resort Club remain unresolved** — both
+new files still returned inline (not auto-saved), and both contain long
+repeated byte runs; a transcription attempt on Bistro Roberto's file
+produced an actual content splice (not just truncation — the output
+mixed in the tail of a *different*, previously-attempted file), which
+is why manual transcription was not retried for either. They keep the
+fallback initial-letter avatar until a retry succeeds or the files are
+re-exported at a different size in Drive.
 
 **Bug found, not fixed (no Sheets write access):** the live Sheet's
 `logo_file_id` column is desynced from the rest of each row for roughly
