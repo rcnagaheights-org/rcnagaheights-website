@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-20",
-  "source": "Google Drive \"Service Projects Tracker\" sheet + \"Areas of Focus\"/\"Avenues of Service\" subfolders",
+  "generated_at": "2026-08-14",
+  "source": "Google Drive \"Service Projects.xlsx\" + \"Images\" subfolder",
   "projects": [
     {
       "project_name": "BINHI NG KINABUKASAN",
@@ -9,6 +9,94 @@
       "description": "BINHI NG KINABUKASAN (BINHI) is a scholarship program of the Rotary Club of Naga Heights that provided educational assistance to 100 students of Jose de Villa National High School in Barangay Manguiring, Calabanga, Camarines Sur—a far-flung community with limited access to educational and economic opportunities available in urban areas. By easing the financial burden on students and their families, the project enabled beneficiaries to continue their education with greater confidence and stability. Beyond supporting individual learners, BINHI also strengthened the school’s Parents-Teachers Association (PTA) by improving its financial resources, enabling it to undertake timely and relevant programs and projects for the benefit of the entire school community. Through this initiative, the Rotary Club of Naga Heights invested not only in the education of 100 young people but also in the long-term growth and resilience of a geographically underserved community, creating lasting impact through education.",
       "date": "2026-06-01",
       "image": "/assets/service-projects/areas-of-focus/binhi-ng-kinabukasan.jpg"
+    },
+    {
+      "project_name": "SUMMER CLUB TURNOVER AND STRATEGIC PLANNING",
+      "category": "Club Service",
+      "category_group": "avenues_of_service",
+      "description": "The Rotary Club of Naga Heights conducted its Summer Club Turnover and Strategic Planning to formally transition into Rotary Year 2026–2027. The activity brought together club members for fellowship, leadership transition, and strategic planning, providing an opportunity to review the club’s accomplishments, assess its current realities, and establish priorities for the year ahead. As the club celebrated its fifth year, members undertook a timely review and revision of the club’s Vision Statement to ensure it remained responsive to the evolving needs of the community and aligned with the club’s long-term aspirations. The club also launched its BAKAS Presidential Thrust and developed strategic goals, service initiatives, and action plans to guide its programs throughout the Rotary year. The activity strengthened unity, reaffirmed the club’s shared purpose, and established a clear roadmap for sustainable service and lasting community impact.",
+      "date": "2026-06-06",
+      "image": "/assets/service-projects/avenues-of-service/summer-club-turnover-and-strategic-planning.jpg"
+    },
+    {
+      "project_name": "TALK ON ETHICAL LEADERSHIP FOR LAW STUDENTS",
+      "category": "Youth Service",
+      "category_group": "avenues_of_service",
+      "description": "Rotary Club of Naga Heights President Atty. Khristian Damielle Jamer served as the invited resource speaker during the Association of Law Students of the Philippines (ALSP) National Convention, where he delivered a lecture on Ethical Student Leadership for Law Students. The session emphasized integrity, accountability, ethical decision-making, and servant leadership, encouraging future members of the legal profession to cultivate character and professional responsibility from their years in law school. Attended by law student delegates from different law schools across the Philippines, the lecture promoted values-based leadership and reinforced the role of lawyers as servants of justice and nation-building. Through the participation of its Club President, the Rotary Club of Naga Heights advanced Rotary’s commitment to youth development, vocational service, and the formation of ethical leaders who will create lasting impact in their communities and the legal profession.",
+      "date": "2026-06-27",
+      "image": "/assets/service-projects/avenues-of-service/talk-on-ethical-leadership-for-law-students.jpg"
+    },
+    {
+      "project_name": "UNLOCKING MENTAL WELL-BEING",
+      "category": "Disease Prevention and Treatment",
+      "category_group": "areas_of_focus",
+      "description": "The Rotary Club of Naga Heights partnered with fellow Rotary clubs in the implementation of Unlocking Mental Well-Being: Tools for Everyday Life, a collaborative mental health advocacy program held on May 31, 2026 at the San Sebastian Parish Hall, San Sebastian Cathedral, Lipa City, Batangas. The activity brought together college students, youth leaders, mental health advocates, and Rotary volunteers for interactive learning sessions, small-group discussions, and practical workshops focused on mental wellness, emotional resilience, stress management, and peer support. Through this multi-club initiative, participants were equipped with practical tools to promote positive mental health and foster supportive communities. The collaboration strengthened Rotary’s commitment to improving health, empowering young people, and building strategic partnerships that create lasting impact beyond club and district boundaries.",
+      "date": "2026-05-31",
+      "image": "/assets/service-projects/areas-of-focus/unlocking-mental-well-being.jpg"
+    },
+    {
+      "project_name": "DISKWENTULONG CARD",
+      "category": "Club Service",
+      "category_group": "avenues_of_service",
+      "description": "DiskwenTulong Card (DTC) is the flagship resource generation initiative of the Rotary Club of Naga Heights that transforms everyday purchases into opportunities for community service. Through partnerships with local businesses, participating establishments extended exclusive discounts, privileges, and special offers to DTC cardholders, while the sale of the cards generated sustainable funding for the club’s humanitarian programs. The project strengthened collaboration between the business sector and Rotary by promoting local enterprises, encouraging community participation, and demonstrating corporate social responsibility. Proceeds from the initiative support the club’s projects in healthcare, education, legal awareness, livelihood development, youth empowerment, environmental sustainability, and other humanitarian initiatives, creating a sustainable funding model that enables the club to expand its service and create lasting impact in the communities it serves.",
+      "date": "2026-08-01",
+      "image": "/assets/service-projects/avenues-of-service/diskwentulong-card.jpg"
+    },
+    {
+      "project_name": "CHARTERING OF THE NCF INTERACT CLUB",
+      "category": "Youth Service",
+      "category_group": "avenues_of_service",
+      "description": "The Rotary Club of Naga Heights formally launched the chartering initiative for the NCF Interact Club through a partnership meeting with Naga College Foundation, making it one of the club’s flagship Youth Service project for Rotary Year 2026–2027. The activity brought together Rotary leaders and school administrators to discuss the establishment of an Interact Club that will provide students with opportunities to develop leadership skills, engage in meaningful community service, and embrace the ideals of Service Above Self. Recognizing that sustainable service begins by investing in young people, the initiative was designed to cultivate a new generation of ethical, compassionate, and service-oriented leaders who will continue Rotary’s mission in their schools and communities. By laying the foundation for a vibrant Interact Club, the project ensures continuity of service, strengthens youth engagement, and creates a lasting impact that extends well beyond a single Rotary year.",
+      "date": "2026-07-05",
+      "image": "/assets/service-projects/avenues-of-service/chartering-of-the-ncf-interact-club.jpg"
+    },
+    {
+      "project_name": "LEAD",
+      "category": "Youth Service",
+      "category_group": "avenues_of_service",
+      "description": "Project LEAD (Leadership, Ethics, Action, and Dedication) was a collaborative youth leadership development program conducted by the Rotary Club of Naga Heights together with its sister clubs for the student leaders of Naga College Foundation – Basic Education Department. The activity equipped participants with the knowledge, values, and skills necessary to become ethical and effective leaders through three learning sessions: Basics of Interact, Ethical Student Leadership, and How to Create Lasting Impact. The program introduced students to Rotary’s youth leadership opportunities, emphasized integrity, accountability, and service as the foundation of leadership, and challenged participants to become changemakers in their schools and communities. Through this multi-club initiative, Rotary strengthened its partnership with educational institutions, promoted youth leadership and character development, and inspired the next generation to embrace Service Above Self while creating lasting impact in their communities.",
+      "date": "2026-07-25",
+      "image": "/assets/service-projects/avenues-of-service/lead.jpg"
+    },
+    {
+      "project_name": "LIWANAG SA DILIM: Sustainable Alternative Lighting",
+      "category": "Community Economic Development",
+      "category_group": "areas_of_focus",
+      "description": "Project Liwanag sa Dilim was a collaborative humanitarian initiative of the Rotary Club of Naga Heights and its sister clubs that provided 25 SALt Lamps (Sustainable Alternative Lighting) to 25 families in Zone 7, Barangay Harubay, Calabanga, Camarines Sur, an off-grid community that remains beyond the reach of the local electrification program. The SALt Lamps, powered by a simple saline solution of water and salt, offer a safe, sustainable, and environmentally friendly source of light for households without electricity. The project improved the quality of life of beneficiary families by enabling children to study after dark, allowing parents to safely perform household activities at night, and reducing dependence on hazardous kerosene lamps and disposable batteries. Through the combined efforts of the participating Rotary clubs, the initiative demonstrated the power of collaboration in addressing energy poverty, promoting sustainable innovation, and bringing hope and opportunity to underserved communities through lasting service.",
+      "date": "2026-07-25",
+      "image": "/assets/service-projects/areas-of-focus/liwanag-sa-dilim.jpg"
+    },
+    {
+      "project_name": "27TH UP HARONG ACADEMIC FESTIVAL",
+      "category": "Youth Service",
+      "category_group": "avenues_of_service",
+      "description": "The Rotary Club of Naga Heights served as one of the Partner Hosts of the 27th UP Harong Academic Festival (AcadFest), an annual regional gathering that brought together hundreds of students from across the Bicol Region for academic competitions, leadership activities, and intellectual discussions. By supporting the festival, the club reaffirmed its commitment to Youth Service by promoting academic excellence, critical thinking, civic engagement, and leadership among young people. The partnership provided students with opportunities to exchange ideas, develop their talents, and cultivate a deeper sense of social responsibility while fostering collaboration among educational institutions and community organizations. Through its participation, the Rotary Club of Naga Heights strengthened its support for youth empowerment and contributed to developing future leaders equipped to create positive and lasting impact in their communities.",
+      "date": "2026-08-04",
+      "image": "/assets/service-projects/avenues-of-service/27th-up-harong-academic-festival.jpg"
+    },
+    {
+      "project_name": "RCNH WEBSITE",
+      "category": "Club Service",
+      "category_group": "avenues_of_service",
+      "description": "The Rotary Club of Naga Heights officially launched its club website (rcnagaheights.org) as its primary digital platform for public information, member engagement, and community outreach. The website was developed to enhance the club’s public image by providing accessible information on its service projects, upcoming activities, membership opportunities, partnerships, and organizational updates. It also serves as the official online portal for flagship initiatives, including the DiskwenTulong Card Program, allowing the public to verify card authenticity, explore partner establishments, and learn more about the club’s humanitarian programs. By embracing digital innovation, the project strengthened transparency, improved public accessibility, expanded the club’s reach, and reinforced Rotary’s commitment to effective communication and lasting community impact through technology.",
+      "date": "2026-08-01",
+      "image": "/assets/service-projects/avenues-of-service/rcnh-website.jpg"
+    },
+    {
+      "project_name": "RUROK: THE RCNH MAGAZINE",
+      "category": "Club Service",
+      "category_group": "avenues_of_service",
+      "description": "The Rotary Club of Naga Heights officially launched RUROK, the club’s official magazine, as a platform to document, celebrate, and communicate its service initiatives, partnerships, and achievements. Designed to promote transparency, strengthen public image, and preserve the club’s institutional history, the magazine features stories of impactful projects, member accomplishments, community collaborations, and Rotary values in action. More than a publication, RUROK serves as a lasting record of the club’s journey and a medium for inspiring greater community involvement in Rotary’s mission. Through this initiative, the club enhanced its public outreach, strengthened stakeholder engagement, and reinforced its commitment to sharing stories that encourage service, leadership, and lasting impact.",
+      "date": "2026-08-01",
+      "image": "/assets/service-projects/avenues-of-service/rurok-the-rcnh-magazine.jpg"
+    },
+    {
+      "project_name": "4 IN 1 DISTRICT LEARNING SEMINAR",
+      "category": "Club Service",
+      "category_group": "avenues_of_service",
+      "description": "The Rotary Club of Naga Heights participated in the Rotary District 3820 4-in-1 District Learning Seminar, a comprehensive capacity-building program designed to equip club officers and leaders with the knowledge, tools, and strategies necessary to effectively fulfill their responsibilities during Rotary Year 2026–2027. Through focused learning sessions, the seminar strengthened participants’ understanding of Rotary programs, leadership, club administration, membership, The Rotary Foundation, and other key areas essential to building vibrant and effective clubs. The activity also provided opportunities to learn from District leaders, exchange best practices with fellow Rotarians, and strengthen connections across the District. The Club President successfully completed the prescribed learning program, reinforcing the Rotary Club of Naga Heights’ commitment to continuous leadership development, informed governance, and effective service.",
+      "date": "2026-03-03",
+      "image": "/assets/service-projects/avenues-of-service/4-in-1-district-learning-seminar.jpg"
     }
   ]
 }

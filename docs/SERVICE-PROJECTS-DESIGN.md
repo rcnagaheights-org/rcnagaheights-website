@@ -1,11 +1,10 @@
 # Service Projects Page — Data-Driven Rework
-Version: v1.4 · Last updated: 2026-07-20
+Version: v2 · Last updated: 2026-08-14
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). Live at `/projects/`, rendering
-from `assets/service-projects/service-projects.json`. Now running one
-REAL project (BINHI NG KINABUKASAN) — see §6 for the other 5 real rows
-still blocked on missing `category`/`date` in the Tracker sheet.
+from `assets/service-projects/service-projects.json`. As of 2026-08-14,
+12 real projects are live (see §6) — up from 1.
 
 ## 0. Why this rework
 The old page (see docs/PROJECTS-PAGE.md for its now-superseded
@@ -20,23 +19,42 @@ generated JSON data file in the repo (like
 data instead of hand-coded HTML per project.
 
 ## 1. Drive structure (source of truth)
+**Updated 2026-08-14**: the original "Service Projects Tracker" Google
+Sheet + "Areas of Focus"/"Avenues of Service" photo subfolders were
+replaced by the user with a simpler structure — still the same folder,
+different contents:
 ```
 Service Projects/                          (Drive folder)
-├── Service Projects Tracker                (Google Sheet, sheet root —
-│                                             covers BOTH subfolders,
-│                                             not one sheet per folder)
-├── Areas of Focus/                         (subfolder — photo uploads)
-└── Avenues of Service/                     (subfolder — photo uploads)
+├── Service Projects.xlsx                   (replaces the Tracker Sheet)
+└── Images/                                 (replaces the two photo
+                                              subfolders — one flat
+                                              folder for every project's
+                                              photo, regardless of
+                                              category)
 ```
+("Areas of Focus Logos" also exists in this folder — 7 generic official
+Rotary Area-of-Focus icon graphics, not project photos, unused by this
+page.)
 
-**Tracker sheet columns:**
-| Column | Purpose |
-|---|---|
-| `project_name` | Project title |
-| `category` | The specific Area of Focus or Avenue of Service value for this project (e.g. "Community Service," "Disease Prevention") |
-| `description` | 1-2 sentence summary |
-| `date` | Authoritative date for Featured/Latest sorting (see §3) — NOT Drive `createdTime` |
-| `image_filename` | Must match an actual uploaded file's filename exactly, in whichever of the two subfolders the project's `category` belongs to. No fuzzy-matching — a non-matching filename is flagged, not guessed. |
+**Service Projects.xlsx columns:** `Service Projects` (project_name),
+`Start Date:`, `End Date:`, `Avenue of Service:` (category — see format
+note below), `Image_Filename:`, `Description`.
+
+- `date` in the generated JSON uses `Start Date:` uniformly (even for
+  multi-day/ongoing entries like DISKWENTULONG CARD, RCNH WEBSITE, and
+  RUROK MAGAZINE, whose `End Date:` is the literal string "Present") —
+  a deliberate simplification, not a guess, so Featured sorting has one
+  consistent field to compare.
+- `Avenue of Service:` mixes two formats: a plain avenue name for
+  non-cause-specific projects (e.g. `Club Service`, `Youth Service`),
+  or `Community Service: <Area of Focus name>` for cause-specific ones
+  (e.g. `Community Service: Basic Education and Literacy`). Parsed as:
+  a value containing `: ` → `category_group: "areas_of_focus"`,
+  `category` = the part after the colon; otherwise →
+  `category_group: "avenues_of_service"`, `category` = the value as-is.
+- `image_filename` still must match an actual uploaded file in the
+  (now singular) `Images/` folder exactly. No fuzzy-matching — a
+  non-matching filename is flagged, not guessed.
 
 Rotary's official categories, for reference:
 - **Areas of Focus** (global cause areas): e.g. Disease Prevention and
@@ -47,8 +65,9 @@ Rotary's official categories, for reference:
   Vocational Service, Community Service, International Service, Youth
   Service.
 
-A row's `category` value determines which of the two Drive subfolders
-(and which of the two page carousels, see §2) it belongs to.
+A row's parsed `category_group` determines which of the two page
+carousels (see §2) it belongs to — the two-subfolder split by category
+no longer exists on the Drive side, only in the generated JSON/page.
 
 ## 2. Page sections (in order)
 1. **Featured/Latest** — one prominent project, data-driven (see §3),
@@ -109,68 +128,39 @@ Shape (per row):
 }
 ```
 
-## 6. Current data state as of 2026-07-20 — one real project live, 5 more blocked on missing category/date
-The Tracker sheet initially had zero real rows. The user then added 6
-real project rows (real names + real descriptions), but only ONE of
-the 6 had both `category` and `date` filled in — the other 5 are
-missing one or both fields. Per the "flag rather than guess" build
-instruction, only the one fully-specified row was built into the live
-site; the other 5 were deliberately NOT built (see the punch list
-below).
+## 6. Current data state as of 2026-08-14 — 12 real projects live
+As of 2026-07-20, the Tracker sheet had 6 real rows, only 1 fully
+specified (BINHI, live since then). **2026-08-14**: the user replaced
+the Tracker Sheet with "Service Projects.xlsx" (see §1), which added
+`Start Date:`/`End Date:` columns to every row and grew the row count
+to 14. A new "Images" Drive folder was populated the same day with a
+photo for 13 of those 14 rows, filenames matching `Image_Filename:`
+exactly. Per user instruction, all 12 fully-ready rows (BINHI already
+live + 11 new) were built in this pass; 2 rows were deliberately left
+out — see below, not guessed around.
 
-**Live now:**
-- **BINHI NG KINABUKASAN** — the only Tracker row with both `category`
-  (`Area of Focus - Basic Education and Literacy`) and `date`
-  (`2026-06-01`) filled in. It already had a real photo in the repo
-  from before this rework existed
-  (`assets/service-projects/binhi-ng-kinabukasan.png`, 3.7MB) — resized
-  to 1600px wide and re-compressed as JPEG (274KB) per the §2 sizing
-  guidance, moved to
-  `assets/service-projects/areas-of-focus/binhi-ng-kinabukasan.jpg`.
-  **Not mirrored to Drive's "Areas of Focus" subfolder** — a prior
-  version of this doc claimed it was, but that was wrong. Two upload
-  attempts (274KB, then a further-compressed ~86KB retry) both failed:
-  this environment's Drive tool rejects any single call whose payload
-  exceeds ~38,000 base64 characters (roughly 28KB of source image), well
-  under this photo's size either way. No corrupted file was left on
-  Drive from either attempt. Left as a known gap, not being pursued
-  further — the live site serves the repo copy either way, so nothing
-  user-facing is affected. `assets/service-projects/service-projects.json` now
-  contains this one real entry (`category_group: "areas_of_focus"`,
-  parsed from the sheet's `"Area of Focus - X"` / `"Avenue of Service -
-  Y"` string format — split on `" - "`, first part maps to the group,
-  second part is the display category).
-- Because it's the only row, it's automatically Featured (newest/only
-  date) and, per the no-duplication rule in §4, excluded from its own
-  carousel — both "Areas of Focus" and "Avenues of Service" correctly
-  show their empty state right now, not a bug.
-- Verified with temporary test-only entries (never committed) that
-  carousels, prev/next scrolling, and the lightbox all work correctly
-  once more than one row exists per category. **Caveat:** this is
-  sandbox-only verification (Playwright + a local Tailwind build,
-  network-blocked from the real deployed site) — unlike the BINHI
-  Featured display, no real multi-project carousel has been confirmed
-  live via a user screenshot yet, since only one real row exists so
-  far. Re-verify live once a 2nd real project with a real photo lands.
+**Live now (12 total):** BINHI NG KINABUKASAN, SUMMER CLUB TURNOVER AND
+STRATEGIC PLANNING, TALK ON ETHICAL LEADERSHIP FOR LAW STUDENTS,
+UNLOCKING MENTAL WELL-BEING, DISKWENTULONG CARD, CHARTERING OF THE NCF
+INTERACT CLUB, LEAD, LIWANAG SA DILIM: Sustainable Alternative
+Lighting, 27TH UP HARONG ACADEMIC FESTIVAL, RCNH WEBSITE, RUROK: THE
+RCNH MAGAZINE, 4 IN 1 DISTRICT LEARNING SEMINAR. Photos downloaded from
+Drive's "Images" folder, resized to ≤1600px wide and re-compressed as
+JPEG (matching the BINHI precedent), placed under
+`assets/service-projects/areas-of-focus/` or `.../avenues-of-service/`
+per each row's parsed `category_group`. Featured project (newest
+`Start Date:`, 2026-08-04) is 27TH UP HARONG ACADEMIC FESTIVAL.
+Verified locally (Playwright screenshot of a local static server): all
+12 render, Featured/carousel/lightbox logic all correct — not yet
+confirmed against the live deployed site by the user.
 
-**Not yet built — blocked on missing sheet fields, not photos:**
-| Project | Missing |
+**Deliberately excluded (2 of 14 xlsx rows):**
+| Project | Reason |
 |---|---|
-| SUMMER CLUB TURNOVER AND STRATEGIC PLANNING | `date` (has category: Avenue of Service - Club Service) |
-| TALK ON ETHICAL LEADERSHIP FOR LAW STUDENTS | `category` and `date` |
-| UNLOCKING MENTAL WELL-BEING | `category` (its own description text states the date: May 31, 2026 — usable directly, not a guess, once category is filled in) |
-| DISKWENTULONG CARD | `category` and `date` |
-| CHARTERING OF THE NCF INTERACT CLUB | `category` and `date` (description explicitly calls it a "flagship Youth Service project," a strong hint for category but not filled into the sheet itself) |
+| BRIGADA ESKWELA @ MAHABANG DAHILIG SHS | Excluded at the user's explicit instruction (2026-08-14) — fully specified in the sheet (category, date), but its `Image_Filename:` value (`BEMD.png`) does not match any file actually in the Images folder. Not a guess-around; revisit once that photo is uploaded. |
+| GOVERNOR'S VISIT | Fully specified in the sheet AND has a real photo (`GV.png`) in the Images folder — but every `download_file_content` attempt on that specific file (the largest of the 13, 7.4MB) failed with a session-expired error, unlike every other file including two others over 5MB. Not a data gap, a download-tooling gap. Retry later; if it keeps failing, the user re-exporting/compressing `GV.png` in Drive may help (mirrors the fix that worked for the DTC partner logo transcription issue). |
 
-None of these 5 have a photo yet either, matching the general
-Drive-subfolder-empty state — but that's a secondary blocker behind the
-missing category/date, which affect sort order and carousel placement
-directly and were not guessed.
-
-**Also outstanding:** the earlier placeholder entry (and its image,
-both in the repo and in Drive's "Avenues of Service" subfolder, file id
-`1rYEvhLBVzwoP92WX5aw0xpRZE3FlecUf`) has been removed from the repo now
-that real content exists, but the Drive copy can't be deleted by any
-tool available in this environment (create/read/copy/search only, no
-delete) — remove it from Drive by hand when convenient, it's harmless
-to leave for now since nothing references it anymore.
+**Resolved 2026-08-14:** the earlier placeholder entry's leftover image
+in Drive's old "Avenues of Service" subfolder (file id
+`1rYEvhLBVzwoP92WX5aw0xpRZE3FlecUf`) has been trashed, now that this
+environment has Drive delete access — no longer an outstanding item.
