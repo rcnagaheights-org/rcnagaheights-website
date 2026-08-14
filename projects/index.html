@@ -89,7 +89,6 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
         <p id="featured-category" class="text-xs font-bold uppercase tracking-wide text-[#17458f] mb-2"></p>
         <div class="flex items-center gap-4 flex-wrap">
          <h1 id="featured-title" class="text-3xl sm:text-5xl font-bold text-[#0c3c7c]">Our Service Projects</h1>
-         <button id="hero-share-btn" type="button" class="inline-flex items-center gap-2 bg-[#17458f] hover:bg-[#0c3c7c] text-white font-semibold px-5 py-2.5 rounded-full transition-colors"><i data-lucide="share-2" class="w-4 h-4"></i> Share</button>
         </div>
         <p id="featured-desc" class="text-base sm:text-lg text-slate-600 mt-4 text-justify"></p>
        </div>
@@ -128,18 +127,14 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
 
   </main>
 
-  <!-- Lightbox: click any carousel thumbnail to pop the full image, with its
-       own Share button (see shareProject() below). -->
+  <!-- Lightbox: click any carousel thumbnail to pop the full image. -->
   <div id="lightbox-modal" class="modal-hidden fixed inset-0 z-[70] bg-black/80 flex items-center justify-center pt-10 px-4 pb-4 sm:pt-4">
    <div class="relative max-w-5xl w-full max-h-[92vh]">
     <button id="lightbox-close-btn" type="button" aria-label="Close" class="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-10 h-10 rounded-full bg-white grid place-items-center shadow-lg z-10"><i data-lucide="x"></i></button>
     <div class="flex flex-col max-h-[92vh] rounded-xl overflow-hidden">
      <img id="lightbox-img" class="w-full shrink-0 min-h-[160px] max-h-[32vh] sm:max-h-[65vh] object-contain bg-black" src="" alt="">
      <div class="bg-white p-5 flex flex-col flex-1 min-h-0 overflow-hidden">
-      <div class="flex items-center justify-between gap-4 shrink-0">
-       <p id="lightbox-title" class="text-[#0c3c7c] font-bold text-lg"></p>
-       <button id="lightbox-share-btn" type="button" class="shrink-0 inline-flex items-center gap-2 bg-[#17458f]/10 hover:bg-[#17458f]/20 border border-[#17458f]/30 text-[#17458f] font-semibold px-4 py-2 rounded-full transition-colors"><i data-lucide="share-2" class="w-4 h-4"></i> Share</button>
-      </div>
+      <p id="lightbox-title" class="text-[#0c3c7c] font-bold text-lg shrink-0"></p>
       <p id="lightbox-desc" class="text-slate-600 text-sm mt-3 leading-relaxed text-justify overflow-y-auto min-h-0"></p>
      </div>
     </div>
@@ -204,31 +199,6 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-/**
- * Shares a project's own image via the OS-native share sheet
- * (navigator.share with an actual file), which is the only mechanism
- * that reliably shows the CORRECT photo per project on whichever app
- * the user picks (Facebook, Instagram, Messenger, etc) -- unlike a
- * Facebook sharer.php link, which would only ever unfurl this page's
- * single static og:image, not the specific project's photo. Falls back
- * to opening the image directly (so the user can save/share it
- * manually) when the Web Share API or file sharing isn't available.
- */
-async function shareProject(title, text, imgUrl) {
-  try {
-    const resp = await fetch(imgUrl);
-    const blob = await resp.blob();
-    const ext = (blob.type.split('/')[1] || 'jpg').split('+')[0];
-    const fileName = `${title.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.${ext}`;
-    const file = new File([blob], fileName, { type: blob.type });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title, text });
-      return;
-    }
-  } catch (err) { /* fall through to the manual fallback below */ }
-  window.open(imgUrl, '_blank', 'noopener');
-}
-
 const lightboxModal = document.getElementById('lightbox-modal');
 const lightboxImg = document.getElementById('lightbox-img');
 const lightboxTitle = document.getElementById('lightbox-title');
@@ -252,9 +222,6 @@ lightboxModal.addEventListener('click', function(e){
 document.addEventListener('keydown', function(e){
   if (e.key === 'Escape') closeLightbox();
 });
-document.getElementById('lightbox-share-btn').addEventListener('click', function(){
-  shareProject(lightboxTitle.textContent, lightboxDesc.textContent, lightboxImg.src);
-});
 
 /**
  * Renders the data-driven Featured/Latest project -- whichever Tracker
@@ -269,9 +236,6 @@ function renderFeatured(p){
   document.getElementById('featured-category').textContent = p.category;
   document.getElementById('featured-title').textContent = p.project_name;
   document.getElementById('featured-desc').textContent = p.description;
-  document.getElementById('hero-share-btn').onclick = function(){
-    shareProject(p.project_name, p.description, p.image);
-  };
   document.getElementById('featured-wrap').classList.remove('modal-hidden');
 }
 
