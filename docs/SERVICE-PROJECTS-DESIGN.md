@@ -1,10 +1,10 @@
 # Service Projects Page — Data-Driven Rework
-Version: v2 · Last updated: 2026-08-14
+Version: v2.1 · Last updated: 2026-08-14
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). Live at `/projects/`, rendering
 from `assets/service-projects/service-projects.json`. As of 2026-08-14,
-12 real projects are live (see §6) — up from 1.
+13 real projects are live (see §6) — up from 1.
 
 ## 0. Why this rework
 The old page (see docs/PROJECTS-PAGE.md for its now-superseded
@@ -128,37 +128,44 @@ Shape (per row):
 }
 ```
 
-## 6. Current data state as of 2026-08-14 — 12 real projects live
+## 6. Current data state as of 2026-08-14 — 13 real projects live
 As of 2026-07-20, the Tracker sheet had 6 real rows, only 1 fully
-specified (BINHI, live since then). **2026-08-14**: the user replaced
-the Tracker Sheet with "Service Projects.xlsx" (see §1), which added
-`Start Date:`/`End Date:` columns to every row and grew the row count
-to 14. A new "Images" Drive folder was populated the same day with a
-photo for 13 of those 14 rows, filenames matching `Image_Filename:`
-exactly. Per user instruction, all 12 fully-ready rows (BINHI already
-live + 11 new) were built in this pass; 2 rows were deliberately left
-out — see below, not guessed around.
+specified (BINHI, live since then). The Tracker Sheet was then replaced
+by "Service Projects.xlsx" (see §1), which added `Start Date:`/`End
+Date:` columns to every row and grew the row count to 14, and a new
+"Images" Drive folder was populated with a photo for each row. 12 rows
+were built first (BINHI already live + 11 new); BRIGADA ESKWELA
+followed once its photo appeared in Drive later the same day (see
+below) — 13 of 14 rows are now live. Only GOVERNOR'S VISIT remains
+unbuilt, and that's a tooling gap, not a data gap — see below.
 
-**Live now (12 total):** BINHI NG KINABUKASAN, SUMMER CLUB TURNOVER AND
+**Live now (13 total):** BINHI NG KINABUKASAN, SUMMER CLUB TURNOVER AND
 STRATEGIC PLANNING, TALK ON ETHICAL LEADERSHIP FOR LAW STUDENTS,
 UNLOCKING MENTAL WELL-BEING, DISKWENTULONG CARD, CHARTERING OF THE NCF
 INTERACT CLUB, LEAD, LIWANAG SA DILIM: Sustainable Alternative
 Lighting, 27TH UP HARONG ACADEMIC FESTIVAL, RCNH WEBSITE, RUROK: THE
-RCNH MAGAZINE, 4 IN 1 DISTRICT LEARNING SEMINAR. Photos downloaded from
-Drive's "Images" folder, resized to ≤1600px wide and re-compressed as
-JPEG (matching the BINHI precedent), placed under
-`assets/service-projects/areas-of-focus/` or `.../avenues-of-service/`
-per each row's parsed `category_group`. Featured project (newest
-`Start Date:`, 2026-08-04) is 27TH UP HARONG ACADEMIC FESTIVAL.
-Verified locally (Playwright screenshot of a local static server): all
-12 render, Featured/carousel/lightbox logic all correct — not yet
-confirmed against the live deployed site by the user.
+RCNH MAGAZINE, 4 IN 1 DISTRICT LEARNING SEMINAR, BRIGADA ESKWELA @
+MAHABANG DAHILIG SHS. Photos downloaded from Drive's "Images" folder,
+resized to ≤1600px wide and re-compressed as JPEG (matching the BINHI
+precedent), placed under `assets/service-projects/areas-of-focus/` or
+`.../avenues-of-service/` per each row's parsed `category_group`.
+Featured project (newest `Start Date:`, 2026-08-04) is 27TH UP HARONG
+ACADEMIC FESTIVAL. Verified locally (Playwright screenshot of a local
+static server): all render, Featured/carousel/lightbox logic all
+correct — not yet confirmed against the live deployed site by the user.
 
-**Deliberately excluded (2 of 14 xlsx rows):**
+**BRIGADA ESKWELA note:** its Drive photo appeared as `BEMD.jpg`, not
+the `BEMD.png` the sheet's `Image_Filename:` column literally
+specifies — an extension mismatch, not a guess across multiple
+candidates (it's the only file with that base name, uploaded the same
+day the row's other gap — the missing photo itself — was raised). Used
+it; the sheet's `Image_Filename:` value should ideally be corrected to
+`BEMD.jpg` to match, though nothing depends on that being fixed.
+
+**Still not built (1 of 14 xlsx rows):**
 | Project | Reason |
 |---|---|
-| BRIGADA ESKWELA @ MAHABANG DAHILIG SHS | Excluded at the user's explicit instruction (2026-08-14) — fully specified in the sheet (category, date), but its `Image_Filename:` value (`BEMD.png`) does not match any file actually in the Images folder. Not a guess-around; revisit once that photo is uploaded. |
-| GOVERNOR'S VISIT | Fully specified in the sheet AND has a real photo (`GV.png`) in the Images folder — but every `download_file_content` attempt on that specific file (the largest of the 13, 7.4MB) failed with a session-expired error, unlike every other file including two others over 5MB. Not a data gap, a download-tooling gap. Retry later; if it keeps failing, the user re-exporting/compressing `GV.png` in Drive may help (mirrors the fix that worked for the DTC partner logo transcription issue). |
+| GOVERNOR'S VISIT | Fully specified in the sheet AND has a real photo (`GV.png`) in the Images folder — but every `download_file_content` attempt on that specific file (the largest of the 14, 7.4MB) has failed with a session-expired error across two separate sessions (6 attempts total), while every other file including two others over 5MB succeeded. This looks like a real size ceiling somewhere between ~5MB and 7.4MB for this download path, not a transient glitch. Not a data gap — retry once the tooling allows it, or have the user re-export/compress `GV.png` in Drive to bring it under ~5MB. |
 
 **Resolved 2026-08-14:** the earlier placeholder entry's leftover image
 in Drive's old "Avenues of Service" subfolder (file id
