@@ -202,9 +202,17 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   a live-breaking change until fixed same day: the frontend only draws
   tiles for categories in its own hardcoded list, so when the backend
   Sheet's categories changed out from under it, `/diskwentulong/`
-  briefly showed zero partners live. `diskwentulong/index.html` and
-  `assets/merchants/partners.json` are now updated to match. See
-  docs/DTC-DESIGN.md §5.
+  briefly showed zero partners live. **Updated again 2026-08-14**: the
+  user pasted 44 rows into the live Merchants Sheet directly, renaming
+  2 categories (now `Cafes and Restaurant Partners`/`Hotel Partners`)
+  and adding a new `Mental Health Partners` category plus 3 more real
+  partners (one, Mi Panda Naga, with a real logo added). `Code.gs`/the
+  live Sheet is genuinely ahead of this repo now — `diskwentulong/
+  index.html` and `partners.json` were updated to follow it, the
+  reverse of the usual direction. A data-integrity bug was found in the
+  live Sheet's `logo_file_id` column (~30 of 44 rows point at the
+  wrong merchant's logo filename) — not fixed (no Sheets write access),
+  flagged for the user. See docs/DTC-DESIGN.md §5.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

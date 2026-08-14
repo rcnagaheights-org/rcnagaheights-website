@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v7.12 · Last updated: 2026-08-14
+Version: v8 · Last updated: 2026-08-14
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -174,23 +174,30 @@ No `moa_end_date` per row and no `verification_access_code` column —
 both were in earlier drafts and are no longer needed (one shared MOA
 date; no per-partner tokens, see Section 4).
 
-**Category list, updated 2026-08-04** to match the granular
-classifications the "DTC Partners.xlsx" source sheet actually uses
-(the earlier 7-bucket list above was Claude's own simplification,
-never locked in, and was replaced once the live Merchants tab started
-using these instead): Cafe Partners · Hospitality Partners · Self Care
-Partners · Medical & Dental Partners · Hair Grooming Partners · Legal
-Partners · Home and Car Maintenance Partners · Supplies Partners ·
-Multimedia Partners · Entertainment Partners · Educational Partners ·
-Other (fallback for anything unmatched). `CATEGORY_ICONS`/
-`CATEGORY_ORDER` in `diskwentulong/index.html` and every `category`
-value in `assets/merchants/partners.json` were updated together to
-match — `renderCategoryGrid()` only ever draws tiles for categories in
-`CATEGORY_ORDER`, so a category value that doesn't match anything in
-that list silently renders zero partners with no error, which is
-exactly what happened live on 2026-08-04 when the Sheet's categories
-changed out from under the old 7-bucket list (confirmed via a live
-render against the real endpoint, not just inferred from code).
+**Category list, updated 2026-08-04, then again 2026-08-14** — the
+current live taxonomy (12 categories) is: Cafes and Restaurant Partners
+· Hotel Partners · Self Care Partners · Medical & Dental Partners ·
+Mental Health Partners · Hair Grooming Partners · Legal Partners ·
+Home and Car Maintenance Partners · Supplies Partners · Multimedia
+Partners · Entertainment Partners · Educational Partners · Other
+(fallback for anything unmatched). This has changed twice: 2026-08-04
+replaced an earlier 7-bucket simplification (Claude's own, never locked
+in) with a 12-name list matching the "DTC Partners.xlsx" source sheet
+of the time (`Cafe Partners`, `Hospitality Partners`, etc); 2026-08-14
+renamed 2 of those (`Cafe Partners` → `Cafes and Restaurant Partners`,
+`Hospitality Partners` → `Hotel Partners`) and added a brand-new
+`Mental Health Partners` category, matching what the user pasted into
+the live Merchants Sheet directly (see the 2026-08-14 sync note below —
+this is a separate, later edit than the one earlier that same day).
+`CATEGORY_ICONS`/`CATEGORY_ORDER` in `diskwentulong/index.html` and
+every `category` value in `assets/merchants/partners.json` were
+updated together to match each time — `renderCategoryGrid()` only ever
+draws tiles for categories in `CATEGORY_ORDER`, so a category value
+that doesn't match anything in that list silently renders zero
+partners with no error, which is exactly what happened live on
+2026-08-04 when the Sheet's categories changed out from under the old
+7-bucket list (confirmed via a live render against the real endpoint,
+not just inferred from code).
 
 **2026-08-14 sync**: "DTC Partners.xlsx" grew from 32 to 41 rows and
 gained a `Location` column. 9 new partners (RJ's Buffet, Rolando's,
@@ -216,12 +223,43 @@ compressed image data every time) — they render with the page's
 existing fallback initial-letter avatar in the meantime. Also swapped
 Caltex AutoPro's logo for a new wide banner-style image found in Drive
 (`caltexautopro.jpg`, was 1000×1000, now 1600×661) at the user's
-confirmation. **None of this is live yet** — the live "DTC Card
-Database" → Merchants tab still only has the original 32 rows under the
-old category names; a human with Sheet access needs to manually add
-the 9 new rows (business_name/category/offer_details/facebook_url,
-using the category names above, not the xlsx's renamed ones) plus the
-Villa Caceres/Knopper text edits.
+confirmation.
+
+**2026-08-14, later the same day — live paste-in confirmed, 3 more
+partners, category rename adopted, and a data-integrity bug found.**
+The user pasted the above into the live Merchants Sheet directly (44
+rows total, up from 32) — this is the first time this repo's category
+taxonomy has been changed to *follow* a live Sheet edit rather than the
+other way around, since the Sheet now uses the xlsx's renamed
+categories (`Cafes and Restaurant Partners`, `Hotel Partners`) plus a
+brand-new `Mental Health Partners` category not seen in any prior
+source. `CATEGORY_ICONS`/`CATEGORY_ORDER`/`partners.json` were updated
+to match (see the category list above). 3 more partners appeared in the
+live Sheet beyond the 9 already known: Mi Panda Naga (Cafes and
+Restaurant Partners, real logo downloaded and added —
+`mipandanaga.jpg`), MVisions Diagnostic Center & Psychological Services
+and Sorsogon's Psychological Center (both Mental Health Partners, no
+`logo` field — Drive has no dedicated logo file for either, see next
+paragraph).
+
+**Bug found, not fixed (no Sheets write access):** the live Sheet's
+`logo_file_id` column is desynced from the rest of each row for roughly
+30 of 44 entries (e.g. row M-0028 "Patron CamSur" points at
+`Logo.R\&YLaundryShop.JPG`, row M-0029 "R&Y Laundry Shop" points at
+`Logo.R98.JPG` — each row shows a *different* merchant's logo
+filename, in a pattern consistent with a sort/insert operation that
+moved every other column but left this one behind). This was caught by
+cross-checking each row's business name against its `logo_file_id`
+filename. It does not affect this repo's `partners.json` (logos here
+are sourced by downloading and matching real files per merchant name,
+never by trusting this column), but it likely does affect whatever the
+live Apps Script backend (`Code.gs`, Drive-only, not in this repo) does
+with `logo_file_id` when serving the live `getPartners` call — worth
+the user's attention before it's relied on for anything printed or
+circulated. The two newest Mental Health partners' `logo_file_id`
+values (`Logo.NagaSlides.jpg`, `Logo.SouthernCrate.JPG`) are part of
+this same pattern, not real assignments — confirmed via a Drive search
+that no file actually named for either business exists.
 
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:
