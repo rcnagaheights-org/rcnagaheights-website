@@ -1,5 +1,5 @@
 # Rotarians Page — Roster & Council of Presidents
-Version: v1.5 · Last updated: 2026-08-15
+Version: v1.6 · Last updated: 2026-08-15
 
 ## Status
 Live at `/rotarians/`. Still plain hardcoded HTML per person, not
@@ -19,6 +19,35 @@ a roster change comes in.
 4. **Members** — grid of cards for members without an officer role.
    Cards here show only the name — no "Member" label, since the
    section heading already says so (redundant text removed 2026-07-21).
+
+**Portraits (added 2026-08-15):** every card in all three grids (COP,
+Officers, Members) now shows a circular portrait photo above the name
+— `w-24 h-24 rounded-full object-cover` at
+`/assets/rotarians/portraits/<slug>.jpg`. Source photos came from
+Drive's "Officers and Members / Portraits" folder (see below),
+downloaded via direct `curl` against each file's share link (all
+"anyone with the link" shared — same approach used elsewhere this
+session for the DTC partner logos and the Governor's Visit project
+photo), then center-cropped to a 480×480 square and re-compressed as
+JPEG. The sitting President is unaffected — she keeps her own larger
+photo in the separate President's Message section, not a grid card.
+Filenames are simplified per-person slugs (e.g. `mendozacabral.jpg`
+for Krista Carmina Mendoza-Cabral), not the Drive `Portrait` column's
+literal filenames — same pattern as `assets/merchants/partners.json`.
+First crop attempt biased the vertical anchor 1/3 of the way down the
+leftover height, which clipped the top of the hair on several photos
+(most visibly Gumabao's) — some subjects are framed with very little
+headroom in the original. Fixed by anchoring near the top instead
+(~5% of leftover height, not 33%), re-verified against a local
+Tailwind render that no head is cropped by the circular mask.
+
+**Tile centering (added 2026-08-15):** all three grids switched from
+CSS Grid (`grid sm:grid-cols-2 lg:grid-cols-4`) to
+`flex flex-wrap justify-center` with each card given an explicit
+responsive width (`w-full sm:w-[calc(50%-0.75rem)]
+lg:w-[calc(25%-1.125rem)]`) — CSS Grid left a trailing incomplete row
+flush left (e.g. Jason Bagadiong alone on COP's 2nd row); flexbox
+centers it instead. Verified at mobile/tablet/desktop widths.
 
 ## Council of Presidents (COP) — the rule
 **Any Rotarian carrying the designation Immediate Past President or
