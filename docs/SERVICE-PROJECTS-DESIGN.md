@@ -1,10 +1,10 @@
 # Service Projects Page — Data-Driven Rework
-Version: v2.1 · Last updated: 2026-08-14
+Version: v2.2 · Last updated: 2026-08-15
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). Live at `/projects/`, rendering
-from `assets/service-projects/service-projects.json`. As of 2026-08-14,
-13 real projects are live (see §6) — up from 1.
+from `assets/service-projects/service-projects.json`. As of 2026-08-15,
+all 14 real projects from the xlsx are live (see §6) — up from 1.
 
 ## 0. Why this rework
 The old page (see docs/PROJECTS-PAGE.md for its now-superseded
@@ -128,31 +128,33 @@ Shape (per row):
 }
 ```
 
-## 6. Current data state as of 2026-08-14 — 13 real projects live
+## 6. Current data state as of 2026-08-15 — all 14 real projects live
 As of 2026-07-20, the Tracker sheet had 6 real rows, only 1 fully
 specified (BINHI, live since then). The Tracker Sheet was then replaced
 by "Service Projects.xlsx" (see §1), which added `Start Date:`/`End
 Date:` columns to every row and grew the row count to 14, and a new
 "Images" Drive folder was populated with a photo for each row. 12 rows
 were built first (BINHI already live + 11 new); BRIGADA ESKWELA
-followed once its photo appeared in Drive later the same day (see
-below) — 13 of 14 rows are now live. Only GOVERNOR'S VISIT remains
-unbuilt, and that's a tooling gap, not a data gap — see below.
+followed once its photo appeared in Drive later the same day; GOVERNOR'S
+VISIT — the last holdout — was resolved 2026-08-15 (see below). All 14
+of 14 rows are now live.
 
-**Live now (13 total):** BINHI NG KINABUKASAN, SUMMER CLUB TURNOVER AND
+**Live now (14 total):** BINHI NG KINABUKASAN, SUMMER CLUB TURNOVER AND
 STRATEGIC PLANNING, TALK ON ETHICAL LEADERSHIP FOR LAW STUDENTS,
 UNLOCKING MENTAL WELL-BEING, DISKWENTULONG CARD, CHARTERING OF THE NCF
 INTERACT CLUB, LEAD, LIWANAG SA DILIM: Sustainable Alternative
-Lighting, 27TH UP HARONG ACADEMIC FESTIVAL, RCNH WEBSITE, RUROK: THE
-RCNH MAGAZINE, 4 IN 1 DISTRICT LEARNING SEMINAR, BRIGADA ESKWELA @
-MAHABANG DAHILIG SHS. Photos downloaded from Drive's "Images" folder,
-resized to ≤1600px wide and re-compressed as JPEG (matching the BINHI
-precedent), placed under `assets/service-projects/areas-of-focus/` or
-`.../avenues-of-service/` per each row's parsed `category_group`.
-Featured project (newest `Start Date:`, 2026-08-04) is 27TH UP HARONG
-ACADEMIC FESTIVAL. Verified locally (Playwright screenshot of a local
-static server): all render, Featured/carousel/lightbox logic all
-correct — not yet confirmed against the live deployed site by the user.
+Lighting, GOVERNOR'S VISIT, 27TH UP HARONG ACADEMIC FESTIVAL, RCNH
+WEBSITE, RUROK: THE RCNH MAGAZINE, 4 IN 1 DISTRICT LEARNING SEMINAR,
+BRIGADA ESKWELA @ MAHABANG DAHILIG SHS. Photos downloaded from Drive's
+"Images" folder, resized to ≤1600px wide and re-compressed as JPEG
+(matching the BINHI precedent), placed under
+`assets/service-projects/areas-of-focus/` or `.../avenues-of-service/`
+per each row's parsed `category_group`. Featured project (newest
+`Start Date:`, 2026-08-04) is 27TH UP HARONG ACADEMIC FESTIVAL — GOVERNOR'S
+VISIT's `2026-08-01` date doesn't overtake it. Verified locally
+(Playwright screenshot of a local static server): all render,
+Featured/carousel/lightbox logic all correct — not yet confirmed
+against the live deployed site by the user.
 
 **BRIGADA ESKWELA note:** its Drive photo appeared as `BEMD.jpg`, not
 the `BEMD.png` the sheet's `Image_Filename:` column literally
@@ -162,10 +164,23 @@ day the row's other gap — the missing photo itself — was raised). Used
 it; the sheet's `Image_Filename:` value should ideally be corrected to
 `BEMD.jpg` to match, though nothing depends on that being fixed.
 
-**Still not built (1 of 14 xlsx rows):**
-| Project | Reason |
-|---|---|
-| GOVERNOR'S VISIT | Fully specified in the sheet AND has a real photo (`GV.png`) in the Images folder — but every `download_file_content` attempt on that specific file (the largest of the 14, 7.4MB) has failed with a session-expired error across two separate sessions (6 attempts total), while every other file including two others over 5MB succeeded. This looks like a real size ceiling somewhere between ~5MB and 7.4MB for this download path, not a transient glitch. Not a data gap — retry once the tooling allows it, or have the user re-export/compress `GV.png` in Drive to bring it under ~5MB. |
+**GOVERNOR'S VISIT — resolved 2026-08-15:** `GV.png` (also mislabeled —
+actually a JPEG, same quirk as BEMD) had failed 6 straight
+`download_file_content` attempts across two sessions with a
+session-expired error, previously logged here as a ~5MB size ceiling
+on that download path. Two things had changed by this attempt: the
+Drive file itself was now only 1.4MB (down from the originally-reported
+7.4MB — apparently re-exported/re-compressed at some point, though not
+by anything this repo tracked), and this session discovered that
+`download_file_content` isn't the only route to a Drive file — both
+files share "Anyone with the link" permission, so a direct
+`curl https://drive.google.com/uc?export=download&id=<fileId>` pulled
+the exact byte-for-byte file straight to disk, bypassing the MCP tool
+entirely. That path was actually used to unblock two other stuck
+downloads this same session (partner logos for Bistro Roberto and VCH
+Health Resort Club — see docs/DTC-DESIGN.md) before being applied here.
+Resized locally to 1600×1067 JPEG and added to
+`service-projects.json`/`assets/service-projects/avenues-of-service/`.
 
 **Resolved 2026-08-14:** the earlier placeholder entry's leftover image
 in Drive's old "Avenues of Service" subfolder (file id

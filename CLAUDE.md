@@ -269,13 +269,16 @@ doing any Drive-related content work.
   Drive Tracker Sheet was replaced by "Service Projects.xlsx" (now
   including `Start Date:`/`End Date:` columns), and 12 more real
   projects were built alongside the original BINHI NG KINABUKASAN — 13
-  total live now, including BRIGADA ESKWELA once its photo appeared in
+  total live then, including BRIGADA ESKWELA once its photo appeared in
   Drive later the same day (its sheet-specified filename was `BEMD.png`;
   the actual upload was `BEMD.jpg` — used anyway, only one candidate
-  file existed). Only GOVERNOR'S VISIT remains unbuilt: fully specified
-  with a real photo, but every download attempt on that one file (the
-  largest of the 14, 7.4MB) has failed across two sessions — a tooling
-  gap, not a data gap. See design doc §6.
+  file existed). **Updated 2026-08-15**: GOVERNOR'S VISIT — the last
+  unbuilt row, previously stuck on 6 failed downloads of its 7.4MB
+  photo — is now live too: the file had shrunk to 1.4MB in Drive since
+  the last attempt, and a direct `curl` against its Drive share link
+  (bypassing the Drive MCP tool, which kept returning the file inline
+  instead of to disk) pulled it down cleanly. All 14 of 14 rows are now
+  live. See design doc §6.
   Homepage's separate "What We Do" carousel
   (`assets/recent-projects/`) is untouched by this rework.
 
