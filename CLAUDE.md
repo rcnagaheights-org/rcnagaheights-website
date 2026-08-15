@@ -125,7 +125,7 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   testing of the real endpoint — the name-match gate is actually
   enforced now, not just in the frontend. See docs/DTC-DESIGN.md's
   Open items for exactly how this was confirmed.
-- Rotarians page now has the full real roster (29 people, from a Drive
+- Rotarians page now has the full real roster (30 people, from a Drive
   membership sheet) instead of 4 hardcoded name slots — still plain
   hardcoded HTML, not data-driven; re-editing this file by hand is
   expected for future roster changes until/unless it's rebuilt data-driven.
@@ -134,7 +134,11 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   Rosales (Charter President) always pinned first, then newest-first by
   Rotary Year. Each of those 5 people's card now lives ONLY in this
   section (removed from Officers/Members to avoid duplication) and shows
-  their current officer title if they have one. See docs/Rotarians.md.
+  their current officer title if they have one. **Updated 2026-08-15**:
+  found and added Maria Francesca Gumabao, a plain Member present in
+  the Drive sheet since the original build but missed at the time — no
+  other discrepancies, every officer title/COP designation/theme
+  cross-checked clean against the sheet. See docs/Rotarians.md.
 - Homepage hero is a rotating carousel of 3 real photos (confirmed with
   the user 2026-07-19 — earlier guidance calling it a single static image
   was superseded). Each slide now renders as a single `object-cover`
