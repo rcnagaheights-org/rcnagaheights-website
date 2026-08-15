@@ -138,7 +138,11 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   found and added Maria Francesca Gumabao, a plain Member present in
   the Drive sheet since the original build but missed at the time — no
   other discrepancies, every officer title/COP designation/theme
-  cross-checked clean against the sheet. See docs/Rotarians.md.
+  cross-checked clean against the sheet. **Also updated 2026-08-15**:
+  every card in all three grids (COP, Officers, Members) now shows a
+  circular portrait photo, sourced from a new Drive "Portraits" folder
+  and downloaded the same direct-`curl` way as the DTC logos/Governor's
+  Visit photo. See docs/Rotarians.md.
 - Homepage hero is a rotating carousel of 3 real photos (confirmed with
   the user 2026-07-19 — earlier guidance calling it a single static image
   was superseded). Each slide now renders as a single `object-cover`
