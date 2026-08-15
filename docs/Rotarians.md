@@ -1,5 +1,5 @@
 # Rotarians Page — Roster & Council of Presidents
-Version: v1.4 · Last updated: 2026-07-21
+Version: v1.5 · Last updated: 2026-08-15
 
 ## Status
 Live at `/rotarians/`. Still plain hardcoded HTML per person, not
@@ -75,9 +75,41 @@ Presidents in descending Rotary Year order.
 All other officers/members (Kathleen Felipe, Charles Oliver Dadua III,
 Nelvin Charles Crescini, Jose Leo Raphaello Del Rosario, Odessa Balmes,
 Raymar Bron, Kimberly Chancoco, Sherwin Francis Mendoza, Krista Carmina
-Mendoza-Cabral, Melissa Ngo, Edmund John Palmes, and the 12 other plain
+Mendoza-Cabral, Melissa Ngo, Edmund John Palmes, and the 13 other plain
 Members) carry no COP designation and appear only once, in Officers or
 Members as before.
+
+## Update 2026-08-15 — added a missed Member, cross-check clean
+Checked the live `Membership Roster RY 2026-27.xlsx` in Drive against
+the page row by row. Found one real gap: **Maria Francesca Gumabao**
+(a plain Member, sheet row 19) was in the source sheet but had never
+made it onto the page — missed during the original 2026-07-21 build,
+not a new addition to the sheet. Added her to the Members grid, in the
+same row-order position as the sheet (between Dannin Joy Labordo and
+Joseph Lemuel Lomibao). Total roster is now 30, up from 29.
+
+Every other name, officer title, COP designation, and presidential
+theme/year was cross-checked against the sheet and matched exactly —
+including the `President-Elect` (Kathleen Felipe) and `President-Nominee`
+(Charles Oliver Dadua III) tags, which already existed correctly on
+the page. One data-entry quirk in the sheet itself, not the page: row
+24 has "Crescini" duplicated into both the Last Name and First Name
+columns, with "Nelvin Charles" landing in the Council of Presidents
+column instead — the page already has this person correctly as
+"Nelvin Charles Crescini, Deputy Secretary" with no COP tag, so no fix
+was needed on this end.
+
+**Portraits folder:** the same Drive update also added a new
+"Portraits" subfolder with one photo per roster member — not wired to
+the page yet, since every Officer/Member/COP card is still text-only
+(only the sitting President has a photo, in the separate President's
+Message section). Two discrepancies found there: Gumabao's portrait
+was missing (consistent with her being missed everywhere else), and
+two extra photos — `JEREMIAS.PNG` and `LAVADIA.PNG` — didn't match
+anyone in the roster sheet. Resolved same day: the user renamed
+`LAVADIA.PNG` to `GUMABAO.PNG` (it was actually her photo), and asked
+to leave `JEREMIAS.PNG` alone — still an unexplained extra file, not a
+roster gap, no action needed on it.
 
 ## Maintaining this each Rotary Year
 When a new Rotary Year begins and a new president takes over:
