@@ -248,7 +248,8 @@
     "name": "Bistro Roberto",
     "category": "Entertainment Partners",
     "commitment": "10% Discount",
-    "facebook_url": "https://www.facebook.com/VCHBistroRoberto"
+    "facebook_url": "https://www.facebook.com/VCHBistroRoberto",
+    "logo": "bistroroberto.jpg"
   },
   {
     "name": "BNPL Ant-Rabies Animal Bite Center",
@@ -282,7 +283,8 @@
     "name": "VCH Health Resort Club",
     "category": "Self Care Partners",
     "commitment": "10% Discount",
-    "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity"
+    "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity",
+    "logo": "vchhrc.jpg"
   },
   {
     "name": "Mi Panda Naga",
