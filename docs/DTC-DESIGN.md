@@ -235,7 +235,7 @@ categories (`Cafes and Restaurant Partners`, `Hotel Partners`) plus a
 brand-new `Mental Health Partners` category not seen in any prior
 source. `CATEGORY_ICONS`/`CATEGORY_ORDER`/`partners.json` were updated
 to match (see the category list above). 3 more partners appeared in the
-live Sheet beyond the 9 already known: Mi Panda Naga (Cafes and
+live Sheet beyond the 9 already known: MiPanda Naga (Cafes and
 Restaurant Partners, real logo downloaded and added —
 `mipandanaga.jpg`), MVisions Diagnostic Center & Psychological Services
 and Sorsogon's Psychological Center (both Mental Health Partners).

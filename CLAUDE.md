@@ -214,7 +214,7 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   user pasted 44 rows into the live Merchants Sheet directly, renaming
   2 categories (now `Cafes and Restaurant Partners`/`Hotel Partners`)
   and adding a new `Mental Health Partners` category plus 3 more real
-  partners (one, Mi Panda Naga, with a real logo added). `Code.gs`/the
+  partners (one, MiPanda Naga, with a real logo added). `Code.gs`/the
   live Sheet is genuinely ahead of this repo now — `diskwentulong/
   index.html` and `partners.json` were updated to follow it, the
   reverse of the usual direction. A data-integrity bug was found in the
