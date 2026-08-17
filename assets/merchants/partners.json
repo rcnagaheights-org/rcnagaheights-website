@@ -8,28 +8,28 @@
   },
   {
     "name": "Aran & Co.",
-    "category": "Coffee Shops",
+    "category": "Coffee & Milktea Houses",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/helloaran.co",
     "logo": "aranco.jpg"
   },
   {
     "name": "Bicol Cladding",
-    "category": "Home Essentials",
+    "category": "Home & Car Essentials",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/profile.php?id=61577592862354",
     "logo": "bicolcladding.jpg"
   },
   {
     "name": "Blanche Skin Care and Laser Clinic",
-    "category": "Self Care Services",
+    "category": "Self-care Services",
     "commitment": "20% Discount",
     "facebook_url": "https://www.facebook.com/blancheskincareclinic",
     "logo": "blancheskincare.jpg"
   },
   {
     "name": "Caltex AutoPro - Pili Diversion",
-    "category": "Home & Car Care",
+    "category": "Home & Car Essentials",
     "commitment": "5% off all services",
     "facebook_url": "https://www.facebook.com/caltexautoPro.pili",
     "logo": "caltexautopro.jpg"
@@ -85,14 +85,14 @@
   },
   {
     "name": "Km.eight coffee",
-    "category": "Coffee Shops",
+    "category": "Coffee & Milktea Houses",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/km8.coffee",
     "logo": "kmeightcoffee.jpg"
   },
   {
     "name": "Knopper",
-    "category": "Medical Supplies",
+    "category": "Medical & Diagnostic Supplies",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/knopperpharmacy",
     "logo": "knopperpharmacy.jpg"
@@ -106,14 +106,14 @@
   },
   {
     "name": "Lift",
-    "category": "Self Care Services",
+    "category": "Self-care Services",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/profile.php?id=61579032807471",
     "logo": "lift.jpg"
   },
   {
     "name": "Magayon Coffee",
-    "category": "Coffee Shops",
+    "category": "Coffee & Milktea Houses",
     "commitment": "Buy 1, Get 1 at Php 50 off (Valid Monday-Thursday. One redemption per visit; for every Php 1,000 purchase, get a free Php 100 gift certificate.",
     "facebook_url": "https://www.facebook.com/magayoncoffee",
     "logo": "magayoncoffee.jpg"
@@ -141,7 +141,7 @@
   },
   {
     "name": "R&Y Laundry Shop",
-    "category": "Home & Car Care",
+    "category": "Home & Car Essentials",
     "commitment": "5% Discount; Free Fabric Dryer Sheets for New Customers",
     "facebook_url": "https://www.facebook.com/profile.php?id=61584740678104",
     "logo": "rylaundryshop.jpg"
@@ -176,7 +176,7 @@
   },
   {
     "name": "Trangkilo Massage Hut",
-    "category": "Self Care Services",
+    "category": "Self-care Services",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/kamalawellnessspa",
     "logo": "trangkilomassagehut.jpg"
@@ -197,21 +197,21 @@
   },
   {
     "name": "Santigwar",
-    "category": "Coffee Shops",
+    "category": "Coffee & Milktea Houses",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/share/1Jpzw5tTxf/?mibextid=wwXIfr",
     "logo": "Sntgwr.jpg"
   },
   {
     "name": "Southern Crate",
-    "category": "Whole Sale Supplies",
+    "category": "Wholesale Supplies",
     "commitment": "2% OFF on a minimum single-receipt purchase of ₱2,500",
     "facebook_url": "https://www.facebook.com/southerncrate",
     "logo": "SouthernCrate.jpg"
   },
   {
     "name": "Rebel Coffee",
-    "category": "Coffee Shops",
+    "category": "Coffee & Milktea Houses",
     "commitment": "5% OFF on a minimum single-receipt purchase of ₱1,000 and FREE Cookie during the cardholder's birthday month",
     "facebook_url": "https://www.facebook.com/rebelcoffeeroasters.ph",
     "logo": "Rebel.jpg"
@@ -274,21 +274,21 @@
   },
   {
     "name": "Gluta Nail & Lashes Aesthetic Clinic",
-    "category": "Self Care Services",
+    "category": "Self-care Services",
     "commitment": "20% Discount",
     "facebook_url": "https://www.facebook.com/share/1DaoBdRU8n/",
     "logo": "glutanaillashes.jpg"
   },
   {
     "name": "VCH Health Resort Club",
-    "category": "Self Care Services",
+    "category": "Self-care Services",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity",
     "logo": "vchhrc.jpg"
   },
   {
     "name": "MiPanda Naga",
-    "category": "Restaurants",
+    "category": "Coffee & Milktea Houses",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/mipandanaga",
     "logo": "mipandanaga.jpg"
@@ -309,7 +309,7 @@
   },
   {
     "name": "Redflame Enterprises",
-    "category": "Home Essentials",
+    "category": "Home & Car Essentials",
     "commitment": "20% Discount",
     "facebook_url": "https://www.facebook.com/Redflame.Enterprises/",
     "logo": "redflame.jpg"
@@ -320,5 +320,12 @@
     "commitment": "10% Discount on the following services: i. Consultation\nii. Psychotherapy/Counseling\niii. Psychological Assessment\niv. Psychological Testing for School and OJT purposes\nv. Neuro Psychiatric & Psychological Exam for Employment\nvi. Training and Seminars",
     "facebook_url": "https://www.facebook.com/61593332758873/",
     "logo": "noeia.jpg"
+  },
+  {
+    "name": "LabCom Laboratory Supplies",
+    "category": "Medical & Diagnostic Supplies",
+    "commitment": "5% Discount",
+    "facebook_url": "https://www.facebook.com/blueknight1969",
+    "logo": "labcom.png"
   }
 ]

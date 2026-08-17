@@ -236,7 +236,14 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   hiding its partners. Also added `assets/merchants/live-snapshot.json`,
   a raw mirror of the live `getPartners` response kept only as a manual
   diff baseline for future syncs (not read by the live site, not
-  auto-updated). See docs/DTC-DESIGN.md §5.
+  auto-updated). **Updated again 2026-08-17**: categories changed a
+  third time (16 categories now, down from 17) — `Home & Car Care`/
+  `Home Essentials` merged into one `Home & Car Essentials`, 2 more
+  renamed. This time the resilience fix caught it live exactly as
+  designed: affected tiles kept showing their partners, just with a
+  generic icon, which is what the user spotted and reported. 1 more
+  new partner found (LabCom Laboratory Supplies), real logo added.
+  46/46 prior partners still accounted for. See docs/DTC-DESIGN.md §5.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

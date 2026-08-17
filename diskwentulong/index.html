@@ -215,26 +215,25 @@ document.addEventListener('keydown', e => {
 document.getElementById('terms-modal').classList.remove('modal-hidden');
 
 const CATEGORY_ICONS = {
-  'Restaurants': 'utensils',
-  'Coffee Shops': 'coffee',
-  'Pastries': 'cake',
-  'Hotels': 'building',
-  'Self Care Services': 'sparkles',
-  'Mental Wellness Services': 'brain',
-  'Medical Services': 'stethoscope',
-  'Dental Services': 'smile',
-  'Medical Supplies': 'pill',
   'Grooming Services': 'scissors',
-  'Legal Services': 'scale',
-  'Home & Car Care': 'wrench',
-  'Home Essentials': 'package',
-  'Whole Sale Supplies': 'boxes',
-  'Multimedia Services': 'camera',
+  'Coffee & Milktea Houses': 'coffee',
+  'Home & Car Essentials': 'wrench',
   'Entertainment': 'party-popper',
+  'Self-care Services': 'sparkles',
+  'Medical Services': 'stethoscope',
+  'Legal Services': 'scale',
+  'Multimedia Services': 'camera',
+  'Pastries': 'cake',
+  'Medical & Diagnostic Supplies': 'flask-conical',
+  'Mental Wellness Services': 'brain',
+  'Hotels': 'building',
+  'Restaurants': 'utensils',
   'Training Services': 'graduation-cap',
+  'Dental Services': 'smile',
+  'Wholesale Supplies': 'boxes',
   'Other': 'grid'
 };
-const CATEGORY_ORDER = ['Restaurants', 'Coffee Shops', 'Pastries', 'Hotels', 'Self Care Services', 'Mental Wellness Services', 'Medical Services', 'Dental Services', 'Medical Supplies', 'Grooming Services', 'Legal Services', 'Home & Car Care', 'Home Essentials', 'Whole Sale Supplies', 'Multimedia Services', 'Entertainment', 'Training Services', 'Other'];
+const CATEGORY_ORDER = ['Grooming Services', 'Coffee & Milktea Houses', 'Home & Car Essentials', 'Entertainment', 'Self-care Services', 'Medical Services', 'Legal Services', 'Multimedia Services', 'Pastries', 'Medical & Diagnostic Supplies', 'Mental Wellness Services', 'Hotels', 'Restaurants', 'Training Services', 'Dental Services', 'Wholesale Supplies', 'Other'];
 
 // Category keys match the live getPartners endpoint's own classification
 // strings exactly (used for grouping/icon lookup) -- this taxonomy
