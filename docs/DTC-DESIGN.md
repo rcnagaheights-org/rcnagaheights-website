@@ -418,6 +418,7 @@ supplies are folded in) — confirmed to actually exist in the Lucide
 has now been verified (a name existing in a newer Lucide doesn't
 guarantee this pinned old version has it). `assets/merchants/
 live-snapshot.json` updated to this fetch.
+
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:
 1. "What is DTC" — informational section (real copy written and live,
