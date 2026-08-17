@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v9 · Last updated: 2026-08-16
+Version: v9.1 · Last updated: 2026-08-17
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -350,6 +350,44 @@ CDN directly): all 17 category tiles render with counts summing to 46,
 and spot-checked category popups (Restaurants, Home Essentials, Mental
 Wellness Services) show correct names/logos/discounts for every
 partner including both new ones.
+
+**Resilience fix, 2026-08-17 — stop a category-taxonomy change from
+ever hiding partners again.** The 2026-08-04 and 2026-08-16 incidents
+above share one root cause: `renderCategoryGrid()` only ever drew a
+tile for a category present in the frontend's own hardcoded
+`CATEGORY_ORDER` list, so any Sheet-side category rename/split the
+frontend didn't already know about made every partner in that category
+vanish with no error. Fixed by changing `CATEGORY_ORDER` from a filter
+into a preferred sort order: `renderCategoryGrid()` now renders a tile
+for every category actually present in the live data, drawing the
+known ones (from `CATEGORY_ORDER`) first in their usual order, then
+appending any unrecognized category afterward with a generic icon
+(`CATEGORY_ICONS[cat] || 'grid'`, already the fallback). A category the
+frontend has never heard of now degrades to a slightly out-of-place
+tile with a generic icon instead of disappearing outright. Verified
+with a synthetic unrecognized category injected directly into
+`renderCategoryGrid()` in a local render — it produced a tile, not a
+silent gap — and re-confirmed the real 46-partner live data still
+renders identically to before (17 tiles, same order, same counts).
+
+**Live-data snapshot file added, 2026-08-17.**
+`assets/merchants/live-snapshot.json` is a raw, unmodified mirror of
+the live `getPartners` response (Sheet's own field names, raw Drive
+logo filenames, live category strings) plus a `fetched_at` date —
+*not* a duplicate of `partners.json` in purpose, even though the
+underlying merchant data overlaps. `partners.json` is the processed,
+site-serving file (simplified logo filenames, categories matched to
+`CATEGORY_ORDER`); the snapshot is an undigested diff baseline, read by
+nobody but whoever is reconciling the two, and only ever updated when
+explicitly asked to sync merchants — it is not fetched automatically
+and does not by itself detect drift. The intended workflow: fetch live,
+diff it against this file (a plain JSON diff catches every change,
+not just the ones normalization happens to preserve), apply only the
+real deltas to `partners.json`/`CATEGORY_ORDER`/`CATEGORY_ICONS`, then
+overwrite the snapshot with the new fetch. This complements the
+resilience fix above rather than replacing it — the snapshot makes a
+manual sync fast and precise; the resilience fix means a sync that
+never happens degrades gracefully instead of breaking the page.
 
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:
