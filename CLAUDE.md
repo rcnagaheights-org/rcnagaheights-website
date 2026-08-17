@@ -228,8 +228,15 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   `CATEGORY_ICONS`/`CATEGORY_ORDER`/`partners.json` updated to match;
   2 brand-new partners found in the same diff (Redflame Enterprises,
   Noeia Psychological Services), both with real logos added. 44/44
-  prior partners still accounted for, none removed. See
-  docs/DTC-DESIGN.md §5.
+  prior partners still accounted for, none removed. **Updated
+  2026-08-17**: since this same category-taxonomy break has now
+  happened twice, `renderCategoryGrid()` no longer treats
+  `CATEGORY_ORDER` as a strict filter — an unrecognized category now
+  still renders (generic icon, appended last) instead of silently
+  hiding its partners. Also added `assets/merchants/live-snapshot.json`,
+  a raw mirror of the live `getPartners` response kept only as a manual
+  diff baseline for future syncs (not read by the live site, not
+  auto-updated). See docs/DTC-DESIGN.md §5.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

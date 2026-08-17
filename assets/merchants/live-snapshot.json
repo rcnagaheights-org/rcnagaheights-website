@@ -1,0 +1,363 @@
+{
+  "fetched_at": "2026-08-17",
+  "source": "https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC/exec?action=partners",
+  "note": "Raw, unmodified mirror of the live getPartners response at fetch time -- categories/logos/names exactly as the Sheet returned them, NOT the simplified names this repo uses in partners.json. Never read by the live site; exists only as a diff baseline for manual syncs. Update only when asked to sync merchants -- never automatically.",
+  "data": {
+    "Grooming Services": [
+      {
+        "name": "Alpha Barber",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/alphabarberph",
+        "website_url": "",
+        "logo": "Logo.AlphaBarbers.jpg"
+      },
+      {
+        "name": "Centro Barbero",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/CentroBarbero",
+        "website_url": "",
+        "logo": "Logo.CentroBarbero.JPG"
+      },
+      {
+        "name": "Gentry Barbers",
+        "commitment": "10% Discount for Online Booking",
+        "facebook_url": "https://www.facebook.com/gentrybarbersph",
+        "website_url": "",
+        "logo": "Logo.GentryBarbers.jpg"
+      }
+    ],
+    "Coffee Shops": [
+      {
+        "name": "Aran & Co.",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/helloaran.co",
+        "website_url": "",
+        "logo": "Logo.Aran&Co.JPG"
+      },
+      {
+        "name": "Km.eight coffee",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/km8.coffee",
+        "website_url": "",
+        "logo": "Logo.Km8.jpeg"
+      },
+      {
+        "name": "Magayon Coffee",
+        "commitment": "Buy 1, Get 1 at Php 50 off (Valid Monday-Thursday. One redemption per visit; for every Php 1,000 purchase, get a free Php 100 gift certificate.",
+        "facebook_url": "https://www.facebook.com/magayoncoffee",
+        "website_url": "",
+        "logo": "Logo.MagayonCoffee.JPG"
+      },
+      {
+        "name": "Rebel Coffee",
+        "commitment": "5% OFF on a minimum single-receipt purchase of ₱1,000 and FREE Cookie during the cardholder's birthday month",
+        "facebook_url": "https://www.facebook.com/rebelcoffeeroasters.ph",
+        "website_url": "",
+        "logo": "Logo.Rebel.JPG"
+      },
+      {
+        "name": "Santigwar",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/share/1Jpzw5tTxf/?mibextid=wwXIfr",
+        "website_url": "",
+        "logo": "Logo.Sntgwr.JPG"
+      }
+    ],
+    "Home Essentials": [
+      {
+        "name": "Bicol Cladding",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/profile.php?id=61577592862354",
+        "website_url": "",
+        "logo": "Logo.BicolCladding.jpg"
+      },
+      {
+        "name": "Redflame Enterprises",
+        "commitment": "20% Discount",
+        "facebook_url": "https://www.facebook.com/Redflame.Enterprises/",
+        "website_url": "",
+        "logo": "Logo.Redflame.jpg"
+      }
+    ],
+    "Entertainment": [
+      {
+        "name": "Bistro Roberto",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/VCHBistroRoberto",
+        "website_url": "",
+        "logo": "Logo.BistroRoberto.jpg"
+      },
+      {
+        "name": "Naga Slides Inflatables",
+        "commitment": "50% OFF (Rotarians); 40% OFF (Non-Rotarians); ONE FREE Slide Set-Up for Rotary Club of Naga Heights children's outreach activity until December 31, 2026 only, subject to availability.",
+        "facebook_url": "https://www.facebook.com/nagaslidesinflatables",
+        "website_url": "",
+        "logo": "Logo.NagaSlides.jpg"
+      }
+    ],
+    "Self Care Services": [
+      {
+        "name": "Blanche Skin Care and Laser Clinic",
+        "commitment": "20% Discount",
+        "facebook_url": "https://www.facebook.com/blancheskincareclinic",
+        "website_url": "",
+        "logo": "Logo.Blanche.jpg"
+      },
+      {
+        "name": "Gluta Nail & Lashes Aesthetic Clinic",
+        "commitment": "20% Discount",
+        "facebook_url": "https://www.facebook.com/share/1DaoBdRU8n/",
+        "website_url": "",
+        "logo": "Logo.GlutaNailLashes.jpg"
+      },
+      {
+        "name": "Lift",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/profile.php?id=61579032807471",
+        "website_url": "",
+        "logo": "Logo.Lift.jpg"
+      },
+      {
+        "name": "Trangkilo Massage Hut",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/kamalawellnessspa",
+        "website_url": "",
+        "logo": "Logo.Trangkilo.jpg"
+      },
+      {
+        "name": "VCH Health Resort Club",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity",
+        "website_url": "",
+        "logo": "Logo.HRC.jpg"
+      }
+    ],
+    "Medical Services": [
+      {
+        "name": "BNPL Ant-Rabies Animal Bite Center",
+        "commitment": "20% Discount; Free Vaccine for Category 3 Animal Bite if also a PhilHealth Member",
+        "facebook_url": "https://www.facebook.com/share/1CdRbpftGy/",
+        "website_url": "",
+        "logo": "Logo.BNPL.JPG"
+      },
+      {
+        "name": "CABS Medical and Diagnostic Clinic",
+        "commitment": "10% Discount; Free Vaccine for Category 3 Animal Bite if also a PhilHealth Member",
+        "facebook_url": "https://www.facebook.com/share/19XDJyBZmP/",
+        "website_url": "",
+        "logo": "Logo.CABS.JPG"
+      },
+      {
+        "name": "LabWorx Diagnostic and Health Services, Inc.",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/labworxdiagnostic2015",
+        "website_url": "",
+        "logo": "Logo.Labworx.jpg"
+      }
+    ],
+    "Home & Car Care": [
+      {
+        "name": "Caltex AutoPro - Pili Diversion",
+        "commitment": "5% off all services",
+        "facebook_url": "https://www.facebook.com/caltexautoPro.pili",
+        "website_url": "",
+        "logo": "Logo.CaltexAutoPro.JPG"
+      },
+      {
+        "name": "R&Y Laundry Shop",
+        "commitment": "5% Discount; Free Fabric Dryer Sheets for New Customers",
+        "facebook_url": "https://www.facebook.com/profile.php?id=61584740678104",
+        "website_url": "",
+        "logo": "Logo.R&YLaundryShop.JPG"
+      }
+    ],
+    "Legal Services": [
+      {
+        "name": "CPD Law",
+        "commitment": "Free Notarization of Three (3) Simple Affidavits",
+        "facebook_url": "https://www.facebook.com/CHOLOLOLOL",
+        "website_url": "",
+        "logo": "Logo.CPD Law.JPG"
+      },
+      {
+        "name": "Jamer Law",
+        "commitment": "Free Notarization of Three (3) Simple Affidavits",
+        "facebook_url": "https://www.facebook.com/jamerlaw",
+        "website_url": "",
+        "logo": "Logo.JamerLaw.png"
+      },
+      {
+        "name": "Mendoza Law Office",
+        "commitment": "Free Notarization of Three (3) Simple Affidavits",
+        "facebook_url": "https://www.facebook.com/fwancis.mendoza",
+        "website_url": "",
+        "logo": "Logo.SFOM Law.JPG"
+      },
+      {
+        "name": "Rosales Law Office",
+        "commitment": "Free Notarization of Three (3) Simple Affidavits",
+        "facebook_url": "https://www.facebook.com/ghielr",
+        "website_url": "",
+        "logo": "Logo.RosalesLaw.JPG"
+      }
+    ],
+    "Multimedia Services": [
+      {
+        "name": "Cricket Peeks",
+        "commitment": "10% Discount on all photography services (capped at Php 500)",
+        "facebook_url": "https://www.facebook.com/profile.php?id=61557144605281",
+        "website_url": "",
+        "logo": "Logo.CricketPeeks.JPG"
+      },
+      {
+        "name": "Julia Advertising",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/juliaadvertising",
+        "website_url": "",
+        "logo": "Logo.JuliaADS"
+      },
+      {
+        "name": "LEX Press",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/profile.php?id=61555187114287",
+        "website_url": "",
+        "logo": "Logo.LexPress.JPG"
+      }
+    ],
+    "Pastries": [
+      {
+        "name": "J. Emmanuel Pastries - the House of Pili",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/houseofpili",
+        "website_url": "",
+        "logo": "Logo.JEmmanuel.jpeg"
+      }
+    ],
+    "Medical Supplies": [
+      {
+        "name": "Knopper",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/knopperpharmacy",
+        "website_url": "",
+        "logo": "Logo.Knopper.jpg"
+      }
+    ],
+    "Restaurants": [
+      {
+        "name": "MiPanda Naga",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/mipandanaga",
+        "website_url": "",
+        "logo": "Logo.MiPanda.png"
+      },
+      {
+        "name": "Patron CamSur",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/patronfelipecamsur",
+        "website_url": "",
+        "logo": "Logo.Patron.jpeg"
+      },
+      {
+        "name": "RJ's Buffet",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/RJsBuffet",
+        "website_url": "",
+        "logo": "Logo.RJsBuffet.jpeg"
+      },
+      {
+        "name": "Rolando's",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/profile.php?id=61584270377141",
+        "website_url": "",
+        "logo": "Logo.Rolando's.jpg"
+      },
+      {
+        "name": "Smesh",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/smash.burgers4400",
+        "website_url": "",
+        "logo": "Logo.Smesh.JPG"
+      },
+      {
+        "name": "White Bean Cafe",
+        "commitment": "5% Discount",
+        "facebook_url": "https://www.facebook.com/whitebeancafe",
+        "website_url": "",
+        "logo": "Logo.WB.png"
+      }
+    ],
+    "Mental Wellness Services": [
+      {
+        "name": "MVisions Diagnostic Center & Psychological Services",
+        "commitment": "10% Discount on the following services:\ni. Consultation \nii. Psychotherapy/Counseling \niii. Psychological Assessment \niv. Psychological Testing for School and OJT purposes \nv. Neuro Psychiatric & Psychological Exam for Employment \nvi. Occupational Therapy \nvii. Speech therapy \nviii. Physical Therapy \nix. Training and Seminars",
+        "facebook_url": "https://www.facebook.com/mvisionsdiagnosticcenter",
+        "website_url": "",
+        "logo": "Logo.MVisions.jpg"
+      },
+      {
+        "name": "Noeia Psychological Services",
+        "commitment": "10% Discount on the following services: i. Consultation\nii. Psychotherapy/Counseling\niii. Psychological Assessment\niv. Psychological Testing for School and OJT purposes\nv. Neuro Psychiatric & Psychological Exam for Employment\nvi. Training and Seminars",
+        "facebook_url": "https://www.facebook.com/61593332758873/",
+        "website_url": "",
+        "logo": "Logo.Noeia.jpg"
+      },
+      {
+        "name": "Sorsogon's Psychological Center",
+        "commitment": "10% Discount on the following services:\ni. Consultation \nii. Psychotherapy/Counseling \niii. Psychological Assessment \niv. Psychological Testing for School and OJT purposes \nv. Neuro Psychiatric & Psychological Exam for Employment \nvi. Training and Seminars",
+        "facebook_url": "https://www.facebook.com/profile.php?id=61590541211510",
+        "website_url": "",
+        "logo": "Logo.SPC.jpg"
+      }
+    ],
+    "Hotels": [
+      {
+        "name": "Nagaland Hotel",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/NagalandHotel",
+        "website_url": "",
+        "logo": "Logo.NLH.jpeg"
+      },
+      {
+        "name": "Sundaze Hotel",
+        "commitment": "Enjoy 10% Room Discount for Cardholders. \nID verification required upon check-in.",
+        "facebook_url": "https://www.facebook.com/sundazehotel",
+        "website_url": "",
+        "logo": "Logo.Sundaze.jpg"
+      },
+      {
+        "name": "Villa Caceres Hotel",
+        "commitment": "10% Discount",
+        "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity",
+        "website_url": "",
+        "logo": "Logo.VillaCaceres.jpg"
+      }
+    ],
+    "Training Services": [
+      {
+        "name": "R98 Driving Academy",
+        "commitment": "20% Discount - 15-hr. Theoretical Driving Course",
+        "facebook_url": "https://www.facebook.com/r98.drivingacademy",
+        "website_url": "",
+        "logo": "Logo.R98.JPG"
+      }
+    ],
+    "Dental Services": [
+      {
+        "name": "Smile Right Dental Clinic",
+        "commitment": "10% Discount on Basic Procedures;\n5% Discount Dentures",
+        "facebook_url": "https://www.facebook.com/smilerightnaga",
+        "website_url": "",
+        "logo": "Logo.SmileRightDentalClinic.JPG"
+      }
+    ],
+    "Whole Sale Supplies": [
+      {
+        "name": "Southern Crate",
+        "commitment": "2% OFF on a minimum single-receipt purchase of ₱2,500",
+        "facebook_url": "https://www.facebook.com/southerncrate",
+        "website_url": "",
+        "logo": "Logo.SouthernCrate.JPG"
+      }
+    ]
+  }
+}

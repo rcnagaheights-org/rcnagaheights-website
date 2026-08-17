@@ -268,14 +268,23 @@ function openCategory(cat, items){
 
 const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC/exec';
 
+// CATEGORY_ORDER is a preferred sort order, not a filter -- a category
+// the live Sheet returns that isn't in this list still gets a tile
+// (generic icon, appended after the known ones) instead of silently
+// vanishing. This is what actually broke live on 2026-08-04 and again
+// on 2026-08-16: the Sheet's category taxonomy changed out from under
+// this hardcoded list, and every partner disappeared with no error.
+// See docs/DTC-DESIGN.md for the full incident history.
 function renderCategoryGrid(grouped){
   const grid = document.getElementById('category-grid');
   grid.innerHTML = '';
-  let rendered = 0;
-  CATEGORY_ORDER.forEach(cat => {
-    const items = grouped[cat] || [];
-    if (!items.length) return;
-    rendered++;
+  const seen = new Set();
+  const orderedCats = CATEGORY_ORDER.filter(cat => grouped[cat] && grouped[cat].length);
+  const unknownCats = Object.keys(grouped).filter(cat => grouped[cat] && grouped[cat].length && !CATEGORY_ORDER.includes(cat));
+  orderedCats.concat(unknownCats).forEach(cat => {
+    if (seen.has(cat)) return;
+    seen.add(cat);
+    const items = grouped[cat];
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'lift bg-white p-8 rounded-2xl border text-center';
@@ -283,7 +292,7 @@ function renderCategoryGrid(grouped){
     btn.onclick = () => openCategory(cat, items);
     grid.appendChild(btn);
   });
-  if (!rendered) grid.innerHTML = '<p class="col-span-full text-center text-slate-500">No partners listed yet.</p>';
+  if (!seen.size) grid.innerHTML = '<p class="col-span-full text-center text-slate-500">No partners listed yet.</p>';
   lucide.createIcons();
 }
 
