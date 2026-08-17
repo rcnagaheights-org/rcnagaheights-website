@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v9.1 · Last updated: 2026-08-17
+Version: v10 · Last updated: 2026-08-17
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -388,6 +388,36 @@ overwrite the snapshot with the new fetch. This complements the
 resilience fix above rather than replacing it — the snapshot makes a
 manual sync fast and precise; the resilience fix means a sync that
 never happens degrades gracefully instead of breaking the page.
+
+**Category taxonomy changed a third time, 2026-08-17 — the resilience
+fix's fallback caught it live, working exactly as designed.** The user
+reported "why only grid icons for others" with a live screenshot
+showing `Home & Car Essentials`, `Self-care Services`, and `Medical &
+Diagnostic Supplies` all rendering the generic fallback icon. This
+wasn't a bug in the resilience fix — it was the fix doing its job: the
+live Sheet's categories had changed *again* (renamed/merged) since the
+2026-08-16 sync, so those specific tiles fell back to `'grid'` exactly
+as intended, showing partners instead of hiding them. Confirmed via a
+fresh `curl` against the live endpoint: `Coffee Shops` → `Coffee &
+Milktea Houses` (gained MiPanda Naga, moved from Restaurants);
+`Self Care Services` → `Self-care Services` (rename only); `Medical
+Supplies` → `Medical & Diagnostic Supplies` (renamed + gained a new
+partner); `Home & Car Care` and `Home Essentials` merged into one
+`Home & Car Essentials` (2+2=4, confirmed no partner lost in the
+merge); `Whole Sale Supplies` → `Wholesale Supplies` (space removed).
+16 categories now, down from 17.
+
+One brand-new partner found in the diff: **LabCom Laboratory
+Supplies** (Medical & Diagnostic Supplies, `labcom.png`, real logo
+downloaded from Drive). No partners removed — all 46 prior entries
+matched a live counterpart by name. `CATEGORY_ICONS`/`CATEGORY_ORDER`
+updated to the 16-category list; `Medical & Diagnostic Supplies` got a
+new icon (`flask-conical`, more fitting than plain `pill` now that lab
+supplies are folded in) — confirmed to actually exist in the Lucide
+0.263.0 bundle before using it, the same way every icon in this list
+has now been verified (a name existing in a newer Lucide doesn't
+guarantee this pinned old version has it). `assets/merchants/
+live-snapshot.json` updated to this fetch.
 
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:
