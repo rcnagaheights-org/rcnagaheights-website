@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v8.2 · Last updated: 2026-08-14
+Version: v9 · Last updated: 2026-08-16
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -174,21 +174,20 @@ No `moa_end_date` per row and no `verification_access_code` column —
 both were in earlier drafts and are no longer needed (one shared MOA
 date; no per-partner tokens, see Section 4).
 
-**Category list, updated 2026-08-04, then again 2026-08-14** — the
-current live taxonomy (12 categories) is: Cafes and Restaurant Partners
-· Hotel Partners · Self Care Partners · Medical & Dental Partners ·
-Mental Health Partners · Hair Grooming Partners · Legal Partners ·
-Home and Car Maintenance Partners · Supplies Partners · Multimedia
-Partners · Entertainment Partners · Educational Partners · Other
-(fallback for anything unmatched). This has changed twice: 2026-08-04
-replaced an earlier 7-bucket simplification (Claude's own, never locked
-in) with a 12-name list matching the "DTC Partners.xlsx" source sheet
-of the time (`Cafe Partners`, `Hospitality Partners`, etc); 2026-08-14
-renamed 2 of those (`Cafe Partners` → `Cafes and Restaurant Partners`,
-`Hospitality Partners` → `Hotel Partners`) and added a brand-new
-`Mental Health Partners` category, matching what the user pasted into
-the live Merchants Sheet directly (see the 2026-08-14 sync note below —
-this is a separate, later edit than the one earlier that same day).
+**Category list, updated 2026-08-04, 2026-08-14, then again
+2026-08-16** — the current live taxonomy (17 categories) is:
+Restaurants · Coffee Shops · Pastries · Hotels · Self Care Services ·
+Mental Wellness Services · Medical Services · Dental Services ·
+Medical Supplies · Grooming Services · Legal Services · Home & Car
+Care · Home Essentials · Whole Sale Supplies · Multimedia Services ·
+Entertainment · Training Services · Other (fallback for anything
+unmatched). This has now changed three times: 2026-08-04 replaced an
+earlier 7-bucket simplification (Claude's own, never locked in) with a
+12-name list matching the "DTC Partners.xlsx" source sheet of the time
+(`Cafe Partners`, `Hospitality Partners`, etc); 2026-08-14 renamed 2 of
+those and added `Mental Health Partners`; 2026-08-16 replaced the whole
+12-name taxonomy with the current 17-name one, dropping the `X
+Partners` naming convention entirely (see the 2026-08-16 note below).
 `CATEGORY_ICONS`/`CATEGORY_ORDER` in `diskwentulong/index.html` and
 every `category` value in `assets/merchants/partners.json` were
 updated together to match each time — `renderCategoryGrid()` only ever
@@ -304,6 +303,53 @@ This is a workaround, not a fix to `Code.gs` itself — `logo_file_id`
 was never designed to double as a usable path into this repo's asset
 folder, and that mismatch will resurface if the client-side lookup is
 ever removed without addressing it at the backend.
+
+**Category taxonomy replaced entirely, 2026-08-16 — live-breaking,
+found via user report ("partner merchants missing").** The live
+`getPartners` endpoint started returning a completely different set of
+category keys — 17 categories (`Restaurants`, `Coffee Shops`,
+`Pastries`, `Hotels`, `Self Care Services`, `Mental Wellness Services`,
+`Medical Services`, `Dental Services`, `Medical Supplies`, `Grooming
+Services`, `Legal Services`, `Home & Car Care`, `Home Essentials`,
+`Whole Sale Supplies`, `Multimedia Services`, `Entertainment`,
+`Training Services`) with no more `X Partners` suffix — instead of the
+12-category taxonomy this repo's `CATEGORY_ORDER` expected. Confirmed
+via direct `curl` against the live endpoint. Exactly the same failure
+mode as 2026-08-04: `renderCategoryGrid()` only ever draws tiles for
+categories present in `CATEGORY_ORDER`, so once the live fetch
+resolved a few seconds after page load, it silently replaced the
+working static-fallback tiles with "No partners listed yet." — every
+partner effectively vanished from the live page.
+
+Fixed by fully replacing `CATEGORY_ICONS`/`CATEGORY_ORDER` in
+`diskwentulong/index.html` with the new 17-category list (new icons
+chosen per category — e.g. `utensils` for Restaurants, `pill` for
+Medical Supplies) and updating every `category` value in
+`assets/merchants/partners.json` to match, using the live endpoint's
+own grouping as the source of truth rather than re-deriving it by hand.
+Old categories mostly renamed 1:1 (`Hair Grooming Partners` →
+`Grooming Services`, `Hotel Partners` → `Hotels`, etc.), but three old
+categories now split into finer ones: `Cafes and Restaurant Partners`
+split into `Restaurants` (6)/`Coffee Shops` (5)/`Pastries` (1);
+`Medical & Dental Partners` split into `Medical Services`
+(3)/`Medical Supplies` (1)/`Dental Services` (1); `Supplies Partners`
+split into `Home Essentials` (2)/`Whole Sale Supplies` (1).
+`displayCategory()` (previously stripped a trailing " Partners" for
+display) is now a no-op pass-through, since no category carries that
+suffix anymore.
+
+Diffing the live endpoint's 46 partners against this repo's 44 turned
+up 2 brand-new merchants, both with real logos already in Drive,
+downloaded and added: **Redflame Enterprises** (Home Essentials,
+`redflame.jpg`) and **Noeia Psychological Services** (Mental Wellness
+Services, `noeia.jpg`). No partners were removed — all 44 prior
+entries matched a live counterpart by name. Verified end-to-end
+against a locally-fetched copy of the Tailwind CDN script (the
+sandboxed headless browser can't reach either the Tailwind or Lucide
+CDN directly): all 17 category tiles render with counts summing to 46,
+and spot-checked category popups (Restaurants, Home Essentials, Mental
+Wellness Services) show correct names/logos/discounts for every
+partner including both new ones.
 
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:

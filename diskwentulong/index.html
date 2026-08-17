@@ -215,27 +215,35 @@ document.addEventListener('keydown', e => {
 document.getElementById('terms-modal').classList.remove('modal-hidden');
 
 const CATEGORY_ICONS = {
-  'Cafes and Restaurant Partners': 'coffee',
-  'Hotel Partners': 'building',
-  'Self Care Partners': 'sparkles',
-  'Medical & Dental Partners': 'stethoscope',
-  'Mental Health Partners': 'brain',
-  'Hair Grooming Partners': 'scissors',
-  'Legal Partners': 'scale',
-  'Home and Car Maintenance Partners': 'wrench',
-  'Supplies Partners': 'package',
-  'Multimedia Partners': 'camera',
-  'Entertainment Partners': 'party-popper',
-  'Educational Partners': 'graduation-cap',
+  'Restaurants': 'utensils',
+  'Coffee Shops': 'coffee',
+  'Pastries': 'cake',
+  'Hotels': 'building',
+  'Self Care Services': 'sparkles',
+  'Mental Wellness Services': 'brain',
+  'Medical Services': 'stethoscope',
+  'Dental Services': 'smile',
+  'Medical Supplies': 'pill',
+  'Grooming Services': 'scissors',
+  'Legal Services': 'scale',
+  'Home & Car Care': 'wrench',
+  'Home Essentials': 'package',
+  'Whole Sale Supplies': 'boxes',
+  'Multimedia Services': 'camera',
+  'Entertainment': 'party-popper',
+  'Training Services': 'graduation-cap',
   'Other': 'grid'
 };
-const CATEGORY_ORDER = ['Cafes and Restaurant Partners', 'Hotel Partners', 'Self Care Partners', 'Medical & Dental Partners', 'Mental Health Partners', 'Hair Grooming Partners', 'Legal Partners', 'Home and Car Maintenance Partners', 'Supplies Partners', 'Multimedia Partners', 'Entertainment Partners', 'Educational Partners', 'Other'];
+const CATEGORY_ORDER = ['Restaurants', 'Coffee Shops', 'Pastries', 'Hotels', 'Self Care Services', 'Mental Wellness Services', 'Medical Services', 'Dental Services', 'Medical Supplies', 'Grooming Services', 'Legal Services', 'Home & Car Care', 'Home Essentials', 'Whole Sale Supplies', 'Multimedia Services', 'Entertainment', 'Training Services', 'Other'];
 
-// Category keys keep the "Partners" suffix (matching the Sheet's own
-// classification strings, used for grouping/icon lookup); this strips
-// it for display only, e.g. "Cafe Partners" -> "Cafe".
+// Category keys match the live getPartners endpoint's own classification
+// strings exactly (used for grouping/icon lookup) -- this taxonomy
+// changed 2026-08-16 (17 categories, no more "X Partners" naming
+// convention -- see docs/DTC-DESIGN.md). displayCategory() is a no-op
+// pass-through now that categories don't carry a suffix to strip, kept
+// only so callers don't need to change.
 function displayCategory(cat){
-  return cat.replace(/ Partners$/, '');
+  return cat;
 }
 
 function openCategory(cat, items){

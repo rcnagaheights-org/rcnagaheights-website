@@ -220,7 +220,16 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   reverse of the usual direction. A data-integrity bug was found in the
   live Sheet's `logo_file_id` column (~30 of 44 rows point at the
   wrong merchant's logo filename) — not fixed (no Sheets write access),
-  flagged for the user. See docs/DTC-DESIGN.md §5.
+  flagged for the user. **Updated 2026-08-16**: the live `getPartners`
+  endpoint switched to a completely different 17-category taxonomy
+  (`Restaurants`, `Coffee Shops`, `Grooming Services`, etc. — no more
+  `X Partners` suffix), breaking `/diskwentulong/` live again the same
+  way as 2026-08-04 (user reported "partner merchants missing").
+  `CATEGORY_ICONS`/`CATEGORY_ORDER`/`partners.json` updated to match;
+  2 brand-new partners found in the same diff (Redflame Enterprises,
+  Noeia Psychological Services), both with real logos added. 44/44
+  prior partners still accounted for, none removed. See
+  docs/DTC-DESIGN.md §5.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
