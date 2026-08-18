@@ -1,5 +1,5 @@
 # Rurok — Design Detail
-Version: v3.1 · Last updated: 2026-08-18
+Version: v3.2 · Last updated: 2026-08-18
 Mirrors Google Drive's "PROPOSAL - Digital Bulletin Publishing
 Workflow.txt" (Digital Bulletin folder) — read that first for the full
 publishing-cadence rationale; this file covers how it's actually built
@@ -87,6 +87,30 @@ that reality rather than the superseded proposal:
   button, click-outside, or Escape) resets the iframe's `src` to `''`
   so the embed stops running in the background while hidden — it does
   not stay loaded, just invisible.
+- **Perceived-slowness fix, 2026-08-18, later still.** The user reported
+  the Past Issues modal feeling slow to open. Root cause: the iframe's
+  `src` was only ever set at the moment of click, so the entire Heyzine
+  load pipeline (DNS, TLS, their JS bundle, PDF rendering — none of it
+  controllable from this repo) started with zero head start, and
+  nothing indicated it was loading at all — just a blank white modal
+  until content appeared. Three fixes, none of which touch Heyzine
+  itself: (1) `<link rel="preconnect">` for `heyzine.com` and
+  `cdnm.heyzine.com` in `<head>`, warming the connection before it's
+  needed by either the Featured embed or the modal; (2) hovering,
+  focusing, or touching a Past Issues card now calls `preloadIssue()`,
+  which sets the (currently-hidden) modal iframe's `src` ahead of the
+  actual click, so loading has a head start by the time the user clicks;
+  (3) a spinner (`#issue-modal-loading`, Lucide's `loader-2` + Tailwind
+  `animate-spin`, confirmed to actually exist in the pinned Lucide
+  0.263.0 bundle before using it) covers the iframe until it fires a
+  real `load` event, tracked via `issueLoadedUrl` so the spinner does
+  NOT reappear if a hover/focus preload already finished before the
+  click — verified in a local render: hover-then-click shows no
+  spinner at all (preload already completed), while a fresh click with
+  no prior hover (e.g. a keyboard/touch user tapping directly) correctly
+  shows it. This doesn't make Heyzine itself faster — that's out of this
+  repo's control — it removes the wasted head start and the "is this
+  broken" uncertainty around a wait that was already happening.
 - A real automation to detect new Heyzine uploads and update this page
   without a manual step was discussed and **deferred** — see the
   session notes for the design sketch (poll Heyzine's List Flipbooks
