@@ -273,17 +273,24 @@ doing any Drive-related content work.
   this site's `/foundation/`->`/diskwentulong/` precedent) — now embeds
   the real first issue (Rurok, Volume 1: June Issue, Rotary Year
   2026-27) via a Heyzine flipbook iframe, plus a "Past Issues" section
-  below it (currently an honest empty state — Volume 1 is the only
-  issue that exists so far). `noindex` removed, `/rurok/` is in
-  `sitemap.xml`, and it's linked in the nav (desktop, mobile menu,
-  footer Site Map) on all 6 nav-bearing pages, between "DiskwenTulong
-  Card" and "Contact Us" (`/verify/`/`/register/` have no nav chrome by
-  design, untouched). Visible on-page headings ("Rurok" title, "Latest
-  Issue" label, "Past Issues" heading) were later stripped as redundant
-  clutter — the `<h1>` stays in the DOM but visually hidden (`sr-only`)
-  for SEO. See docs/RUROK-DESIGN.md for the full history. Only one
-  issue exists so far; re-word the meta description back to mentioning
-  an archive once a second issue actually exists.
+  below it. `noindex` removed, `/rurok/` is in `sitemap.xml`, and it's
+  linked in the nav (desktop, mobile menu, footer Site Map) on all 6
+  nav-bearing pages, between "DiskwenTulong Card" and "Contact Us"
+  (`/verify/`/`/register/` have no nav chrome by design, untouched).
+  Visible on-page headings ("Rurok" title, "Latest Issue" label, "Past
+  Issues" heading) were later stripped as redundant clutter — the
+  `<h1>` stays in the DOM but visually hidden (`sr-only`) for SEO.
+  **Updated 2026-08-18**: a second issue (Volume 2: July Issue) is now
+  live, and the original "one flipbook per Rotary Year" plan is
+  superseded — the club is uploading a new Heyzine flipbook per issue
+  instead, roughly monthly, retiring the previous one into a real Past
+  Issues card (Volume 1's, now live, linking to its own Heyzine page —
+  no plain PDF exists for it yet, and Heyzine's free-tier 5-flipbook
+  cap isn't close to being a real constraint). A fully-automated
+  version (poll Heyzine's API on a schedule, make this page data-driven
+  like `/diskwentulong/`) was discussed and deferred, not built — see
+  docs/RUROK-DESIGN.md for the design sketch. See docs/RUROK-DESIGN.md
+  for the full history.
 - No automated test suite exists anywhere in this repo (confirmed via
   audit 2026-07-20) — see docs/QA-STATUS.md for the full risk list,
   including which "confirmed working" claims are backed by the user's

@@ -81,31 +81,39 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
      <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <h1 class="sr-only">Rurok — Rotary Club of Naga Heights Bulletin</h1>
 
-      <!-- FEATURED: latest issue, embedded flipbook (per the Drive
-           "PROPOSAL - Digital Bulletin Publishing Workflow" doc's
-           one-live-flipbook-per-Rotary-Year approach). Heading/label
-           text above the iframe was removed 2026-08-01 per explicit
-           request (visual clutter -- Heyzine's own widget already
-           shows the issue title internally); the page's H1 heading is
-           kept but visually hidden via sr-only (not deleted) so the
-           page still has exactly one real heading for SEO/
-           accessibility, matching every other page on this site. -->
+      <!-- FEATURED: latest issue, embedded flipbook. Originally planned
+           as one cumulative flipbook per Rotary Year (per the Drive
+           "PROPOSAL - Digital Bulletin Publishing Workflow" doc); as of
+           2026-08-18 the club is instead uploading a new flipbook per
+           issue as each one is ready, retiring the previous one to Past
+           Issues below -- see docs/RUROK-DESIGN.md. Heading/label text
+           above the iframe was removed 2026-08-01 per explicit request
+           (visual clutter -- Heyzine's own widget already shows the
+           issue title internally); the page's H1 heading is kept but
+           visually hidden via sr-only (not deleted) so the page still
+           has exactly one real heading for SEO/accessibility, matching
+           every other page on this site. -->
       <div class="max-w-4xl lg:max-w-5xl mx-auto bg-white rounded-[2rem] p-4 sm:p-6">
-       <iframe src="https://heyzine.com/flip-book/1f2a839135.html" title="Rurok - Rotary Club of Naga Heights Bulletin, Volume 1: June Issue" class="w-full rounded-2xl border h-[640px] lg:h-[800px]" allowfullscreen loading="lazy"></iframe>
+       <iframe src="https://heyzine.com/flip-book/a40e3e33de.html" title="Rurok - Rotary Club of Naga Heights Bulletin, Volume 2: July Issue" class="w-full rounded-2xl border h-[640px] lg:h-[800px]" allowfullscreen loading="lazy"></iframe>
       </div>
 
-      <!-- PAST ISSUES: per the proposal doc, a retired Rotary Year's
-           flipbook becomes a plain PDF download thumbnail here (same
-           file, not a re-export) once a new year's flipbook replaces it
-           above. No past issues exist yet -- Rurok Volume 1 is the
-           first issue ever published, so this is an honest empty state,
-           not a bug. Add a thumbnail card here (image + issue label +
-           PDF link) per retired issue once one actually exists. Heading/
-           description text removed 2026-08-01 per explicit request --
-           just the icon remains as a visual placeholder. -->
+      <!-- PAST ISSUES: a retired issue's flipbook becomes a thumbnail
+           card here once a newer issue replaces it above. Links to the
+           issue's own Heyzine flip-book page rather than a PDF -- no
+           plain PDF file exists for these yet, and with only a handful
+           of flipbooks live on Heyzine's free tier (5-flipbook cap),
+           there's no pressure to switch to PDF links until that cap is
+           actually reached. See docs/RUROK-DESIGN.md. -->
       <div class="max-w-4xl mx-auto mt-16">
-       <div class="rounded-[2rem] border-2 border-dashed p-10 text-center text-slate-400">
-        <i data-lucide="archive" class="w-10 h-10 mx-auto"></i>
+       <div class="grid sm:grid-cols-2 gap-6">
+        <a href="https://heyzine.com/flip-book/1f2a839135.html" target="_blank" rel="noopener noreferrer" class="lift flex gap-4 items-center bg-white rounded-2xl border p-4">
+         <img src="/assets/rurok/rurok-v1-cover.jpg" alt="Rurok Volume 1: June Issue cover" class="w-16 h-auto rounded-lg border shrink-0">
+         <div>
+          <p class="font-bold text-[#0c3c7c]">Volume 1: June Issue</p>
+          <p class="text-slate-500 text-sm mt-1">Rotary Year 2026-27</p>
+          <p class="text-[#17458f] text-sm mt-1 font-semibold inline-flex items-center gap-1">View issue <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></p>
+         </div>
+        </a>
        </div>
       </div>
      </div>
