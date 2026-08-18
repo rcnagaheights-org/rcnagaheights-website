@@ -98,28 +98,45 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
       </div>
 
       <!-- PAST ISSUES: a retired issue's flipbook becomes a thumbnail
-           card here once a newer issue replaces it above. Links to the
-           issue's own Heyzine flip-book page rather than a PDF -- no
-           plain PDF file exists for these yet, and with only a handful
-           of flipbooks live on Heyzine's free tier (5-flipbook cap),
+           card here once a newer issue replaces it above. Clicking opens
+           the issue in the in-page modal below rather than redirecting
+           to heyzine.com -- same "never send readers off this site"
+           reasoning as the Featured embed above. Links to the issue's
+           own Heyzine flip-book page rather than a PDF -- no plain PDF
+           file exists for these yet, and with only a handful of
+           flipbooks live on Heyzine's free tier (5-flipbook cap),
            there's no pressure to switch to PDF links until that cap is
            actually reached. See docs/RUROK-DESIGN.md. -->
       <div class="max-w-4xl mx-auto mt-16">
-       <div class="grid sm:grid-cols-2 gap-6">
-        <a href="https://heyzine.com/flip-book/1f2a839135.html" target="_blank" rel="noopener noreferrer" class="lift flex gap-4 items-center bg-white rounded-2xl border p-4">
+       <div class="flex flex-wrap justify-center gap-6">
+        <button type="button" onclick="openIssueModal('https://heyzine.com/flip-book/1f2a839135.html','Rurok - Rotary Club of Naga Heights Bulletin, Volume 1: June Issue')" class="lift flex gap-4 items-center bg-white rounded-2xl border p-4 text-left w-full sm:w-[calc(50%-0.75rem)]">
          <img src="/assets/rurok/rurok-v1-cover.jpg" alt="Rurok Volume 1: June Issue cover" class="w-16 h-auto rounded-lg border shrink-0">
          <div>
           <p class="font-bold text-[#0c3c7c]">Volume 1: June Issue</p>
           <p class="text-slate-500 text-sm mt-1">Rotary Year 2026-27</p>
           <p class="text-[#17458f] text-sm mt-1 font-semibold inline-flex items-center gap-1">View issue <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></p>
          </div>
-        </a>
+        </button>
        </div>
       </div>
      </div>
     </section>
 
   </main>
+
+  <!-- Past Issues modal: reuses the same iframe embed, in a popup, so
+       viewing a retired issue never leaves rcnagaheights.org. z-[70]
+       clears the fixed DTC banner (z-[60]) the same way the projects
+       page's lightbox does. Setting the iframe src to '' on close stops
+       it running/loading in the background while hidden. -->
+  <div id="issue-modal" class="modal-hidden fixed inset-0 z-[70] bg-black/80 flex items-center justify-center pt-10 px-4 pb-4 sm:pt-4">
+   <div class="relative max-w-4xl lg:max-w-5xl w-full max-h-[92vh]">
+    <button onclick="closeIssueModal()" type="button" aria-label="Close" class="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-10 h-10 rounded-full bg-white grid place-items-center shadow-lg z-10"><i data-lucide="x"></i></button>
+    <div class="bg-white rounded-[2rem] p-4 sm:p-6">
+     <iframe id="issue-modal-iframe" src="" title="" class="w-full rounded-2xl border h-[70vh] lg:h-[800px]" allowfullscreen loading="lazy"></iframe>
+    </div>
+   </div>
+  </div>
 <footer id="global-footer" class="bg-[#071f47] text-white py-12">
    <div class="max-w-7xl mx-auto px-4 sm:px-6">
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
@@ -162,6 +179,24 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
   </footer>
   <script>
 document.getElementById('menu-button').onclick=()=>document.getElementById('mobile-menu').classList.toggle('hidden');
+
+function openIssueModal(url, title){
+  const iframe = document.getElementById('issue-modal-iframe');
+  iframe.src = url;
+  iframe.title = title;
+  document.getElementById('issue-modal').classList.remove('modal-hidden');
+}
+function closeIssueModal(){
+  document.getElementById('issue-modal').classList.add('modal-hidden');
+  document.getElementById('issue-modal-iframe').src = '';
+}
+document.getElementById('issue-modal').addEventListener('click', e => {
+  if (e.target.id === 'issue-modal') closeIssueModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeIssueModal();
+});
+
 (function(){
   document.querySelectorAll('a[href^="tel:"]').forEach(a=>{
     if(a.getAttribute('href').includes('XXX')){
