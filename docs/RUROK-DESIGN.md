@@ -1,5 +1,5 @@
 # Rurok — Design Detail
-Version: v3 · Last updated: 2026-08-18
+Version: v3.1 · Last updated: 2026-08-18
 Mirrors Google Drive's "PROPOSAL - Digital Bulletin Publishing
 Workflow.txt" (Digital Bulletin folder) — read that first for the full
 publishing-cadence rationale; this file covers how it's actually built
@@ -68,14 +68,25 @@ that reality rather than the superseded proposal:
   Featured `<iframe>` and retire the previous issue into a Past Issues
   card.
 - Past Issues cards link to the retired issue's **own Heyzine flip-book
-  page** (`target="_blank"`), not a plain PDF — no PDF file exists for
-  any issue so far (checked: the Drive "Digital Bulletin" folder holds
-  only the original proposal doc, no PDFs), and there's no pressure to
-  create one while Heyzine's free-tier cap (5 flipbooks) isn't actually
-  being approached. If/when that cap becomes a real constraint, switch
-  Past Issues to plain PDF links at that point (per the user, once past
-  the 5th issue: "no need for the embed, just need a download or view
-  pdf") and only then delete the superseded flipbook from Heyzine.
+  page**, not a plain PDF — no PDF file exists for any issue so far
+  (checked: the Drive "Digital Bulletin" folder holds only the original
+  proposal doc, no PDFs), and there's no pressure to create one while
+  Heyzine's free-tier cap (5 flipbooks) isn't actually being approached.
+  If/when that cap becomes a real constraint, switch Past Issues to
+  plain PDF links at that point (per the user, once past the 5th issue:
+  "no need for the embed, just need a download or view pdf") and only
+  then delete the superseded flipbook from Heyzine.
+- **Updated 2026-08-18, later the same day**: a Past Issues card opens
+  its flipbook in an **in-page modal** (`#issue-modal`, reusing the same
+  iframe-embed approach as the Featured section) instead of
+  `target="_blank"`-ing out to heyzine.com — the user asked for this
+  explicitly, and it matches the Featured section's own long-standing
+  "never send readers off this site" reasoning, just extended to Past
+  Issues too. `z-[70]` clears the fixed DTC banner (`z-[60]`), same
+  fix already applied to the projects page's lightbox. Closing (✕
+  button, click-outside, or Escape) resets the iframe's `src` to `''`
+  so the embed stops running in the background while hidden — it does
+  not stay loaded, just invisible.
 - A real automation to detect new Heyzine uploads and update this page
   without a manual step was discussed and **deferred** — see the
   session notes for the design sketch (poll Heyzine's List Flipbooks
