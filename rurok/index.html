@@ -46,6 +46,12 @@
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&amp;family=Playfair+Display:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <!-- Warm the connection to Heyzine ahead of time -- both the Featured
+       embed and the Past Issues modal load from these hosts, and a
+       fresh DNS+TLS handshake is a meaningful chunk of why a Heyzine
+       embed feels slow to appear. -->
+  <link rel="preconnect" href="https://heyzine.com">
+  <link rel="preconnect" href="https://cdnm.heyzine.com" crossorigin>
   <style>
 :root{--blue:#17458f;--deep:#0c3c7c;--gold:#f7a81b;--mist:#f4f7fc}*{box-sizing:border-box}
 body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{font-family:'Playfair Display',serif}
@@ -109,7 +115,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
            actually reached. See docs/RUROK-DESIGN.md. -->
       <div class="max-w-4xl mx-auto mt-16">
        <div class="flex flex-wrap justify-center gap-6">
-        <button type="button" onclick="openIssueModal('https://heyzine.com/flip-book/1f2a839135.html','Rurok - Rotary Club of Naga Heights Bulletin, Volume 1: June Issue')" class="lift flex gap-4 items-center bg-white rounded-2xl border p-4 text-left w-full sm:w-[calc(50%-0.75rem)]">
+        <button type="button" onclick="openIssueModal('https://heyzine.com/flip-book/1f2a839135.html','Rurok - Rotary Club of Naga Heights Bulletin, Volume 1: June Issue')" onmouseenter="preloadIssue('https://heyzine.com/flip-book/1f2a839135.html')" onfocus="preloadIssue('https://heyzine.com/flip-book/1f2a839135.html')" ontouchstart="preloadIssue('https://heyzine.com/flip-book/1f2a839135.html')" class="lift flex gap-4 items-center bg-white rounded-2xl border p-4 text-left w-full sm:w-[calc(50%-0.75rem)]">
          <img src="/assets/rurok/rurok-v1-cover.jpg" alt="Rurok Volume 1: June Issue cover" class="w-16 h-auto rounded-lg border shrink-0">
          <div>
           <p class="font-bold text-[#0c3c7c]">Volume 1: June Issue</p>
@@ -128,12 +134,23 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
        viewing a retired issue never leaves rcnagaheights.org. z-[70]
        clears the fixed DTC banner (z-[60]) the same way the projects
        page's lightbox does. Setting the iframe src to '' on close stops
-       it running/loading in the background while hidden. -->
+       it running/loading in the background while hidden.
+       Loading a Heyzine embed genuinely takes a moment (their own JS
+       bundle + PDF rendering, not something this site controls), so two
+       things soften that: a spinner covers the iframe until it actually
+       fires 'load' (see script below), and hovering/focusing/touching a
+       Past Issues card preloads its iframe src ahead of the actual click
+       -- see preloadIssue() below. -->
   <div id="issue-modal" class="modal-hidden fixed inset-0 z-[70] bg-black/80 flex items-center justify-center pt-10 px-4 pb-4 sm:pt-4">
    <div class="relative max-w-4xl lg:max-w-5xl w-full max-h-[92vh]">
     <button onclick="closeIssueModal()" type="button" aria-label="Close" class="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-10 h-10 rounded-full bg-white grid place-items-center shadow-lg z-10"><i data-lucide="x"></i></button>
     <div class="bg-white rounded-[2rem] p-4 sm:p-6">
-     <iframe id="issue-modal-iframe" src="" title="" class="w-full rounded-2xl border h-[70vh] lg:h-[800px]" allowfullscreen loading="lazy"></iframe>
+     <div class="relative">
+      <div id="issue-modal-loading" class="absolute inset-0 grid place-items-center bg-white rounded-2xl">
+       <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-[#17458f]"></i>
+      </div>
+      <iframe id="issue-modal-iframe" src="" title="" class="w-full rounded-2xl border h-[70vh] lg:h-[800px]" allowfullscreen loading="lazy"></iframe>
+     </div>
     </div>
    </div>
   </div>
@@ -180,15 +197,39 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
   <script>
 document.getElementById('menu-button').onclick=()=>document.getElementById('mobile-menu').classList.toggle('hidden');
 
+const issueIframe = document.getElementById('issue-modal-iframe');
+const issueLoading = document.getElementById('issue-modal-loading');
+let issueLoadedUrl = '';
+issueIframe.addEventListener('load', () => {
+  issueLoadedUrl = issueIframe.src;
+  issueLoading.classList.add('hidden');
+});
+
+// Called on hover/focus/touchstart of a Past Issues card, before the
+// actual click -- gives the Heyzine embed's own load (their JS bundle +
+// PDF render, not something this site controls) a head start instead of
+// only beginning once the modal is already open and visible.
+function preloadIssue(url){
+  if (issueIframe.src === url) return;
+  issueLoadedUrl = '';
+  issueIframe.src = url;
+}
+
 function openIssueModal(url, title){
-  const iframe = document.getElementById('issue-modal-iframe');
-  iframe.src = url;
-  iframe.title = title;
+  issueIframe.title = title;
+  if (issueLoadedUrl === url) {
+    issueLoading.classList.add('hidden');
+  } else {
+    issueLoading.classList.remove('hidden');
+    if (issueIframe.src !== url) issueIframe.src = url;
+  }
   document.getElementById('issue-modal').classList.remove('modal-hidden');
 }
 function closeIssueModal(){
   document.getElementById('issue-modal').classList.add('modal-hidden');
-  document.getElementById('issue-modal-iframe').src = '';
+  issueIframe.src = '';
+  issueLoadedUrl = '';
+  issueLoading.classList.remove('hidden');
 }
 document.getElementById('issue-modal').addEventListener('click', e => {
   if (e.target.id === 'issue-modal') closeIssueModal();
