@@ -327,5 +327,19 @@
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/blueknight1969",
     "logo": "labcom.png"
+  },
+  {
+    "name": "Mercury Drug",
+    "category": "Medical & Diagnostic Supplies",
+    "commitment": "15% Discount for purchase of at least 15 pcs. of the ff. medicine from RiteMed: Atorvastatin 10 mg, Atorvastatin 20 mg, Clopidogrel 775 mg, Losartan 500 mg, Rosuvastatin 10 mg, Rosuvastatin 20 mg, Telmisartan 40 mg, Amlodipine 5 mg, Losartan + Amlodipine 50/5 mg, Losartan + Amlodipine 100/5 mg, Amlodipine 10 mg, Metformin 500 mg, and Trimetazidine 35 mg.",
+    "facebook_url": "https://www.facebook.com/mercurydrugph",
+    "logo": "mercurydrug.png"
+  },
+  {
+    "name": "Flavours by RooRoo Café",
+    "category": "Restaurants",
+    "commitment": "5% Discount",
+    "facebook_url": "https://www.facebook.com/flavoursgastronomica/",
+    "logo": "flavours.jpg"
   }
 ]
