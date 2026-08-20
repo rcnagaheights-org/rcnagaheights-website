@@ -243,7 +243,17 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   designed: affected tiles kept showing their partners, just with a
   generic icon, which is what the user spotted and reported. 1 more
   new partner found (LabCom Laboratory Supplies), real logo added.
-  46/46 prior partners still accounted for. See docs/DTC-DESIGN.md §5.
+  46/46 prior partners still accounted for. **Updated 2026-08-20**: 2
+  more new partners synced (Mercury Drug, Flavours by RooRoo Café),
+  both real logos added — no category taxonomy change this time, both
+  landed in already-known categories. 47/47 prior partners still
+  accounted for. See docs/DTC-DESIGN.md §5.
+- `/verify/` now shows a merchant-specific promo image under the
+  verification result (2026-08-20) — Mercury Drug's RiteMed flyer, shown
+  only when the merchant dropdown is set to "Mercury Drug" AND the
+  result's card status is ACTIVE. Hardcoded per-merchant for now (one
+  partner); see docs/DTC-DESIGN.md §4 for the pattern if more partners
+  want this.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

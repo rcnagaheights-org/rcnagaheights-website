@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v10 · Last updated: 2026-08-17
+Version: v10.2 · Last updated: 2026-08-20
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -149,6 +149,24 @@ real batch of cards.
 The verify link/QR is deliberately public and non-secret (no per-partner
 tokens) — the manual ID check does the security work, so link secrecy
 isn't needed. Simpler to build and maintain than per-partner tokens.
+
+**Merchant-specific promo, added 2026-08-20.** `/verify/`'s
+`showResult()` now conditionally renders a partner's own promotional
+image directly beneath the verification result — no precedent existed
+for this before, so the pattern is: `showResult(data, cardNumber,
+merchant)` receives the selected merchant name (already captured by the
+submit handler, just not previously passed through), and shows the
+image only when BOTH the selected merchant is an exact string match AND
+`data.status === 'ACTIVE'` — an expired/suspended/invalid card at that
+same merchant shows no promo. First (and so far only) instance: Mercury
+Drug's RiteMed flyer ("Buy 15-Tab & Get 15% Discount" on a list of 13
+specific RiteMed medicines/dosages), supplied by the user as an image
+attachment, saved to `assets/merchants/mercury-ritemed-promo.jpg`. This
+is hardcoded per-merchant in the frontend (an `if (merchant === 'Mercury
+Drug' ...)` check), not a new Merchants-sheet column — reasonable for
+one merchant, but if more partners want their own promo shown this way,
+consider adding a `promo_image` column to the Merchants sheet instead of
+hardcoding each one by name.
 
 **The card-printed QR's URL is effectively permanent** once cards are
 printed and distributed. Do not restructure `/diskwentulong/` without
@@ -418,6 +436,28 @@ supplies are folded in) — confirmed to actually exist in the Lucide
 has now been verified (a name existing in a newer Lucide doesn't
 guarantee this pinned old version has it). `assets/merchants/
 live-snapshot.json` updated to this fetch.
+
+**2 more new partners synced, 2026-08-20 — no taxonomy change this
+time.** User asked "when did we commit mercury drug" after seeing it
+live; checked git history first (never committed, at any point, on any
+branch) before checking the live Sheet, where it did exist — confirming
+this was a brand-new row someone added directly in Google Sheets, not
+something missed in an earlier sync. Diffing the live endpoint (49
+partners) against the repo (47) turned up two: **Mercury Drug**
+(Medical & Diagnostic Supplies, `mercurydrug.png`) and **Flavours by
+RooRoo Café** (Restaurants, `flavours.jpg`), both with real logos
+downloaded from Drive. No category renames this time — both landed in
+categories the frontend already recognized, so the resilience fix from
+the last sync wasn't actually what kept these two from breaking
+anything (that fix only matters for *new/renamed category names*); the
+frontend was always naturally accepting of new partners inside a
+*known* category, since neither the partner list nor its count was
+ever hardcoded. The only real gap before this sync: without a
+`partners.json` entry, `localLogoByName` couldn't resolve their logos,
+so they briefly showed the generic letter-avatar fallback on the live
+site — not broken, just visually incomplete. `assets/merchants/
+live-snapshot.json` updated to this fetch. 47/47 prior entries still
+accounted for, none removed.
 
 ## 6. The /diskwentulong/ page (replaces the old Foundation page)
 Structure:

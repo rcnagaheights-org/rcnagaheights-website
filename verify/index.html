@@ -168,8 +168,14 @@ const verifyResult = document.getElementById('verify-result');
 const verifyError = document.getElementById('verify-error');
 const verifySubmitBtn = document.getElementById('verify-submit-btn');
 
-function showResult(data, cardNumber){
+function showResult(data, cardNumber, merchant){
   const stamp = STATUS_STAMP[data.status] || DEFAULT_STAMP;
+  const showMercuryPromo = merchant === 'Mercury Drug' && data.status === 'ACTIVE';
+  const mercuryPromoHtml = showMercuryPromo ? `
+    <div class="mt-4 bg-white rounded-2xl p-3">
+     <img src="/assets/merchants/mercury-ritemed-promo.jpg" alt="Mercury Drug RiteMed promo: buy 15 tablets and get 15% discount on select RiteMed medicines" class="w-full h-auto rounded-xl">
+    </div>
+  ` : '';
   verifyResult.innerHTML = `
     <div class="flex items-end justify-between gap-3 mb-3">
      <div class="text-left min-w-0"><p class="text-[0.64rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Card Number</p><p class="text-base font-bold tabular-nums">${escapeHtml(data.card_number || cardNumber)}</p></div>
@@ -181,6 +187,7 @@ function showResult(data, cardNumber){
      <div><p class="text-[0.64rem] font-bold uppercase tracking-wide text-blue-200 mb-1">Expires</p><p class="text-base font-bold tabular-nums">${escapeHtml(data.expiry_date || '—')}</p></div>
     </div>
     <button id="verify-reset-btn" type="button" class="block w-full border-[1.5px] border-white/35 hover:bg-white/10 text-white font-bold text-sm py-2.5 rounded-full transition-colors">Verify another card</button>
+    ${mercuryPromoHtml}
   `;
   verifyForm.classList.add('modal-hidden');
   verifyResult.classList.remove('modal-hidden');
@@ -206,7 +213,7 @@ verifyForm.addEventListener('submit', function(e){
     .then(r => r.json())
     .then(data => {
       if (data.error) throw new Error(data.error);
-      showResult(data, cardNumber);
+      showResult(data, cardNumber, merchant);
     })
     .catch(() => {
       verifyError.textContent = 'Could not verify this card right now. Please try again, or contact the club if this keeps happening.';
