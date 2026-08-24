@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v1.8 · Last updated: 2026-08-04
+Version: v1.9 · Last updated: 2026-08-24
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -111,11 +111,14 @@ raised during that day's partner sync (the source "DTC Partners.xlsx"
 sheet spells it "White Bean Cafe," no accent, while this repo's
 partners.json has "White Bean Café," accented): the stored cell is a
 mangled accented name, not an unaccented one — so the repo's accented
-spelling is correct and was left unchanged. **Fix is a one-cell Sheet
-edit** (retype row M-0028's `business_name` as `White Bean Café`, no
-code change or redeploy needed) — nobody has done this yet; no
-Sheets-cell-write tool is available from this environment, so it
-needs a human with Sheet access. See docs/DTC-DESIGN.md's Open items.
+spelling is correct and was left unchanged at the time. **Resolved**:
+the 2026-08-20 `assets/merchants/live-snapshot.json` fetch shows the
+cell now reads "White Bean Cafe" — someone retyped it directly in the
+Sheet between 2026-08-04 and 2026-08-20, clearing the mojibake, but
+unaccented rather than restoring the accented spelling this doc argued
+for. The corruption is gone either way; the accent is now a cosmetic
+mismatch against this repo's `partners.json`, not a bug. See
+docs/DTC-DESIGN.md's Open items.
 
 **Resolved data bug, found and fixed 2026-07-29:** the `2026` batch tab
 had a completely blank `status` column on every row (unlike `TEST`,

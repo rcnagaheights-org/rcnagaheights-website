@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v10.2 · Last updated: 2026-08-20
+Version: v10.3 · Last updated: 2026-08-24
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -555,18 +555,14 @@ the 3-attempt member-auth saga described in §3 — the mechanism is now
 considered stable, not experimental.
 
 ## Open items
-- [ ] **4 new merchants not yet in the live Merchants tab** — added
+- [x] **4 new merchants not yet in the live Merchants tab** — added
       2026-08-04: R98 Driving Academy (Services), Santigwar (Food &
       Dining), Southern Crate (Services), Rebel Coffee (Food & Dining).
-      Logos + `assets/merchants/partners.json` (the fallback data path)
-      are updated in this repo, but the backend Sheet's Merchants tab —
-      what the live `getPartners` endpoint actually reads — still only
-      has the original 28 rows. Same class of gap as Code.gs v9 below:
-      needs a human with Sheet access to paste in the 4 new rows
-      (business_name/category/offer_details/facebook_url/logo_file_id/
-      status=Active, per §5's schema) before these show live; until
-      then they're only visible if the live endpoint is ever down and
-      the page falls back to this repo's JSON.
+      **Resolved**: confirmed live in the 2026-08-20
+      `assets/merchants/live-snapshot.json` fetch — all 4 are now in the
+      backend Sheet's Merchants tab and served by the real `getPartners`
+      endpoint, not just this repo's fallback JSON. Checkbox was simply
+      never updated when this actually landed.
 - [x] **Category assignments** — all 28 entries in
       assets/merchants/partners.json now user-confirmed (2026-07-19):
       Aran & Co. -> Food & Dining, Bicol Cladding -> Services,
@@ -704,7 +700,7 @@ considered stable, not experimental.
       `TEST`'s convention. Worth one real `/register/` + `/verify/`
       round trip on a `2026` card to confirm end-to-end now that the
       data's corrected — not yet done.
-- [ ] **`getPartners` double-encoding bug, found 2026-07-24, root cause
+- [x] **`getPartners` double-encoding bug, found 2026-07-24, root cause
       confirmed 2026-08-04** — at least one merchant name comes back
       mis-encoded: "White Bean Café" as `White Bean CafÃ©`. **Root cause
       confirmed by reading the live "DTC Card Database" Sheet directly**
@@ -714,13 +710,14 @@ considered stable, not experimental.
       most likely from however the original CSV got pasted in on
       2026-07-19 (see Open items below). This is a **pure Sheet data
       fix, not a Code.gs bug** — `getPartners_()` just returns whatever
-      string is in the cell, faithfully and correctly. **Fix:** open the
-      "DTC Card Database" Sheet, Merchants tab, row M-0028, and retype
-      the `business_name` cell as `White Bean Café`. No code change, no
-      redeploy, needed. Nobody has done this yet — no Sheets-cell-write
-      tool is available from this environment (same limitation noted in
-      docs/CONTENT-MANAGEMENT.md), so this needs a human with Sheet
-      access. See docs/QA-STATUS.md.
+      string is in the cell, faithfully and correctly. **Resolved**:
+      the 2026-08-20 `live-snapshot.json` fetch shows the cell now reads
+      "White Bean Cafe" (unaccented) — someone retyped it directly in
+      the Sheet at some point between 2026-08-04 and 2026-08-20, and the
+      mojibake is gone. This repo's `partners.json` still spells it
+      "White Bean Café" (accented) — a cosmetic spelling mismatch against
+      the live Sheet, not a bug; leave as-is unless the club confirms
+      which spelling is actually correct.
 - [x] **`/verify/` anti-enumeration fix — written 2026-07-30, DEPLOYED
       and CONFIRMED LIVE 2026-08-04.** `Code.gs v9` has been pasted into
       the Apps Script editor and redeployed, per the user. Independently
