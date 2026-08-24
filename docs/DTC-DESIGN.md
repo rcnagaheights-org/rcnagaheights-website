@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v10.3 · Last updated: 2026-08-24
+Version: v10.4 · Last updated: 2026-08-24
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -658,8 +658,10 @@ considered stable, not experimental.
       logo_file_id filled in; contact_person/contact_number/website_url/
       address blank per user decision; moa_start_date/date_added
       2026-07-01, status Active for all).
-- [ ] **"What is DTC" section copy is a first draft** — written by
-      Claude to get the page functional, not reviewed/approved wording
+- [x] **"What is DTC" section copy is a first draft** — written by
+      Claude to get the page functional, not reviewed/approved wording.
+      **Resolved 2026-08-24**: user confirmed the live copy stands as
+      final, no rewrite wanted. No text change made.
 - [ ] Nav label is currently "DiskwenTulong Card" (Claude's choice,
       live now) — confirm this wording or change it
 - [x] **`TEST` batch tab** — confirmed live: 100 pre-populated
