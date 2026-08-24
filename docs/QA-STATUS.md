@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v1.9 · Last updated: 2026-08-24
+Version: v2.0 · Last updated: 2026-08-24
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -34,6 +34,15 @@ Sign-In/Apps Script flow.
 - DTC member-auth end-to-end: registered `DTC-TEST-00002` and
   `DTC-TEST-00003` while signed in as `admin@rcnagaheights.org`,
   `registered_by` recorded correctly both times (2026-07-20).
+- The DTC category-taxonomy resilience fix (`renderCategoryGrid()`
+  treating `CATEGORY_ORDER` as sort order, not a filter — see
+  docs/DTC-DESIGN.md §5) working as designed on a real live break: when
+  the live taxonomy changed a third time (2026-08-17), the user's own
+  screenshot of the live `/diskwentulong/` page showed the affected
+  tiles still rendering with a generic fallback icon instead of
+  disappearing — direct proof the fix behaves correctly under a real
+  live taxonomy change, not just against a simulated one in this
+  sandbox.
 
 **Sandbox-only so far — plausible but not yet user-confirmed live:**
 - The two most recent hero/about-image mobile aspect-ratio fixes
@@ -69,6 +78,50 @@ Sign-In/Apps Script flow.
   selected and checked that the Verifications row actually shows the
   merchant name in column D. Deployed and reported done ≠
   end-to-end verified.
+- **Everything shipped 2026-08-14 through 2026-08-20** — verified only
+  via local Playwright + a local Tailwind/Lucide build served against a
+  copy of the changed page, never the real deployed site, except where
+  a distinct verification method is called out below:
+  - Rotarians page: full 30-person roster, the Council of Presidents
+    section, the later-found Maria Francesca Gumabao addition, and
+    circular portrait photos on all three grids (Council/Officers/
+    Members). No live user screenshot confirming the deployed
+    `/rotarians/` page matches.
+  - Service Projects: 12 more real projects plus GOVERNOR'S VISIT (all
+    14 of 14 Tracker rows now built) — each photo's *download* was
+    confirmed byte-for-byte against Drive, but whether the deployed
+    `/projects/` page actually renders all 14 correctly has not been
+    confirmed via a live screenshot.
+  - Rurok: Volume 2 added as Featured, Volume 1 retired to a Past
+    Issues card, an in-page modal for Past Issues (replacing a
+    redirect to heyzine.com), card centering, and the preconnect/
+    hover-preload/spinner loading optimization. The real Heyzine embed
+    itself was never actually loaded in any sandboxed session —
+    Playwright in this environment cannot reach any external host at
+    all (confirmed by testing plain navigation to heyzine.com itself,
+    not just CDN hosts), so all of this was verified against a local
+    stand-in page, not the real widget.
+  - `/verify/`'s Mercury Drug RiteMed promo image (2026-08-20) — verified
+    only by calling `showResult()` directly with mocked data (Mercury
+    Drug+ACTIVE, Mercury Drug+EXPIRED, other-merchant+ACTIVE) in a local
+    Playwright render. The conditional has never fired against a real
+    live Apps Script `action=verify` response with `merchant=Mercury
+    Drug`.
+  - Two name-correction fixes (reversed "Cortina Mateo" → "Mateo
+    Cortina" on the Rotarians page; "Mi Panda Naga" → "MiPanda Naga" in
+    partners.json) — trivial text-only edits, not independently
+    screenshot-verified, low regression risk given the change size.
+- **A distinct, better-verified tier: the underlying partner *data* for
+  the LabCom, Mercury Drug, and Flavours by RooRoo Café syncs (2026-08-17
+  and 2026-08-20)** — each was found and cross-checked by `curl`-ing the
+  real live `getPartners` endpoint directly (this environment's CLI
+  network access is not sandboxed the way its Chromium is, see the
+  Rurok note above), so the *existence and field values* of these
+  partners in the live Sheet is genuinely live-confirmed, not a sandbox
+  guess. What's still sandbox-only is whether their tiles actually
+  *render* correctly (right logo, right category icon) on the real
+  deployed `/diskwentulong/` page — nobody has sent a live screenshot
+  confirming that since these three syncs landed.
 
 **A third tier, distinct from both of the above (2026-07-24):** a
 session with real network access (unlike the sandboxed session that
