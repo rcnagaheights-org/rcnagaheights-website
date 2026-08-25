@@ -1,5 +1,5 @@
 # Rurok — Design Detail
-Version: v4.1 · Last updated: 2026-08-25
+Version: v5.1 · Last updated: 2026-08-25
 Mirrors Google Drive's "PROPOSAL - Digital Bulletin Publishing
 Workflow.txt" (Digital Bulletin folder) — read that first for the full
 publishing-cadence rationale; this file covers how it's actually built
@@ -50,11 +50,22 @@ adding a second one.
    embedded widget's own fullscreen icon (top-right of the widget
    itself) already lets a reader expand it without ever leaving this
    site.
-2. **Past Issues section (bottom)** — a card per retired issue, cover
-   thumbnail + issue label + a link. Originally planned to link to a
-   plain PDF download (per the proposal doc's yearly-retirement model);
-   as of 2026-08-18 it links to the issue's own Heyzine flip-book page
+2. **Past Issues section** — a card per issue still live on Heyzine but
+   no longer Featured, cover thumbnail + issue label + "View issue"
+   (opens the in-page modal). Capped at 4 by construction, since
+   Heyzine's free tier holds at most 5 flipbooks total and 1 of those
+   is always the Featured issue above — see enforceHeyzineFlipbookCap_
+   in "Automation" below. Originally planned to link to a plain PDF
+   download (per the proposal doc's yearly-retirement model); as of
+   2026-08-18 it links to the issue's own Heyzine flip-book page
    instead — see "Cadence change" below for why.
+3. **Archived Issues (PDF) section, added 2026-08-25** — a separate
+   section, own small label, for any issue retired past that 5-flipbook
+   cap: same card shape, but "Download PDF" linking straight to a
+   Drive-hosted copy instead of opening the in-page modal, since the
+   Heyzine embed no longer exists for a deleted flipbook. Hidden
+   entirely until an issue is ever actually retired this way (won't
+   happen until a 6th issue is uploaded) — see "Automation" below.
 
 ## Cadence change, 2026-08-18 — no longer one flipbook per Rotary Year
 The original proposal's whole rationale was **one cumulative flipbook
@@ -157,15 +168,18 @@ a new issue to Heyzine — is now gone. Same overall shape as
   load (falling back to `assets/rurok/issues.json` — a static mirror in
   this repo, same shape, same live-then-static-fallback pattern
   `/diskwentulong/` and `/verify/` already use) and builds the Featured
-  iframe's `src`/`title` and every Past Issues card from that response,
-  via `renderIssues()`. Past Issues cards are built with DOM APIs
-  (`buildPastIssueCard()`), not an HTML template string, specifically
-  so a label or URL containing a quote can't break the markup. The
-  existing `openIssueModal`/`preloadIssue`/loading-spinner behavior
-  (see "Cadence change" above) is unchanged — the dynamic cards call
-  the exact same functions a hardcoded card used to. If there are zero
-  past issues, the whole Past Issues section hides itself
-  (`#past-issues-wrap`) rather than showing an empty grid.
+  iframe's `src`/`title` from that response via `renderIssues()`, which
+  also splits `data.past` into two separate sections — see "Page
+  structure" above for what each looks like. Both card types share
+  `buildIssueCardShell_()` (built with DOM APIs, not an HTML template
+  string, specifically so a label or URL containing a quote can't break
+  the markup), with `buildViewableIssueCard()` wiring up the existing
+  `openIssueModal`/`preloadIssue` behavior (see "Cadence change" above,
+  unchanged) and `buildArchivedIssueCard()` just setting a plain
+  download `href`. Each section (`#past-issues-wrap`,
+  `#archived-issues-wrap`) hides itself independently if it has nothing
+  to show — right now that means Archived Issues stays hidden, since no
+  issue has ever actually been retired past the cap yet.
 - **A real, found-the-hard-way gap: Heyzine's own title/subtitle fields
   can be blank.** Confirmed empirically 2026-08-24 by calling the real
   List Flipbooks endpoint: Volume 1 has `title: "RUROK"` / `subtitle:
@@ -182,6 +196,36 @@ a new issue to Heyzine — is now gone. Same overall shape as
   writing, Volume 2's row needs exactly this fix** — it will read
   "New Issue – August 2026" (or similar) live until someone sets its
   real label by one of those two routes.
+- **Heyzine's free-tier 5-flipbook cap is also enforced automatically,
+  added 2026-08-25 (`Code.gs v11`).** Every `syncRurokIssues()` run also
+  calls `enforceHeyzineFlipbookCap_()`: once the live List Flipbooks
+  response has more than 5 entries (i.e. on the 6th upload), it retires
+  the single oldest one — never the newest/current issue — by (1)
+  downloading its PDF via the `links.pdf` URL already in that run's API
+  response, (2) saving it into a Drive folder ("Rurok Past Issue PDFs,"
+  under the "Digital Bulletin" folder) and sharing it "anyone with the
+  link can view," (3) only once that save is confirmed, writing the
+  resulting Drive URL into that row's new `pdf_url` column, and (4)
+  only then calling Heyzine's `flipbook-delete` API on it. Any failure
+  in steps 1-2 aborts before ever reaching step 4 — an un-archived
+  flipbook is left alone on Heyzine rather than risking a delete with
+  no backup — and at most one flipbook is retired per run regardless of
+  how far over the cap the count is, as a deliberate limit against a
+  counting bug deleting real content in bulk. `getRurokIssues_()` now
+  returns `pdf_url` per issue; the frontend puts any issue with
+  `pdf_url` set into the separate Archived Issues section as a plain
+  download link (`<a href="{pdf_url}">`, "Download PDF") instead of a
+  modal-opening button, since the Heyzine page it used to link to no
+  longer exists. **Deliberately chose Drive over committing PDFs
+  into this git repo** — the latter would need a GitHub write-scoped
+  token stored in Apps Script, letting a scheduled trigger push content
+  to the live site with no human review, unlike every other change to
+  this repo. **Not verified end-to-end yet** — with only 2 real issues
+  live, the 6th-upload trigger condition hasn't actually fired; this is
+  sandbox/logic-reviewed, not live-confirmed. Also unconfirmed: whether
+  Heyzine's thumbnail CDN URL keeps resolving after a flipbook is
+  deleted — the frontend doesn't assume either way, falling back to the
+  site logo via the `<img>`'s `onerror` handler if it doesn't.
 - **Still not automated**: the `assets/rurok/rurok-og.jpg` social-share
   crop (see "Social-share image" below — still a manual regenerate-and-
   commit step each time Featured changes) and `sitemap.xml`'s `lastmod`

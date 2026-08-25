@@ -111,20 +111,32 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
        </div>
       </div>
 
-      <!-- PAST ISSUES: built dynamically from the same fetch above (see
-           renderIssues() below) -- a retired issue's flipbook becomes a
-           thumbnail card here once a newer issue replaces it above, with
-           no manual HTML edit needed. Hidden entirely if there are no
-           past issues yet. Clicking opens the issue in the in-page modal
-           below rather than redirecting to heyzine.com -- same "never
-           send readers off this site" reasoning as the Featured embed
-           above. Links to the issue's own Heyzine flip-book page rather
-           than a PDF -- no plain PDF file exists for these yet, and with
-           only a handful of flipbooks live on Heyzine's free tier
-           (5-flipbook cap), there's no pressure to switch to PDF links
-           until that cap is actually reached. See docs/RUROK-DESIGN.md. -->
+      <!-- PAST ISSUES (still viewable): built dynamically from the same
+           fetch above (see renderIssues() below) -- issues still live
+           on Heyzine (not yet past the free-tier 5-flipbook cap) become
+           a thumbnail card here, capped at 4 by construction (5 total
+           on Heyzine minus the 1 Featured above -- see
+           enforceHeyzineFlipbookCap_ in docs/RUROK-DESIGN.md's
+           Automation section). Hidden entirely if there are none yet.
+           Clicking opens the issue in the in-page modal below rather
+           than redirecting to heyzine.com -- same "never send readers
+           off this site" reasoning as the Featured embed above. -->
       <div id="past-issues-wrap" class="max-w-4xl mx-auto mt-16 hidden">
+       <p class="eyebrow text-xs font-bold text-[#f7a81b] text-center mb-4">Past Issues</p>
        <div id="past-issues-grid" class="flex flex-wrap justify-center gap-6"></div>
+      </div>
+
+      <!-- ARCHIVED ISSUES (PDF download): once an issue is pushed past
+           Heyzine's 5-flipbook cap, enforceHeyzineFlipbookCap_ archives
+           its PDF to Drive and deletes the flipbook from Heyzine -- its
+           embed page no longer exists, so this is a separate section of
+           plain download links rather than more modal-opening cards.
+           Hidden entirely until the first issue is ever retired this
+           way (won't happen until a 6th issue is uploaded). See
+           docs/RUROK-DESIGN.md's Automation section. -->
+      <div id="archived-issues-wrap" class="max-w-4xl mx-auto mt-16 hidden">
+       <p class="eyebrow text-xs font-bold text-[#f7a81b] text-center mb-4">Archived Issues (PDF)</p>
+       <div id="archived-issues-grid" class="flex flex-wrap justify-center gap-6"></div>
       </div>
      </div>
     </section>
@@ -220,28 +232,30 @@ function rotaryYearFor(isoDate){
   return `${startYear}-${String((startYear + 1) % 100).padStart(2, '0')}`;
 }
 
-// Built via DOM APIs rather than an HTML template string so a label or
-// URL containing a quote (from Heyzine's own title/subtitle fields,
-// which this site doesn't control) can't break the markup or need
-// manual escaping in three different places.
-function buildPastIssueCard(issue){
+// Shared card shell for both Past Issues (still viewable on Heyzine)
+// and Archived Issues (PDF-only, once retired past the 5-flipbook cap)
+// -- built via DOM APIs rather than an HTML template string so a label
+// containing a quote (from Heyzine's own title/subtitle fields, which
+// this site doesn't control) can't break the markup or need manual
+// escaping in three different places. tagName/actionLabel/actionIcon
+// differ per card type; the caller wires up the actual link/click
+// behavior afterward.
+function buildIssueCardShell_(issue, tagName, actionLabel, actionIcon){
   const label = issue.label || 'Past Issue';
-  const url = issue.url || '';
   const thumb = issue.thumbnail || '/assets/rotary-logo.png';
-  const fullTitle = `Rurok — Rotary Club of Naga Heights Bulletin, ${label}`;
 
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'lift flex gap-4 items-center bg-white rounded-2xl border p-4 text-left w-full sm:w-[calc(50%-0.75rem)]';
-  btn.addEventListener('click', () => openIssueModal(url, fullTitle));
-  btn.addEventListener('mouseenter', () => preloadIssue(url));
-  btn.addEventListener('focus', () => preloadIssue(url));
-  btn.addEventListener('touchstart', () => preloadIssue(url));
+  const card = document.createElement(tagName);
+  card.className = 'lift flex gap-4 items-center bg-white rounded-2xl border p-4 text-left w-full sm:w-[calc(50%-0.75rem)]';
 
   const img = document.createElement('img');
   img.src = thumb;
   img.alt = `${label} cover`;
   img.className = 'w-16 h-auto rounded-lg border shrink-0';
+  // The Heyzine-hosted thumbnail may stop resolving once its flipbook
+  // is deleted (unconfirmed either way -- not something worth deleting
+  // a real flipbook just to test) -- fall back to the site logo rather
+  // than show a broken image.
+  img.onerror = () => { img.onerror = null; img.src = '/assets/rotary-logo.png'; };
 
   const textWrap = document.createElement('div');
   const titleP = document.createElement('p');
@@ -252,11 +266,35 @@ function buildPastIssueCard(issue){
   yearP.textContent = `Rotary Year ${rotaryYearFor(issue.date)}`;
   const linkP = document.createElement('p');
   linkP.className = 'text-[#17458f] text-sm mt-1 font-semibold inline-flex items-center gap-1';
-  linkP.innerHTML = 'View issue <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>';
+  linkP.innerHTML = `${actionLabel} <i data-lucide="${actionIcon}" class="w-3.5 h-3.5"></i>`;
   textWrap.append(titleP, yearP, linkP);
 
-  btn.append(img, textWrap);
-  return btn;
+  card.append(img, textWrap);
+  return card;
+}
+
+// Still live on Heyzine -- opens the in-page modal, same as the
+// Featured section, never redirects off this site.
+function buildViewableIssueCard(issue){
+  const url = issue.url || '';
+  const fullTitle = `Rurok — Rotary Club of Naga Heights Bulletin, ${issue.label || ''}`;
+  const card = buildIssueCardShell_(issue, 'button', 'View issue', 'arrow-right');
+  card.type = 'button';
+  card.addEventListener('click', () => openIssueModal(url, fullTitle));
+  card.addEventListener('mouseenter', () => preloadIssue(url));
+  card.addEventListener('focus', () => preloadIssue(url));
+  card.addEventListener('touchstart', () => preloadIssue(url));
+  return card;
+}
+
+// Retired past Heyzine's 5-flipbook cap -- its embed page no longer
+// exists, so this is a plain download link to the Drive-archived PDF.
+function buildArchivedIssueCard(issue){
+  const card = buildIssueCardShell_(issue, 'a', 'Download PDF', 'download');
+  card.href = issue.pdf_url;
+  card.target = '_blank';
+  card.rel = 'noopener';
+  return card;
 }
 
 function renderIssues(data){
@@ -266,15 +304,29 @@ function renderIssues(data){
   featuredIframe.src = data.current.url;
 
   const past = Array.isArray(data.past) ? data.past : [];
-  const wrap = document.getElementById('past-issues-wrap');
-  const grid = document.getElementById('past-issues-grid');
-  grid.innerHTML = '';
-  if (!past.length) {
-    wrap.classList.add('hidden');
-    return;
+  const stillViewable = past.filter(issue => !issue.pdf_url);
+  const archived = past.filter(issue => issue.pdf_url);
+
+  const viewableWrap = document.getElementById('past-issues-wrap');
+  const viewableGrid = document.getElementById('past-issues-grid');
+  viewableGrid.innerHTML = '';
+  if (stillViewable.length) {
+    viewableWrap.classList.remove('hidden');
+    stillViewable.forEach(issue => viewableGrid.appendChild(buildViewableIssueCard(issue)));
+  } else {
+    viewableWrap.classList.add('hidden');
   }
-  wrap.classList.remove('hidden');
-  past.forEach(issue => grid.appendChild(buildPastIssueCard(issue)));
+
+  const archivedWrap = document.getElementById('archived-issues-wrap');
+  const archivedGrid = document.getElementById('archived-issues-grid');
+  archivedGrid.innerHTML = '';
+  if (archived.length) {
+    archivedWrap.classList.remove('hidden');
+    archived.forEach(issue => archivedGrid.appendChild(buildArchivedIssueCard(issue)));
+  } else {
+    archivedWrap.classList.add('hidden');
+  }
+
   lucide.createIcons();
 }
 
