@@ -1,13 +1,14 @@
 # Rurok — Design Detail
-Version: v3.2 · Last updated: 2026-08-18
+Version: v4.1 · Last updated: 2026-08-25
 Mirrors Google Drive's "PROPOSAL - Digital Bulletin Publishing
 Workflow.txt" (Digital Bulletin folder) — read that first for the full
 publishing-cadence rationale; this file covers how it's actually built
 on the site.
 
 ## Status
-**BUILT and LIVE.** `rurok/index.html`, serving `/rurok/`, now shows the
-real first issue instead of placeholder content.
+**BUILT and LIVE.** `rurok/index.html`, serving `/rurok/`, is now
+data-driven — see "Automation" below — instead of the hardcoded
+Featured iframe + single Past Issues card it was built with originally.
 
 ## Naming
 The page's public-facing name is **"Rurok"** — `<title>`, `<h1>`, meta
@@ -112,20 +113,94 @@ that reality rather than the superseded proposal:
   repo's control — it removes the wasted head start and the "is this
   broken" uncertainty around a wait that was already happening.
 - A real automation to detect new Heyzine uploads and update this page
-  without a manual step was discussed and **deferred** — see the
-  session notes for the design sketch (poll Heyzine's List Flipbooks
-  API on a schedule via a new Apps Script trigger, write new issues to
-  a Sheet, make this page data-driven like `/diskwentulong/` and
-  `/projects/` instead of hardcoded HTML). Heyzine's free tier does
-  include real API access, confirmed via their docs.
+  without a manual step was discussed 2026-08-18 and deferred at the
+  time — **built 2026-08-24, see "Automation" below.**
 
-## Current data state (as of 2026-08-18)
-Two real issues exist:
+## Automation, added 2026-08-24
+The manual step this whole page used to need — swap the Featured
+`<iframe>`'s `src`, add a Past Issues card, every time the club uploads
+a new issue to Heyzine — is now gone. Same overall shape as
+`/diskwentulong/`'s live-partner-data pattern:
+
+- **Backend (`Code.gs v10`, Drive-only, not in this repo)** adds a
+  `syncRurokIssues()` function that polls Heyzine's own **List
+  Flipbooks API** (`GET https://heyzine.com/api1/flipbook-list`,
+  confirmed directly against the real endpoint 2026-08-24 — returns
+  each flipbook's `id`, `date`, `title`, `subtitle`, and a `links`
+  object with `custom`/`base` (the flip-book page URL) and `thumbnail`
+  (a ready-made cover image URL — no more manual `og:image`-scraping
+  needed for future issues, see "Adding a past issue" below). It's
+  meant to run on a daily time-driven trigger (set up manually in the
+  Apps Script editor, since Apps Script triggers can't be created via
+  the Drive API — see the file's own header for exact steps): each run
+  diffs the API's flipbook list against a new `RurokIssues` Sheet tab
+  by `flipbook_id`, appends any row that's new, and recomputes which
+  row is `current` (the newest by upload date) vs. `past` (everything
+  else). The shared Web App's `doGet` gained a fourth action,
+  `?action=rurokIssues`, returning `{ current: {...}, past: [...] }`
+  read live from that tab — unrelated to DTC, but shipped in the same
+  script/deployment since one already exists. **Naming gotcha, found
+  2026-08-25 while walking the user through the manual setup steps**:
+  this function is deliberately named `syncRurokIssues` with NO
+  trailing underscore, unlike this file's other internal helpers —
+  Apps Script's Run/Trigger function-picker dropdowns silently omit any
+  top-level function whose name ends in `_`, confirmed by the user's
+  own screenshot of the Run dropdown showing only `doGet`/`doPost`/
+  `setupWorkbook`/`createBatchTabExample` and no underscored functions
+  at all. A first version of this file used `syncRurokIssues_` and it
+  was genuinely unselectable in either dropdown — this also means the
+  pre-existing `authorizeExternalRequest_()` helper has had this same
+  problem since v7, despite its own header comment implying otherwise;
+  left alone here since it's unrelated to Rurok and already a one-time
+  step marked done for the live project.
+- **Frontend (`rurok/index.html`)** fetches `?action=rurokIssues` on
+  load (falling back to `assets/rurok/issues.json` — a static mirror in
+  this repo, same shape, same live-then-static-fallback pattern
+  `/diskwentulong/` and `/verify/` already use) and builds the Featured
+  iframe's `src`/`title` and every Past Issues card from that response,
+  via `renderIssues()`. Past Issues cards are built with DOM APIs
+  (`buildPastIssueCard()`), not an HTML template string, specifically
+  so a label or URL containing a quote can't break the markup. The
+  existing `openIssueModal`/`preloadIssue`/loading-spinner behavior
+  (see "Cadence change" above) is unchanged — the dynamic cards call
+  the exact same functions a hardcoded card used to. If there are zero
+  past issues, the whole Past Issues section hides itself
+  (`#past-issues-wrap`) rather than showing an empty grid.
+- **A real, found-the-hard-way gap: Heyzine's own title/subtitle fields
+  can be blank.** Confirmed empirically 2026-08-24 by calling the real
+  List Flipbooks endpoint: Volume 1 has `title: "RUROK"` / `subtitle:
+  "Volume 1: June Issue"` filled in, but Volume 2 — already live as the
+  Featured issue — has both blank. `syncRurokIssues()` never shows a
+  blank label on the live page: if both fields are empty it falls back
+  to an auto-generated placeholder (`formatRurokFallbackLabel_()`,
+  e.g. "New Issue – August 2026") and flags that row's `needs_review`
+  column `TRUE`. Fixing the real label needs one of two manual touches
+  — editing the `label` cell directly in the `RurokIssues` Sheet tab
+  (takes effect immediately, no redeploy, matches how a `partners.json`
+  typo gets fixed), or filling in the title/subtitle on Heyzine's own
+  dashboard and letting the next sync pick it up. **As of this
+  writing, Volume 2's row needs exactly this fix** — it will read
+  "New Issue – August 2026" (or similar) live until someone sets its
+  real label by one of those two routes.
+- **Still not automated**: the `assets/rurok/rurok-og.jpg` social-share
+  crop (see "Social-share image" below — still a manual regenerate-and-
+  commit step each time Featured changes) and `sitemap.xml`'s `lastmod`
+  bump. Both are cheap, low-risk manual steps deliberately left as-is
+  rather than building more automation than the actual need justifies.
+
+## Current data state (as of 2026-08-24)
+Two real issues exist, both now tracked in the live `RurokIssues` Sheet
+tab once `Code.gs v10` is deployed and its first `syncRurokIssues()`
+run completes (see "Automation" above) — the values below also match
+this repo's `assets/rurok/issues.json` fallback:
 - **Rurok, Volume 2: July Issue (Rotary Year 2026-27)** —
-  `https://heyzine.com/flip-book/a40e3e33de.html`, now Featured.
+  `https://heyzine.com/flip-book/a40e3e33de.html`, Featured. Live on
+  Heyzine with blank title/subtitle (see "Automation" above) — this
+  repo's fallback JSON has the real label hardcoded, but the live Sheet
+  row needs the same manual fix once synced.
 - **Rurok, Volume 1: June Issue (Rotary Year 2026-27)** —
-  `https://heyzine.com/flip-book/1f2a839135.html`, now a Past Issues
-  card linking to that same Heyzine page.
+  `https://heyzine.com/flip-book/1f2a839135.html`, a Past Issues card
+  linking to that same Heyzine page.
 
 **Cover images sourced without a headless-browser screenshot this
 time** — a better method than the one used for Volume 1's og:image
@@ -139,13 +214,22 @@ Past Issues thumbnail, resized to 500px wide) and the new
 before — see below).
 
 ## Adding a past issue later (repeat this each time)
-When the next issue's Heyzine link arrives: swap the Featured `<iframe>`
-to the new link, add a Past Issues card for whichever issue it replaced
-(cover thumbnail via Heyzine's `og:image` trick above + issue label +
-link to that issue's own Heyzine page), and update the social-share
-image to the new Featured issue's cover — see "Social-share image"
-below. Also bump `sitemap.xml`'s `lastmod` for `/rurok/` per
-docs/SEO.md's checklist, since visible copy changes each time.
+As of the automation above, swapping the Featured issue and retiring
+the previous one to Past Issues is no longer a manual HTML edit — the
+daily `syncRurokIssues()` trigger picks up any new Heyzine upload on
+its own. What's still manual each time:
+1. Check the new issue's row in the `RurokIssues` Sheet tab (or the
+   live `?action=rurokIssues` response) for `needs_review = TRUE` — if
+   the club didn't fill in a title/subtitle on Heyzine, fix the `label`
+   cell directly in the Sheet (see "Automation" above).
+2. Update `assets/rurok/issues.json` in this repo to match, so the
+   static fallback doesn't go stale if the live endpoint is ever down
+   (same reasoning as `/diskwentulong/`'s `partners.json`).
+3. Regenerate `assets/rurok/rurok-og.jpg` from the new Featured issue's
+   cover (now available directly from the API's `thumbnail` URL — no
+   more `og:image`-scraping needed) — see "Social-share image" below.
+4. Bump `sitemap.xml`'s `lastmod` for `/rurok/` per docs/SEO.md's
+   checklist, since visible copy changes each time.
 
 ## Social-share image (added 2026-08-01, sourcing method changed 2026-08-18)
 `og:image`/`twitter:image` use a dedicated image
@@ -183,19 +267,24 @@ URL was renamed.
 
 ## Not done / explicitly out of scope
 - No Heyzine account/upload access exists in this environment (no
-  connector) — any future issue's Heyzine embed link must be created
-  manually by a club officer and handed over, same as the first two
-  were. **Automating this end-to-end was discussed 2026-08-18 and
-  deferred, not built**: Heyzine's free tier does include real API
-  access (confirmed via their own docs — list/create/delete flipbooks,
-  get embed codes), so a scheduled Apps Script trigger could poll it
-  and make this page fully data-driven with no manual step at all. The
-  free tier's 5-flipbook cap is not a real constraint for this, since
-  only the current issue needs to stay live on Heyzine — once a
-  Past Issues card exists, the retired flipbook can be deleted from
-  Heyzine without breaking anything (Past Issues links to the flip-book
-  page today, but the design already anticipates switching that to a
-  plain PDF link instead, once the flipbook itself needs to go).
+  connector) — a club officer must still actually upload the PDF to
+  Heyzine themselves; nothing in this repo can do that step. Everything
+  *after* upload (detecting it, updating the live page) is now
+  automated — see "Automation" above. The free tier's 5-flipbook cap is
+  still not a real constraint, since only the current issue needs to
+  stay live on Heyzine — once a Past Issues card exists, the retired
+  flipbook can be deleted from Heyzine without breaking anything (Past
+  Issues links to the flip-book page today, but the design already
+  anticipates switching that to a plain PDF link instead, once the
+  flipbook itself needs to go).
+- The social-share crop (`assets/rurok/rurok-og.jpg`) and `sitemap.xml`
+  bump are still manual — see "Automation" above for why these two were
+  deliberately left alone rather than automated too.
+- A blank Heyzine title/subtitle still needs a one-time manual label
+  fix per issue (Sheet cell edit or filling in Heyzine's own dashboard)
+  — see "Automation" above. Not eliminated by this build; the real
+  underlying limitation is that Heyzine's API only ever returns
+  whatever metadata the club actually entered on their end.
 - **Heyzine's own iframe chrome (toolbar, title/subtitle panel, corner
   "Heyzine Flipbooks" branding) cannot be stripped from this embed —
   checked, not assumed (2026-08-01).** Heyzine's developer docs list

@@ -45,8 +45,9 @@ docs/SERVICE-PROJECTS-DESIGN.md -> data-driven Service Projects rework
 docs/QA-STATUS.md      -> what's actually confirmed live vs. only
                            sandbox-tested, and the open DTC/QA risk list
 docs/RUROK-DESIGN.md   -> Rurok (Digital Bulletin) page design: naming,
-                           featured/past-issues structure, current data
-                           state
+                           featured/past-issues structure, the Heyzine-
+                           polling automation (Code.gs v10), current
+                           data state
 docs/SEO.md            -> SEO checklist to run on any copy-changing
                            commit, per-page audit state, audit history
 docs/BACKEND-CAPABILITY-TEST.md -> what Claude has actually tested (not
@@ -296,11 +297,17 @@ doing any Drive-related content work.
   instead, roughly monthly, retiring the previous one into a real Past
   Issues card (Volume 1's, now live, linking to its own Heyzine page —
   no plain PDF exists for it yet, and Heyzine's free-tier 5-flipbook
-  cap isn't close to being a real constraint). A fully-automated
-  version (poll Heyzine's API on a schedule, make this page data-driven
-  like `/diskwentulong/`) was discussed and deferred, not built — see
-  docs/RUROK-DESIGN.md for the design sketch. See docs/RUROK-DESIGN.md
-  for the full history.
+  cap isn't close to being a real constraint). **Updated 2026-08-24**:
+  the automation discussed and deferred on 2026-08-18 is now built —
+  `Code.gs v10` polls Heyzine's own List Flipbooks API on a daily
+  trigger and keeps a new `RurokIssues` Sheet tab in sync; `/rurok/`
+  now fetches `?action=rurokIssues` (falling back to
+  `assets/rurok/issues.json`, same live-then-static pattern as
+  `/diskwentulong/`) instead of a hardcoded Featured iframe + Past
+  Issues card. A new upload needs zero HTML edit now — though a blank
+  Heyzine title/subtitle (confirmed live on the current Volume 2 issue)
+  still needs one manual label fix per issue; see docs/RUROK-DESIGN.md's
+  "Automation" section for exactly what's automated vs. still manual.
 - No automated test suite exists anywhere in this repo (confirmed via
   audit 2026-07-20) — see docs/QA-STATUS.md for the full risk list,
   including which "confirmed working" claims are backed by the user's

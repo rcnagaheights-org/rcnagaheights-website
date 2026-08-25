@@ -87,43 +87,44 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
      <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <h1 class="sr-only">Rurok — Rotary Club of Naga Heights Bulletin</h1>
 
-      <!-- FEATURED: latest issue, embedded flipbook. Originally planned
-           as one cumulative flipbook per Rotary Year (per the Drive
-           "PROPOSAL - Digital Bulletin Publishing Workflow" doc); as of
-           2026-08-18 the club is instead uploading a new flipbook per
-           issue as each one is ready, retiring the previous one to Past
-           Issues below -- see docs/RUROK-DESIGN.md. Heading/label text
-           above the iframe was removed 2026-08-01 per explicit request
-           (visual clutter -- Heyzine's own widget already shows the
-           issue title internally); the page's H1 heading is kept but
-           visually hidden via sr-only (not deleted) so the page still
-           has exactly one real heading for SEO/accessibility, matching
-           every other page on this site. -->
+      <!-- FEATURED: latest issue, embedded flipbook. Data-driven as of
+           2026-08-24 -- see docs/RUROK-DESIGN.md's "Automation" section.
+           A scheduled Apps Script job polls Heyzine's own List
+           Flipbooks API and keeps the RurokIssues Sheet tab in sync;
+           this page fetches ?action=rurokIssues (falling back to
+           assets/rurok/issues.json, same live-then-static pattern as
+           /diskwentulong/) and sets this iframe's src via JS below --
+           no more manual HTML edit every time the club uploads a new
+           issue. Heading/label text above the iframe was removed
+           2026-08-01 per explicit request (visual clutter -- Heyzine's
+           own widget already shows the issue title internally); the
+           page's H1 heading is kept but visually hidden via sr-only
+           (not deleted) so the page still has exactly one real heading
+           for SEO/accessibility, matching every other page on this
+           site. -->
       <div class="max-w-4xl lg:max-w-5xl mx-auto bg-white rounded-[2rem] p-4 sm:p-6">
-       <iframe src="https://heyzine.com/flip-book/a40e3e33de.html" title="Rurok - Rotary Club of Naga Heights Bulletin, Volume 2: July Issue" class="w-full rounded-2xl border h-[640px] lg:h-[800px]" allowfullscreen loading="lazy"></iframe>
+       <div class="relative">
+        <div id="featured-loading" class="absolute inset-0 grid place-items-center bg-white rounded-2xl h-[640px] lg:h-[800px]">
+         <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-[#17458f]"></i>
+        </div>
+        <iframe id="featured-iframe" src="" title="Rurok — Rotary Club of Naga Heights Bulletin" class="w-full rounded-2xl border h-[640px] lg:h-[800px]" allowfullscreen loading="lazy"></iframe>
+       </div>
       </div>
 
-      <!-- PAST ISSUES: a retired issue's flipbook becomes a thumbnail
-           card here once a newer issue replaces it above. Clicking opens
-           the issue in the in-page modal below rather than redirecting
-           to heyzine.com -- same "never send readers off this site"
-           reasoning as the Featured embed above. Links to the issue's
-           own Heyzine flip-book page rather than a PDF -- no plain PDF
-           file exists for these yet, and with only a handful of
-           flipbooks live on Heyzine's free tier (5-flipbook cap),
-           there's no pressure to switch to PDF links until that cap is
-           actually reached. See docs/RUROK-DESIGN.md. -->
-      <div class="max-w-4xl mx-auto mt-16">
-       <div class="flex flex-wrap justify-center gap-6">
-        <button type="button" onclick="openIssueModal('https://heyzine.com/flip-book/1f2a839135.html','Rurok - Rotary Club of Naga Heights Bulletin, Volume 1: June Issue')" onmouseenter="preloadIssue('https://heyzine.com/flip-book/1f2a839135.html')" onfocus="preloadIssue('https://heyzine.com/flip-book/1f2a839135.html')" ontouchstart="preloadIssue('https://heyzine.com/flip-book/1f2a839135.html')" class="lift flex gap-4 items-center bg-white rounded-2xl border p-4 text-left w-full sm:w-[calc(50%-0.75rem)]">
-         <img src="/assets/rurok/rurok-v1-cover.jpg" alt="Rurok Volume 1: June Issue cover" class="w-16 h-auto rounded-lg border shrink-0">
-         <div>
-          <p class="font-bold text-[#0c3c7c]">Volume 1: June Issue</p>
-          <p class="text-slate-500 text-sm mt-1">Rotary Year 2026-27</p>
-          <p class="text-[#17458f] text-sm mt-1 font-semibold inline-flex items-center gap-1">View issue <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></p>
-         </div>
-        </button>
-       </div>
+      <!-- PAST ISSUES: built dynamically from the same fetch above (see
+           renderIssues() below) -- a retired issue's flipbook becomes a
+           thumbnail card here once a newer issue replaces it above, with
+           no manual HTML edit needed. Hidden entirely if there are no
+           past issues yet. Clicking opens the issue in the in-page modal
+           below rather than redirecting to heyzine.com -- same "never
+           send readers off this site" reasoning as the Featured embed
+           above. Links to the issue's own Heyzine flip-book page rather
+           than a PDF -- no plain PDF file exists for these yet, and with
+           only a handful of flipbooks live on Heyzine's free tier
+           (5-flipbook cap), there's no pressure to switch to PDF links
+           until that cap is actually reached. See docs/RUROK-DESIGN.md. -->
+      <div id="past-issues-wrap" class="max-w-4xl mx-auto mt-16 hidden">
+       <div id="past-issues-grid" class="flex flex-wrap justify-center gap-6"></div>
       </div>
      </div>
     </section>
@@ -196,6 +197,101 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
   </footer>
   <script>
 document.getElementById('menu-button').onclick=()=>document.getElementById('mobile-menu').classList.toggle('hidden');
+
+function escapeHtml(str){
+  const div=document.createElement('div');
+  div.textContent=str;
+  return div.innerHTML;
+}
+
+const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC/exec';
+
+const featuredIframe = document.getElementById('featured-iframe');
+const featuredLoading = document.getElementById('featured-loading');
+featuredIframe.addEventListener('load', () => {
+  if (featuredIframe.src) featuredLoading.classList.add('hidden');
+});
+
+// Rotary Year runs July-June -- e.g. a July 2026 upload is "2026-27".
+function rotaryYearFor(isoDate){
+  const d = isoDate ? new Date(isoDate) : new Date();
+  const y = d.getUTCFullYear();
+  const startYear = d.getUTCMonth() >= 6 ? y : y - 1; // getUTCMonth() is 0-indexed; 6 = July
+  return `${startYear}-${String((startYear + 1) % 100).padStart(2, '0')}`;
+}
+
+// Built via DOM APIs rather than an HTML template string so a label or
+// URL containing a quote (from Heyzine's own title/subtitle fields,
+// which this site doesn't control) can't break the markup or need
+// manual escaping in three different places.
+function buildPastIssueCard(issue){
+  const label = issue.label || 'Past Issue';
+  const url = issue.url || '';
+  const thumb = issue.thumbnail || '/assets/rotary-logo.png';
+  const fullTitle = `Rurok — Rotary Club of Naga Heights Bulletin, ${label}`;
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'lift flex gap-4 items-center bg-white rounded-2xl border p-4 text-left w-full sm:w-[calc(50%-0.75rem)]';
+  btn.addEventListener('click', () => openIssueModal(url, fullTitle));
+  btn.addEventListener('mouseenter', () => preloadIssue(url));
+  btn.addEventListener('focus', () => preloadIssue(url));
+  btn.addEventListener('touchstart', () => preloadIssue(url));
+
+  const img = document.createElement('img');
+  img.src = thumb;
+  img.alt = `${label} cover`;
+  img.className = 'w-16 h-auto rounded-lg border shrink-0';
+
+  const textWrap = document.createElement('div');
+  const titleP = document.createElement('p');
+  titleP.className = 'font-bold text-[#0c3c7c]';
+  titleP.textContent = label;
+  const yearP = document.createElement('p');
+  yearP.className = 'text-slate-500 text-sm mt-1';
+  yearP.textContent = `Rotary Year ${rotaryYearFor(issue.date)}`;
+  const linkP = document.createElement('p');
+  linkP.className = 'text-[#17458f] text-sm mt-1 font-semibold inline-flex items-center gap-1';
+  linkP.innerHTML = 'View issue <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>';
+  textWrap.append(titleP, yearP, linkP);
+
+  btn.append(img, textWrap);
+  return btn;
+}
+
+function renderIssues(data){
+  if (!data || !data.current || !data.current.url) throw new Error('No current Rurok issue in data');
+
+  featuredIframe.title = `Rurok — Rotary Club of Naga Heights Bulletin, ${data.current.label || ''}`;
+  featuredIframe.src = data.current.url;
+
+  const past = Array.isArray(data.past) ? data.past : [];
+  const wrap = document.getElementById('past-issues-wrap');
+  const grid = document.getElementById('past-issues-grid');
+  grid.innerHTML = '';
+  if (!past.length) {
+    wrap.classList.add('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+  past.forEach(issue => grid.appendChild(buildPastIssueCard(issue)));
+  lucide.createIcons();
+}
+
+fetch(`${APPS_SCRIPT_URL}?action=rurokIssues`)
+  .then(r => r.json())
+  .then(data => {
+    if (!data || data.error || !data.current) throw new Error('Live Rurok issues unavailable');
+    renderIssues(data);
+  })
+  .catch(() => {
+    fetch('/assets/rurok/issues.json')
+      .then(r => r.json())
+      .then(renderIssues)
+      .catch(() => {
+        featuredLoading.innerHTML = '<p class="text-slate-500 text-sm px-6 text-center">Could not load the latest issue right now. Please try again shortly.</p>';
+      });
+  });
 
 const issueIframe = document.getElementById('issue-modal-iframe');
 const issueLoading = document.getElementById('issue-modal-loading');
