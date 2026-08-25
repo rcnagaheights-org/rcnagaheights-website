@@ -1,5 +1,5 @@
 # Rurok — Design Detail
-Version: v5.1 · Last updated: 2026-08-25
+Version: v5.2 · Last updated: 2026-08-25
 Mirrors Google Drive's "PROPOSAL - Digital Bulletin Publishing
 Workflow.txt" (Digital Bulletin folder) — read that first for the full
 publishing-cadence rationale; this file covers how it's actually built
@@ -140,7 +140,7 @@ a new issue to Heyzine — is now gone. Same overall shape as
   each flipbook's `id`, `date`, `title`, `subtitle`, and a `links`
   object with `custom`/`base` (the flip-book page URL) and `thumbnail`
   (a ready-made cover image URL — no more manual `og:image`-scraping
-  needed for future issues, see "Adding a past issue" below). It's
+  needed for future issues, see "Publishing Workflow" below). It's
   meant to run on a daily time-driven trigger (set up manually in the
   Apps Script editor, since Apps Script triggers can't be created via
   the Drive API — see the file's own header for exact steps): each run
@@ -257,23 +257,60 @@ Past Issues thumbnail, resized to 500px wide) and the new
 `assets/rurok/rurok-og.jpg` (Volume 2's cover, cropped the same way as
 before — see below).
 
-## Adding a past issue later (repeat this each time)
-As of the automation above, swapping the Featured issue and retiring
-the previous one to Past Issues is no longer a manual HTML edit — the
-daily `syncRurokIssues()` trigger picks up any new Heyzine upload on
-its own. What's still manual each time:
-1. Check the new issue's row in the `RurokIssues` Sheet tab (or the
-   live `?action=rurokIssues` response) for `needs_review = TRUE` — if
-   the club didn't fill in a title/subtitle on Heyzine, fix the `label`
-   cell directly in the Sheet (see "Automation" above).
-2. Update `assets/rurok/issues.json` in this repo to match, so the
-   static fallback doesn't go stale if the live endpoint is ever down
-   (same reasoning as `/diskwentulong/`'s `partners.json`).
-3. Regenerate `assets/rurok/rurok-og.jpg` from the new Featured issue's
-   cover (now available directly from the API's `thumbnail` URL — no
-   more `og:image`-scraping needed) — see "Social-share image" below.
-4. Bump `sitemap.xml`'s `lastmod` for `/rurok/` per docs/SEO.md's
-   checklist, since visible copy changes each time.
+## Publishing Workflow
+The end-to-end process, from a new issue existing as a PDF to it being
+fully live and clean on the site. Split into what happens once ever
+(setup) vs. what repeats every time the club publishes a new issue.
+
+### One-time setup (already done if `Code.gs v11` is deployed)
+Not repeated per issue — see `Code.gs`'s own header comment (or
+docs/DTC-DESIGN.md's Open items) for the exact steps: paste the script
+in, run `setupWorkbook()`, add the `HEYZINE_API_KEY` Script Property,
+run `syncRurokIssues()` once, add its daily time-driven trigger,
+redeploy the Web App. Confirmed done by reading the live `RurokIssues`
+Sheet tab directly on 2026-08-25 (see the session's own record) — the
+8-column schema and both real issues were present and correctly
+`current`/`past`.
+
+### Every time a new issue is ready (recurring)
+1. **A club officer uploads the PDF to Heyzine** — this step has no
+   automation and never will unless a Heyzine connector exists. While
+   uploading, filling in Heyzine's own **Title** ("RUROK") and
+   **Subtitle** ("Volume N: `<Month>` Issue") fields avoids step 3
+   below entirely — this is the one upload-time habit that saves a
+   manual fix later.
+2. **Wait for the next daily `syncRurokIssues()` trigger run** (or open
+   the Apps Script editor and run it manually right away if you don't
+   want to wait up to 24 hours). This one function does everything
+   else automatically:
+   - Adds the new upload as a row in `RurokIssues`.
+   - Marks it `current` and demotes whatever was `current` before to
+     `past` — the live page's Featured section and Past Issues section
+     update themselves from this with zero HTML/code change.
+   - If Heyzine now holds more than 5 flipbooks (i.e. this was the 6th
+     upload), automatically retires the single oldest one: downloads
+     its PDF, archives it to Drive, records the Drive link, and only
+     then deletes it from Heyzine — see "Automation" above. This part
+     needs no attention unless it fails (check the `Logs` tab for
+     `rurok_retire_failed` rows if the Archived Issues section on the
+     live page doesn't show something you expected).
+3. **Check the new row's `needs_review` column.** If `TRUE` (Heyzine's
+   title/subtitle were blank), fix the `label` cell directly in the
+   Sheet — takes effect immediately, no redeploy. Skip this if step 1's
+   habit was followed and it came back `FALSE`.
+4. **Update `assets/rurok/issues.json` in this repo** to match the new
+   live state, so the static fallback doesn't go stale if the live
+   endpoint is ever down (same reasoning as `/diskwentulong/`'s
+   `partners.json`) — commit via the usual flow.
+5. **Regenerate `assets/rurok/rurok-og.jpg`** from the new Featured
+   issue's cover — the API's `thumbnail` field gives a direct URL now,
+   no more scraping needed — see "Social-share image" below. Commit.
+6. **Bump `sitemap.xml`'s `lastmod` for `/rurok/`** per docs/SEO.md's
+   checklist, since visible copy changes every time. Commit.
+
+Steps 4-6 are the only ones that touch this git repo and need a commit;
+steps 1-3 happen entirely in Heyzine/the Sheet/Apps Script and never
+touch this repo at all.
 
 ## Social-share image (added 2026-08-01, sourcing method changed 2026-08-18)
 `og:image`/`twitter:image` use a dedicated image
