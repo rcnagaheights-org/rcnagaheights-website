@@ -1,5 +1,5 @@
 # DiskwenTulong Card (DTC) — Design Detail
-Version: v10.4 · Last updated: 2026-08-24
+Version: v10.6 · Last updated: 2026-08-25
 Mirrors: Google Drive "PROPOSAL - DTC Phase 2 Workflow v2.txt" and
 "PROPOSAL - DTC Cardholder Brochure Page v1.txt" — if those Drive docs
 and this file ever disagree, ask the user which is current before
@@ -741,3 +741,17 @@ considered stable, not experimental.
       is conclusive that the check is live. Exact matching mechanics
       deliberately not spelled out in this public doc; see the
       Drive-only `Code.gs (v9)` file itself for full detail.
+- [ ] **`Code.gs (v10)` written 2026-08-24, NOT YET DEPLOYED.** Adds
+      Rurok bulletin automation (`syncRurokIssues`, `getRurokIssues_`,
+      the new `?action=rurokIssues`) to the same shared Web App/Sheet —
+      unrelated to any DTC logic, which is unchanged from v9's behavior,
+      but bumps the file version since it's the same script. See
+      docs/RUROK-DESIGN.md's "Automation" section for what it does and
+      the manual setup steps (paste into the editor, run
+      `setupWorkbook()` to create the new `RurokIssues` tab, add a
+      `HEYZINE_API_KEY` Script Property, run `syncRurokIssues()` once,
+      add its time-driven trigger, redeploy as a new Web App version).
+      Nobody has done any of this yet — DTC's own `?action=verify/
+      partners` behavior is completely unaffected either way, so there's
+      no urgency tied to DTC itself, but `/rurok/`'s live fetch will
+      keep failing over to its static JSON fallback until this is done.

@@ -1,0 +1,22 @@
+{
+  "current": {
+    "id": "a40e3e33de36e2f31e62b24031b9d5e5f215ac68.pdf",
+    "date": "2026-08-18T06:35:04Z",
+    "label": "Volume 2: July Issue",
+    "url": "https://heyzine.com/flip-book/a40e3e33de.html",
+    "thumbnail": "https://cdnm.heyzine.com/flip-book/cover/a40e3e33de.jpg",
+    "status": "current",
+    "needs_review": false
+  },
+  "past": [
+    {
+      "id": "1f2a839135517d94e328726ae3e2fe88472dea18.pdf",
+      "date": "2026-07-31T22:49:03Z",
+      "label": "Volume 1: June Issue",
+      "url": "https://heyzine.com/flip-book/1f2a839135.html",
+      "thumbnail": "https://cdnm.heyzine.com/flip-book/cover/1f2a839135.jpg",
+      "status": "past",
+      "needs_review": false
+    }
+  ]
+}
