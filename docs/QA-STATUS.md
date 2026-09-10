@@ -1,5 +1,5 @@
 # QA Status & Known Risks
-Version: v2.1 · Last updated: 2026-09-10
+Version: v2.0 · Last updated: 2026-08-24
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
@@ -20,20 +20,12 @@ production on GitHub Pages. Not something to fix given this site's
 scale/no-build-step philosophy, just a risk worth knowing about.
 
 ## 2. Sandbox-verified vs. live-verified — read the difference carefully
-This dev environment's Chromium/Playwright specifically cannot reach
-ANY external host at all — confirmed by testing plain navigation to
-unrelated sites too, not just `script.google.com`/`accounts.google.com`/
-`cdn.jsdelivr.net`/`images.pexels.com`. Anything tested "in-session"
-via a rendered page therefore used a local Tailwind CSS build +
-Playwright screenshots against same-origin substitute assets — never
-the real deployed site, never the real Google Sign-In/Apps Script flow
-through a browser. **This restriction does NOT apply to CLI/`curl`
-traffic** — that goes through this environment's own audited proxy and
-reaches real external hosts fine, `script.google.com` included (used
-repeatedly, e.g. directly querying the live `getPartners`/
-`rurokIssues` endpoints and the real Heyzine API). Don't conflate the
-two: a `curl` against a live endpoint is a real live check; a Chromium
-render of the same data is not.
+This dev environment's network policy blocks `script.google.com`,
+`accounts.google.com`, `cdn.jsdelivr.net`, and `images.pexels.com`
+entirely. Anything tested "in-session" therefore used a local Tailwind
+CSS build + Playwright screenshots against same-origin substitute
+assets — never the real deployed site, never the real Google
+Sign-In/Apps Script flow.
 
 **Confirmed via the user's own live screenshots (trust these):**
 - Homepage hero as a 3-photo carousel (2026-07-19).
@@ -51,24 +43,6 @@ render of the same data is not.
   disappearing — direct proof the fix behaves correctly under a real
   live taxonomy change, not just against a simulated one in this
   sandbox.
-- **The Rurok automation (`Code.gs v11`'s `syncRurokIssues()`), working
-  end to end on a real unattended upload — confirmed 2026-09-10.**
-  Checked directly by `curl`-ing the live `?action=rurokIssues` endpoint
-  (not a screenshot this time, but an equally real live check — see the
-  CLI-vs-Chromium note above): a 3rd real issue, uploaded to Heyzine on
-  2026-09-09, had already been picked up and made `current`, with
-  Volume 2 correctly demoted to `past` — with zero manual step on this
-  repo's side between the upload and the site updating. First real
-  confirmation of the whole live-upload → Sheet → site pipeline, not
-  just the sandbox/logic review it shipped with. **Not yet confirmed by
-  this same check: the 5-flipbook cap / auto-archive-to-Drive /
-  auto-delete-from-Heyzine path** — with only 3 real issues existing,
-  that logic still hasn't had a real chance to fire. Also newly found
-  by this same check: the manual `needs_review` label fix flagged for
-  Volume 2 back on 2026-08-24 was never actually done, and Volume 3 has
-  the identical gap — both still show auto-generated placeholder labels
-  live as of 2026-09-10. See docs/RUROK-DESIGN.md's "Current data
-  state" for detail.
 
 **Sandbox-only so far — plausible but not yet user-confirmed live:**
 - The two most recent hero/about-image mobile aspect-ratio fixes
