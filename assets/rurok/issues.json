@@ -1,19 +1,29 @@
 {
   "current": {
-    "id": "a40e3e33de36e2f31e62b24031b9d5e5f215ac68.pdf",
-    "date": "2026-08-18T06:35:04Z",
-    "label": "Volume 2: July Issue",
-    "url": "https://heyzine.com/flip-book/a40e3e33de.html",
+    "id": "f05badb45adf09cc35691b308bae5bc1fc663b72.pdf",
+    "date": "2026-09-09T15:45:28Z",
+    "label": "New Issue – September 2026",
+    "url": "https://heyzine.com/flip-book/f05badb45a.html",
     "pdf_url": "",
-    "thumbnail": "https://cdnm.heyzine.com/flip-book/cover/a40e3e33de.jpg",
+    "thumbnail": "https://cdnm.heyzine.com/flip-book/cover/f05badb45a.jpg",
     "status": "current",
-    "needs_review": false
+    "needs_review": true
   },
   "past": [
     {
+      "id": "a40e3e33de36e2f31e62b24031b9d5e5f215ac68.pdf",
+      "date": "2026-08-18T14:35:04Z",
+      "label": "New Issue – August 2026",
+      "url": "https://heyzine.com/flip-book/a40e3e33de.html",
+      "pdf_url": "",
+      "thumbnail": "https://cdnm.heyzine.com/flip-book/cover/a40e3e33de.jpg",
+      "status": "past",
+      "needs_review": true
+    },
+    {
       "id": "1f2a839135517d94e328726ae3e2fe88472dea18.pdf",
-      "date": "2026-07-31T22:49:03Z",
-      "label": "Volume 1: June Issue",
+      "date": "2026-08-01T06:49:03Z",
+      "label": "RUROK: Volume 1: June Issue",
       "url": "https://heyzine.com/flip-book/1f2a839135.html",
       "pdf_url": "",
       "thumbnail": "https://cdnm.heyzine.com/flip-book/cover/1f2a839135.jpg",
