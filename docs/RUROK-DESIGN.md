@@ -1,5 +1,5 @@
 # Rurok — Design Detail
-Version: v5.2 · Last updated: 2026-08-25
+Version: v5.3 · Last updated: 2026-09-10
 Mirrors Google Drive's "PROPOSAL - Digital Bulletin Publishing
 Workflow.txt" (Digital Bulletin folder) — read that first for the full
 publishing-cadence rationale; this file covers how it's actually built
@@ -232,19 +232,40 @@ a new issue to Heyzine — is now gone. Same overall shape as
   bump. Both are cheap, low-risk manual steps deliberately left as-is
   rather than building more automation than the actual need justifies.
 
-## Current data state (as of 2026-08-24)
-Two real issues exist, both now tracked in the live `RurokIssues` Sheet
-tab once `Code.gs v10` is deployed and its first `syncRurokIssues()`
-run completes (see "Automation" above) — the values below also match
-this repo's `assets/rurok/issues.json` fallback:
+## Current data state (as of 2026-09-10)
+**The automation is now confirmed working live, for a real unattended
+upload** — checked directly against the live `?action=rurokIssues`
+endpoint 2026-09-10: a 3rd real issue was uploaded to Heyzine on
+2026-09-09, and `syncRurokIssues()` picked it up, made it `current`,
+and correctly demoted Volume 2 to `past`, with zero manual step on this
+repo's side. First real (not sandbox-simulated) confirmation the whole
+pipeline works end to end.
+
+Three real issues exist, all tracked in the live `RurokIssues` Sheet
+tab — the values below also match this repo's `assets/rurok/issues.json`
+fallback:
+- **Rurok, Volume 3 (Rotary Year 2026-27)** —
+  `https://heyzine.com/flip-book/f05badb45a.html`, uploaded 2026-09-09,
+  Featured. **`needs_review = TRUE`** — Heyzine's title/subtitle were
+  blank again on this upload (same gap as Volume 2, see "Automation"
+  above), so it's currently showing the auto-generated placeholder
+  label "New Issue – September 2026" live. Needs a manual fix to its
+  `label` cell in the Sheet (the real issue month, which only the club
+  knows from the PDF's actual content) — **not yet done as of this
+  writing.**
 - **Rurok, Volume 2: July Issue (Rotary Year 2026-27)** —
-  `https://heyzine.com/flip-book/a40e3e33de.html`, Featured. Live on
-  Heyzine with blank title/subtitle (see "Automation" above) — this
-  repo's fallback JSON has the real label hardcoded, but the live Sheet
-  row needs the same manual fix once synced.
+  `https://heyzine.com/flip-book/a40e3e33de.html`, now a Past Issues
+  card. **Also still `needs_review = TRUE` and still unfixed** — the
+  manual label fix flagged back when this was Featured (2026-08-24)
+  was never actually made; it's still showing "New Issue – August
+  2026" live as of 2026-09-10, three weeks later. `assets/rurok/
+  issues.json` in this repo intentionally mirrors this placeholder
+  rather than the real label, to stay honest about what's actually live
+  rather than showing a fallback nicer than reality.
 - **Rurok, Volume 1: June Issue (Rotary Year 2026-27)** —
-  `https://heyzine.com/flip-book/1f2a839135.html`, a Past Issues card
-  linking to that same Heyzine page.
+  `https://heyzine.com/flip-book/1f2a839135.html`, a Past Issues card.
+  The only one with its real label — Heyzine's title/subtitle were
+  filled in for this upload.
 
 **Cover images sourced without a headless-browser screenshot this
 time** — a better method than the one used for Volume 1's og:image
