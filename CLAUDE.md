@@ -45,10 +45,9 @@ docs/SERVICE-PROJECTS-DESIGN.md -> data-driven Service Projects rework
 docs/QA-STATUS.md      -> what's actually confirmed live vs. only
                            sandbox-tested, and the open DTC/QA risk list
 docs/RUROK-DESIGN.md   -> Rurok (Digital Bulletin) page design: naming,
-                           3-section page structure, the Heyzine-polling
-                           + 5-flipbook-cap automation (Code.gs v11),
-                           the full publishing workflow, current data
-                           state
+                           featured/past-issues structure, the Heyzine-
+                           polling automation (Code.gs v10), current
+                           data state
 docs/SEO.md            -> SEO checklist to run on any copy-changing
                            commit, per-page audit state, audit history
 docs/BACKEND-CAPABILITY-TEST.md -> what Claude has actually tested (not
@@ -309,19 +308,6 @@ doing any Drive-related content work.
   Heyzine title/subtitle (confirmed live on the current Volume 2 issue)
   still needs one manual label fix per issue; see docs/RUROK-DESIGN.md's
   "Automation" section for exactly what's automated vs. still manual.
-  **Updated 2026-08-25**: `Code.gs v11` adds `enforceHeyzineFlipbookCap_`
-  — once Heyzine holds more than 5 flipbooks, the oldest is archived to
-  a Drive folder and only then deleted from Heyzine, at most one per
-  run. `/rurok/` now has 3 sections (Featured, Past Issues — capped at
-  4 by construction, Archived Issues (PDF) — hidden until anything's
-  ever actually been retired). **Updated 2026-09-10**: the whole
-  pipeline is now confirmed working on a REAL unattended upload, not
-  just sandbox-tested — a 3rd issue uploaded 2026-09-09 was picked up
-  and made Featured automatically, checked directly against the live
-  endpoint. Two `needs_review` label fixes (Volumes 2 and 3) are still
-  outstanding live, though — see docs/RUROK-DESIGN.md's "Current data
-  state" for detail. The cap/archive path still hasn't fired for real
-  yet (only 3 issues exist, well under 5).
 - No automated test suite exists anywhere in this repo (confirmed via
   audit 2026-07-20) — see docs/QA-STATUS.md for the full risk list,
   including which "confirmed working" claims are backed by the user's
