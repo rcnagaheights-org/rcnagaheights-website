@@ -95,12 +95,16 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
 - Every page's social-share preview image (`og:image`/`twitter:image`)
   is now a real photo of the club (`assets/social/og-share.jpg`,
   self-hosted), replacing a generic Pexels stock placeholder that was
-  live on every page until 2026-07-21. Two pages use their own
+  live on every page until 2026-07-21. Three pages use their own
   dedicated image instead of the shared one: `/diskwentulong/`
-  (`assets/diskwentulong/dtc-card-og.jpg`) and `/rurok/`
+  (`assets/diskwentulong/dtc-card-og.jpg`), `/rurok/`
   (`assets/rurok/rurok-og.jpg`, a crop of the current issue's own
   cover — see docs/RUROK-DESIGN.md for why this needs manual updating
-  each time the featured issue changes).
+  each time the featured issue changes), and, **added 2026-09-19**,
+  the homepage `/` itself (`assets/social/homepage-og.jpg` — the real
+  "Rotary Club of Naga Heights" wordmark logo, `assets/header-logo.png`,
+  centered on a plain white 1200x630 canvas, per the user's request
+  that linking the homepage show the logo rather than a club photo).
 - `/verify/` was rebuilt (PRs #68-71) as a single card-styled form/result
   component matching the physical DTC card's navy/gold branding, fixing
   several rounds of real device bugs along the way (font-metric field
