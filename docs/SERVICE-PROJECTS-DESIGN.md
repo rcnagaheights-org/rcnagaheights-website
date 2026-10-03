@@ -1,5 +1,5 @@
 # Service Projects Page — Data-Driven Rework
-Version: v3 · Last updated: 2026-10-03
+Version: v3.1 · Last updated: 2026-10-03
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). **Updated 2026-10-03**: the page
@@ -244,3 +244,40 @@ cards (13 = 14 minus Featured), no console errors. Not yet confirmed via
 the user's own browser against the actual deployed `/projects/` page (the
 HTML change was written and tested but not yet deployed to GitHub Pages
 as of this doc's last update).
+
+## 8. Featured section Share-to-Facebook button (added 2026-10-03)
+A Share button was re-added to the Featured section specifically (the
+old one, documented in docs/PROJECTS-PAGE.md §4, was removed from this
+page entirely in PR #100 — that doc's platform-constraint analysis still
+applies and is the reasoning behind this one too). It's automatically
+in sync with whichever project is currently Featured — there's no
+hardcoded project, it reads from the same `currentFeatured` object
+`renderFeatured()` already populates from the live/fallback data, so a
+new Featured project (whenever its `date` becomes the newest) needs zero
+button-related update.
+
+Two-path behavior, in order:
+1. **Primary — Web Share API with the actual photo file**: fetches the
+   Featured project's own image, wraps it as a `File`, and calls
+   `navigator.share({ files, title, text })`. This is correct
+   per-project on whatever app the visitor's OS share sheet offers
+   (including Facebook's own app on mobile), since it hands over real
+   image bytes, not a URL/OG-tag-dependent link.
+2. **Fallback — Facebook's `sharer.php` link-share**: used only if
+   `navigator.canShare({ files })` isn't supported (common on several
+   desktop browsers) or the share call itself fails for a reason other
+   than the user cancelling. This shares the `/projects/` page URL,
+   which Facebook unfurls using the page's one static `og:image`/
+   description (the generic club photo) — NOT the specific Featured
+   project's own photo. This is an unavoidable platform limitation, not
+   a bug: Facebook's crawler never executes the JS that picks the
+   Featured project, so it can only ever see this page's static meta
+   tags. Accepted as the best available fallback for browsers that
+   can't do the primary, file-based path.
+
+Verified (Playwright, stubbing `navigator.share`/`canShare` both ways):
+primary path correctly fetches the real Featured photo and calls
+`navigator.share` with the right title/text/filename, no fallback
+triggered; forcing the unsupported case correctly opens
+`sharer.php?u=<page-url>` instead. Not yet confirmed on a real device/
+Facebook app by the user.

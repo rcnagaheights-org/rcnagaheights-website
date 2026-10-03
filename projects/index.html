@@ -91,6 +91,12 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
          <h1 id="featured-title" class="text-3xl sm:text-5xl font-bold text-[#0c3c7c]">Our Service Projects</h1>
         </div>
         <p id="featured-desc" class="text-base sm:text-lg text-slate-600 mt-4 text-justify"></p>
+        <button type="button" id="featured-share-btn" class="mt-5 inline-flex items-center gap-2 bg-[#1877f2] text-white font-semibold text-sm px-5 py-2.5 rounded-full hover:brightness-110 transition">
+         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.025 4.388 11.016 10.125 11.927v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.696 4.533-4.696 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.089 24 18.098 24 12.073z"></path>
+         </svg>
+         Share to Facebook
+        </button>
        </div>
       </div>
       <p id="featured-empty" class="modal-hidden text-slate-500 py-10">No projects yet — check back soon.</p>
@@ -230,7 +236,10 @@ document.addEventListener('keydown', function(e){
  * the no-duplication rule (the Featured project is excluded from its
  * own category's carousel below).
  */
+let currentFeatured = null;
+
 function renderFeatured(p){
+  currentFeatured = p;
   document.getElementById('featured-image').src = p.image;
   document.getElementById('featured-image').alt = p.project_name;
   document.getElementById('featured-category').textContent = p.category;
@@ -238,6 +247,52 @@ function renderFeatured(p){
   document.getElementById('featured-desc').textContent = p.description;
   document.getElementById('featured-wrap').classList.remove('modal-hidden');
 }
+
+/**
+ * Shares whichever project is CURRENTLY Featured -- always in sync with
+ * renderFeatured above, so this needs no update when the Featured
+ * project changes (it's driven by the same `date`-sort logic, not a
+ * hardcoded project). Prefers the Web Share API with the actual photo
+ * file (correct per-project image on any target app, including
+ * Facebook's own share sheet on mobile); falls back to Facebook's
+ * sharer.php link-share only where file sharing isn't supported.
+ *
+ * The sharer.php fallback is a known, deliberate compromise, not a bug:
+ * it shares this PAGE's URL, which Facebook unfurls using the page's
+ * one static og:image/description (the generic club photo), not this
+ * specific project's own photo -- unavoidable without server-side
+ * rendering, since Facebook's crawler never executes the JS that
+ * renders the actual Featured project. See docs/PROJECTS-PAGE.md
+ * section 4 for the full platform-constraint writeup (written for the
+ * previous, since-removed Share button, same constraint applies here).
+ */
+async function shareFeatured(){
+  if (!currentFeatured) return;
+  const { project_name, description, image } = currentFeatured;
+
+  let file = null;
+  try {
+    const resp = await fetch(image);
+    const blob = await resp.blob();
+    const ext = (image.split('.').pop() || 'jpg').split('?')[0];
+    file = new File([blob], `${project_name}.${ext}`, { type: blob.type || 'image/jpeg' });
+  } catch (err) {
+    file = null;
+  }
+
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: project_name, text: description });
+      return;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+    }
+  }
+
+  const shareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href);
+  window.open(shareUrl, '_blank', 'noopener,noreferrer,width=600,height=500');
+}
+document.getElementById('featured-share-btn').addEventListener('click', shareFeatured);
 
 function wireCarouselCardEvents(track){
   track.addEventListener('click', function(e){
