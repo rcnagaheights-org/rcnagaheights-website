@@ -1,22 +1,25 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v1.3 · Last updated: 2026-10-03
+Version: v1.4 · Last updated: 2026-10-03
 
 ## Status
-**Design only for the sync job itself (§2b) — NOT implemented.** §2a (the
-category-config extraction prerequisite) IS now implemented and merged
-(PR #135); see its note in §2a below. §2a-2 (`merchant_id` in the live
-feed) and §2b (the sync job) are still proposal-only, written up to be
-reviewed (by Codex, and the user) before any code is written. Neither
-changes how `/diskwentulong/`'s live partner data behaves today.
+**Design only for the sync job itself (§2b) — NOT implemented.** Both
+prerequisites are now done: §2a (category-config extraction, PR #135)
+and §2a-2 (`merchant_id` exposed from the live feed, `Code.gs` v13,
+deployed directly via `clasp` — see its note in §2a-2 below). §2b (the
+sync job itself) remains proposal-only, written up to be reviewed (by
+Codex, and the user) before any code is written. Neither prerequisite
+changed how `/diskwentulong/`'s live partner data renders — §2a-2 only
+adds a new field to the JSON response, nothing reads it yet.
 
 ## 1. What's already automated vs. not
 
 Partner Merchants' **live data** (business name, category, offer details,
-logo filename, Facebook/website URLs) is already fully automated —
-`getPartners_()` in `Code.gs` reads straight from the live Merchants
-Sheet on every page load (see `docs/DTC-DESIGN.md` §5). This is why the
-live category taxonomy has changed — and broken, then self-healed —
-multiple times without any backend change.
+logo filename, Facebook/website URLs, and — as of `Code.gs` v13 —
+`merchant_id`) is already fully automated — `getPartners_()` in
+`Code.gs` reads straight from the live Merchants Sheet on every page
+load (see `docs/DTC-DESIGN.md` §5). This is why the live category
+taxonomy has changed — and broken, then self-healed — multiple times
+without any backend change.
 
 What is **not** automated, and has required a manual sync each time (see
 `CLAUDE.md`'s Current Status for the full history of these):
@@ -54,18 +57,31 @@ rendering — the underlying fetch keeps running and still updates the
 values for any later render). Gives both humans and the sync job one
 clean, machine-parseable source of truth.
 
-### 2a-2. Prerequisite: expose `merchant_id` from the live endpoint
-Checked while addressing review feedback below: `getPartners_()` in
-`Code.gs` currently returns only `name`, `commitment`, `facebook_url`,
+### 2a-2. Prerequisite: expose `merchant_id` from the live endpoint — **DONE (`Code.gs` v13)**
+Found while addressing review feedback below: `getPartners_()` in
+`Code.gs` used to return only `name`, `commitment`, `facebook_url`,
 `website_url`, and `logo` per entry — **no `merchant_id`**. Matching
 sync-job entries by `business_name` would reintroduce exactly the bug
 flagged in review (a name correction like PR #108's "MiPanda Naga"
 would misread as one merchant disappearing and a different one
-appearing, instead of one merchant being edited). This needs a small,
-additive, one-time backend change — add
-`merchant_id: row[col['merchant_id']]` to the object `getPartners_()`
-already builds — made the normal way, via `clasp` + a reviewed PR
-updating `backend/Code.gs`, then redeployed. This is a one-time setup
+appearing, instead of one merchant being edited). This needed a small,
+additive, one-time backend change — added
+`merchant_id: row[col['merchant_id']] || null` to the object
+`getPartners_()` already builds — made the normal way: via `clasp`
+against the real live Apps Script project (`backend/Code.gs` updated in
+the same commit as its tracked mirror), a new version (17) created, and
+the existing live deployment (`AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC`)
+repointed at it — confirmed via a direct Apps Script REST API read of
+the deployment, not just the `clasp deployments` CLI output (which
+showed a stale cached description after the redeploy — see
+`docs/BACKEND-CAPABILITY-TEST.md`). Purely additive — no existing field
+renamed/removed, no other endpoint touched, no new Google API scope
+(unlike the `SpreadsheetApp.openById()` change that caused a real
+deployment-wide outage earlier this session) — so this redeploy carried
+none of that incident's risk. Per standing practice, this environment's
+own tests can't reliably confirm the live `/exec` endpoint — **not yet
+confirmed by the user's own browser that `?action=partners` actually
+returns the new field end-to-end.** This was a one-time setup
 step, not something the sync job itself ever does — see 2c, the job's
 own write scope stays exactly the two JSON files.
 
@@ -193,10 +209,11 @@ write-scope principle already applied to Codex's own read-only role in
 ## 3. Open questions for review
 - Is a new scheduled GitHub Actions workflow an acceptable first piece of
   CI for this repo, given its "no build step" convention so far?
-- 2a (extracting `CATEGORY_ICONS`/`CATEGORY_ORDER` into a JSON file) is
-  done regardless of whether 2b is ever built (see above). Is adding
-  `merchant_id` to `getPartners_()` (2a-2) worth doing the same way, on
-  its own, ahead of 2b?
+- Both prerequisites (2a, 2a-2) are now done ahead of 2b, each as its own
+  small change. Is there any value in validating `merchant_id` actually
+  comes through the live `?action=partners` response (user's own browser,
+  per standing practice) before starting 2b, or is that low-risk enough
+  to just confirm as part of 2b's own first real run?
 - Any further failure mode in the diff logic (section 2b step 3) that's
   still been missed?
 
@@ -230,6 +247,11 @@ write-scope principle already applied to Codex's own read-only role in
   on an un-timed-out `fetch()` could have hung the page indefinitely on
   a stalled same-origin request, fixed by racing the fetch against a
   2-second timeout.
+- **v1.4** (2026-10-03): §2a-2 done — `getPartners_()` now returns
+  `merchant_id` on every entry (`Code.gs` v13, deployed via `clasp`,
+  confirmed live via a direct Apps Script REST API read of the
+  deployment). Purely additive, no new Google API scope, no other
+  endpoint touched. Not yet confirmed by the user's own browser that the
+  new field actually comes through `?action=partners` end-to-end.
 
-§2b (the sync job) and §2a-2 (`merchant_id` in the live feed) remain
-design only — no code written yet for either.
+§2b (the sync job) remains design only — no code written yet for it.
