@@ -1,5 +1,5 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v1 · Last updated: 2026-10-03
+Version: v1.1 · Last updated: 2026-10-03
 
 ## Status
 **Design only, NOT implemented.** Written up specifically to be reviewed
@@ -46,6 +46,21 @@ fetch/`JSON.parse` that file instead of declaring the object inline.
 Gives both humans and the sync job one clean, machine-parseable source
 of truth.
 
+### 2a-2. Prerequisite: expose `merchant_id` from the live endpoint
+Checked while addressing review feedback below: `getPartners_()` in
+`Code.gs` currently returns only `name`, `commitment`, `facebook_url`,
+`website_url`, and `logo` per entry — **no `merchant_id`**. Matching
+sync-job entries by `business_name` would reintroduce exactly the bug
+flagged in review (a name correction like PR #108's "MiPanda Naga"
+would misread as one merchant disappearing and a different one
+appearing, instead of one merchant being edited). This needs a small,
+additive, one-time backend change — add
+`merchant_id: row[col['merchant_id']]` to the object `getPartners_()`
+already builds — made the normal way, via `clasp` + a reviewed PR
+updating `backend/Code.gs`, then redeployed. This is a one-time setup
+step, not something the sync job itself ever does — see 2c, the job's
+own write scope stays exactly the two JSON files.
+
 ### 2b. The sync job itself
 A new GitHub Actions workflow, scheduled daily (same cadence reasoning as
 Rurok's `syncRurokIssues` trigger — merchant updates land irregularly, so
@@ -58,27 +73,62 @@ Steps the job's script performs:
 1. Fetch the same public, credential-free `?action=partners` endpoint the
    live site already calls.
 2. Load the currently-committed `partners.json` and `categories.json`.
-3. Diff:
+   Each committed partner entry must carry the Merchants sheet's own
+   `merchant_id` (e.g. `M-0001`) as its stable identity — **never match
+   or key on `business_name`**, since a name change is itself one of the
+   edit types this job has to detect (see PR #108: a real past name
+   correction, "MiPanda Naga"). `partners.json` doesn't currently store
+   `merchant_id`; adding that field is part of this job's own
+   prerequisite work alongside 2a.
+3. Diff, by `merchant_id`:
    - **New category** → appended to `categories.json` with a placeholder
      icon (reusing the existing generic-icon fallback) — never guesses a
      real one.
-   - **New merchant** → full metadata (name, category, offer text,
-     Facebook/website links, raw logo filename) added to `partners.json`
-     — pure mechanical copying, safe to automate.
-   - **A merchant/category present before but missing from the live feed
-     now** → never auto-removed. Flagged as a warning in the PR body for
-     a human to investigate, matching how every past manual sync has
-     always handled this (explicit "X/Y prior partners still accounted
-     for" reconciliation).
-   - **Logos**: the backend only returns a raw filename string
-     (`logo_file_id`), not an actual Drive file ID or downloadable URL —
-     so logos stay entirely manual, always. The generated PR body lists
-     exactly which new merchants still need a logo downloaded, resized,
-     and committed, as a checklist.
-4. If there's any diff: commit to a fresh branch
-   (`automated/merchants-sync-YYYY-MM-DD`), open a PR against `main`.
-   Never merges. Never pushes to `main` directly.
-5. If there's no diff: does nothing — no empty/noise PRs.
+   - **New merchant** → added to `partners.json` with its text metadata
+     (name, category, offer text, Facebook/website links) copied
+     directly — safe to automate. **`logo` is always set to `null`** on
+     a new entry, never the raw Drive filename: `diskwentulong/
+     index.html` treats that exact field as an already-validated,
+     committed local asset filename (see `docs/DTC-DESIGN.md`'s logo-
+     resolution notes), and the live feed's raw filename (e.g.
+     `Logo.Aran&Co.JPG`) never matches the committed, resized/renamed
+     asset — copying it verbatim would render a broken image. The raw
+     Drive filename is reported only in the PR body's logo checklist,
+     never written into the JSON itself.
+   - **Existing merchant, changed field(s)** (`business_name`,
+     `category`, offer text, `facebook_url`, `website_url`) → update
+     that `merchant_id`'s entry in `partners.json` to match, and list
+     exactly which field(s) changed, for which merchant, in the PR body.
+     `logo` is excluded from this auto-update (stays manual, same
+     reasoning as above). Without this step the committed fallback
+     silently goes stale on edits — this has already happened for real
+     (offer/name changes), and `/verify/` serves that stale fallback
+     whenever the live call is slow or fails.
+   - **A `merchant_id` present before but missing from the live feed
+     now** (i.e. no longer `Active`) → never silently dropped, and never
+     silently left stale either. Opens a PR proposing its *removal* from
+     `partners.json` as the diff — a human reviews and merges (or
+     rejects) that proposal, rather than the job deciding unilaterally.
+     This is the same "propose, don't apply" principle as every other
+     change type here, just for a deletion instead of an addition.
+   - **Logos** in general: the backend only returns a raw filename
+     string (`logo_file_id`), not an actual Drive file ID or downloadable
+     URL — so actually fetching/committing a logo image stays entirely
+     manual, always, for both new and existing merchants. The generated
+     PR body lists exactly which merchants still need a logo downloaded,
+     resized, and committed, as a checklist.
+4. **A PR opens whenever ANY of the above diff types is detected** — new
+   category, new merchant, changed field on an existing merchant, or a
+   proposed removal — even if, in the disappearance-only case, neither
+   JSON file's content actually changes as a result of that detection
+   alone (the proposed-removal diff itself is the content change in that
+   case). The two JSON files are the only things the job's commit
+   touches; everything else (warnings, the logo checklist, which fields
+   changed and why) lives in the PR description, never silently dropped
+   for lack of a file to attach it to. Never merges. Never pushes to
+   `main` directly.
+5. If there is genuinely no detected change of any kind: does nothing —
+   no empty/noise PRs.
 
 Since Codex's automatic GitHub review is now confirmed working (see
 `AGENTS.md` and this session's integration test), a PR this job opens
@@ -97,10 +147,23 @@ write-scope principle already applied to Codex's own read-only role in
 - Is a new scheduled GitHub Actions workflow an acceptable first piece of
   CI for this repo, given its "no build step" convention so far?
 - Is extracting `CATEGORY_ICONS`/`CATEGORY_ORDER` into a JSON file (2a)
-  worth doing as its own prerequisite PR regardless of whether 2b is
-  ever built?
-- Any failure mode in the diff logic (section 2b step 3) that's been
-  missed, especially around the "never auto-remove" rule?
+  and adding `merchant_id` to `getPartners_()` (2a-2) worth doing as
+  their own prerequisite PRs regardless of whether 2b is ever built?
+- Any further failure mode in the diff logic (section 2b step 3) that's
+  still been missed?
+
+## 4. Revision history
+- **v1** (2026-10-03): initial proposal, opened as PR #134.
+- **v1.1** (2026-10-03): revised per Codex's automatic review on #134 —
+  all three findings were valid and are now incorporated: (1) new
+  merchants get `logo: null`, never the raw Drive filename, in
+  `partners.json`; (2) a disappearance-only run now still opens a PR
+  (proposing removal, reviewed by a human) instead of silently
+  producing no diff and no warning; (3) added proper field-diffing for
+  existing merchants, keyed on the Merchants sheet's own `merchant_id`
+  rather than `business_name` (which can itself change — see PR #108) —
+  this in turn surfaced that `merchant_id` isn't in the live feed yet,
+  now its own prerequisite (2a-2).
 
 Not implemented. No code written yet — this file is the entire proposed
 change, pending review.
