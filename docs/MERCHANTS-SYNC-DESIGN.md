@@ -1,15 +1,23 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v1.4 · Last updated: 2026-10-03
+Version: v2.1 · Last updated: 2026-10-03
 
 ## Status
-**Design only for the sync job itself (§2b) — NOT implemented.** Both
-prerequisites are now done: §2a (category-config extraction, PR #135)
-and §2a-2 (`merchant_id` exposed from the live feed, `Code.gs` v13,
-deployed directly via `clasp` — see its note in §2a-2 below). §2b (the
-sync job itself) remains proposal-only, written up to be reviewed (by
-Codex, and the user) before any code is written. Neither prerequisite
-changed how `/diskwentulong/`'s live partner data renders — §2a-2 only
-adds a new field to the JSON response, nothing reads it yet.
+**Built — `.github/workflows/merchants-sync.yml` +
+`.github/scripts/merchants-sync.js` — but BLOCKED from running for
+real.** Both prerequisites are done: §2a (category-config extraction, PR
+#135) and §2a-2 (`merchant_id` exposed from the live feed, `Code.gs`
+v13, deployed via `clasp`). §2b (the sync job itself) is real code,
+unit-tested locally against mocked live data (every diff path: new
+category, new merchant, changed field, proposed removal,
+snapshot-validation failure, and a one-time name-based bootstrap match —
+see §2b's "Implementation notes" below for that last one, a real
+behavior this design didn't originally spell out). **Confirmed blocked
+by an organization-level GitHub policy** that locks `GITHUB_TOKEN` to
+read-only and can't be overridden at the repo level — see §2d for the
+exact fix needed, which requires an organization owner. Until that's
+resolved, the workflow will run on schedule but every attempt to open or
+update a PR will fail. Nothing here has affected `/diskwentulong/` or
+any committed file.
 
 ## 1. What's already automated vs. not
 
@@ -199,6 +207,38 @@ would get the same automatic review as any PR a human or Claude opens —
 a meaningful extra safety net on auto-generated content before anyone
 looks at it.
 
+### 2b-1. Implementation notes — found while actually building this
+Two real details emerged writing `.github/scripts/merchants-sync.js`
+that this design didn't originally spell out:
+
+- **One-time bootstrap matching.** Step 2 above flags that
+  `partners.json`'s existing 49 entries don't carry `merchant_id` yet.
+  The script's first pass pairs each such legacy entry to a live entry
+  by **normalized name** (same normalization `diskwentulong/index.html`
+  already uses for its own logo lookup) — the ONE place this job
+  matches on name rather than `merchant_id`, and only to backfill the
+  id onto an already-existing entry, never to decide a removal. Every
+  pairing is listed in the PR body ("Bootstrap: merchant_id backfilled
+  by name match") so a human can double-check it. A legacy entry with
+  no unambiguous live match is left completely untouched — not removed,
+  not guessed at — and listed separately ("Legacy entries still without
+  a merchant_id") for manual investigation. Unit-tested: a merchant that
+  genuinely disappeared before this job ever ran correctly surfaces as
+  one of these unmatched-legacy entries (conservative: flagged, not
+  deleted), never as a false "proposed removal", since there was no
+  confirmed `merchant_id` for it to go missing from in the first place.
+- **The plausibility floor is based on *confirmed* merchants, not the
+  raw committed count.** A legacy entry that bootstrap can never match
+  (no live counterpart at all) would otherwise permanently inflate the
+  denominator step 3's floor check divides against, eventually making
+  the floor impossible to satisfy even with zero real losses. The floor
+  is instead `min(confirmedCount, max(5, ceil(confirmedCount * 0.5)))`,
+  where `confirmedCount` is the number of committed entries that already
+  carry a `merchant_id` from a prior run. On the very first run this is
+  0 (no prior confirmed baseline exists yet), so the floor is a no-op
+  until one does — the snapshot-validation gate still catches an
+  `{error: ...}` payload or a non-object response regardless.
+
 ### 2c. Scope discipline
 This job only ever touches `assets/merchants/partners.json` and
 `assets/merchants/categories.json` — never `diskwentulong/index.html`'s
@@ -206,16 +246,47 @@ rendering logic, never `Code.gs`, never Google Sheets. Same narrow-
 write-scope principle already applied to Codex's own read-only role in
 `AGENTS.md`, applied here to this new automated actor too.
 
+### 2d. One manual prerequisite before this can open its first PR
+GitHub disables `GITHUB_TOKEN`-authored pull requests by default. Before
+`merchants-sync.yml` can actually open or update a PR (it will otherwise
+fail at the `gh pr create`/`gh pr edit` step with a permissions error),
+a human needs to enable, once: **repo Settings → Actions → General →
+Workflow permissions → "Allow GitHub Actions to create and approve pull
+requests"**. This isn't something available through this session's
+GitHub tools (it's an admin setting, not an API this session's
+credentials cover).
+
+**Confirmed 2026-10-03 (user's own screenshot): this repo's Workflow
+permissions are locked to "Read repository contents and packages
+permissions" (read-only), with both that checkbox AND the "Read and
+write permissions" radio button above it greyed out/unselectable at the
+repo level.** This is an **organization-level policy** overriding the
+repo setting, not just an unchecked repo-level box — the repo-level
+toggle can't even be reached until the org-wide default changes. Fix
+needs an **organization owner**, at the org's own Settings → Actions →
+General (not this repo's settings page) — either loosening the org-wide
+default directly, or enabling a per-repository-override option if the
+org's plan offers one, after which this repo's own toggle becomes
+reachable. Until this is resolved, `merchants-sync.yml` is fully built
+and unit-tested but **cannot open or update any PR against the real
+GitHub API** — its `gh pr create`/`gh pr edit` step will fail with a
+permissions error on every run.
+
 ## 3. Open questions for review
 - Is a new scheduled GitHub Actions workflow an acceptable first piece of
   CI for this repo, given its "no build step" convention so far?
-- Both prerequisites (2a, 2a-2) are now done ahead of 2b, each as its own
-  small change. Is there any value in validating `merchant_id` actually
-  comes through the live `?action=partners` response (user's own browser,
-  per standing practice) before starting 2b, or is that low-risk enough
-  to just confirm as part of 2b's own first real run?
-- Any further failure mode in the diff logic (section 2b step 3) that's
-  still been missed?
+- The first real run will bootstrap-match (or flag as unmatched) all 49
+  currently-committed partners in one go, likely producing one unusually
+  large first PR (compared to the small incremental diffs expected on
+  every later run). Is that acceptable as a one-time event, or should the
+  very first run be done manually (`workflow_dispatch`) and reviewed with
+  extra care rather than waiting for the daily schedule to trigger it?
+- §2d's repository setting ("Allow GitHub Actions to create and approve
+  pull requests") needs a human to enable it — is that done, or still
+  pending?
+- Any further failure mode in the diff logic (section 2b step 3, or the
+  bootstrap-matching/plausibility-floor behavior in 2b-1) that's still
+  been missed?
 
 ## 4. Revision history
 - **v1** (2026-10-03): initial proposal, opened as PR #134.
@@ -253,5 +324,26 @@ write-scope principle already applied to Codex's own read-only role in
   deployment). Purely additive, no new Google API scope, no other
   endpoint touched. Not yet confirmed by the user's own browser that the
   new field actually comes through `?action=partners` end-to-end.
-
-§2b (the sync job) remains design only — no code written yet for it.
+- **v2** (2026-10-03): §2b built — `.github/workflows/merchants-sync.yml`
+  (scheduled daily + `workflow_dispatch`) and
+  `.github/scripts/merchants-sync.js` (the diff engine). Unit-tested
+  locally against mocked live data for every diff path, including a
+  full end-to-end run against the real committed `partners.json`
+  (49 entries). Two real design details surfaced while writing the code
+  and are documented in the new §2b-1: the one-time name-based bootstrap
+  match for legacy entries without `merchant_id`, and why the
+  plausibility floor is based on *confirmed* merchants rather than the
+  raw committed count (a legacy entry bootstrap can never match would
+  otherwise permanently inflate the denominator). New §2d documents one
+  manual repository-setting prerequisite this session can't set itself.
+  **Not yet triggered against the real live endpoint or confirmed
+  working end-to-end** — pending §2d's manual setting and a first
+  `workflow_dispatch` run.
+- **v2.1** (2026-10-03): §2d updated with what the user's own screenshot
+  confirmed — this isn't a simple unchecked repo-level box. Workflow
+  permissions are locked to read-only at the **organization** level,
+  with the repo's own "Read and write permissions" radio button itself
+  greyed out/unreachable, not just the PR-creation checkbox beneath it.
+  Needs an organization owner at the org's own Actions settings, not
+  this repo's. Confirmed the workflow is fully blocked from opening or
+  updating any real PR until that's resolved.
