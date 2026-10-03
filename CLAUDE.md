@@ -64,6 +64,12 @@ docs/SEO.md            -> SEO checklist to run on any copy-changing
                            commit, per-page audit state, audit history
 docs/BACKEND-CAPABILITY-TEST.md -> what Claude has actually tested (not
                            assumed) it can/can't do against Drive/Sheets
+docs/MERCHANTS-SYNC-DESIGN.md -> design proposal (2026-10-03, NOT yet
+                           implemented) for a scheduled job that detects
+                           new Partner Merchants categories/entries and
+                           opens a PR with the diff, mirroring the
+                           review-preserving pattern already used for
+                           Rurok's automation
 docs/Rotarians.md      -> /rotarians/ roster rules, incl. the Council of
                            Presidents section (added 2026-07-21) and how
                            to update it each Rotary Year
