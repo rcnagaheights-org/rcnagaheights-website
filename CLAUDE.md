@@ -387,9 +387,12 @@ doing any Drive-related content work.
   docs/SERVICE-PROJECTS-DESIGN.md §8. True per-project Facebook preview
   CARDS (showing that project's own photo, not the generic club photo)
   are NOT implemented — confirmed not possible without a real
-  architecture change (static per-build pages, or a dynamic OG endpoint
-  on the Apps Script backend); see §9 for the 3 options and their
-  tradeoffs, awaiting the user's decision.
+  architecture change; the user explicitly chose to accept the generic
+  page-level preview for now (Option C) rather than build a static-page
+  generation step or an Apps-Script-hosted OG workaround — see §9 for
+  the 3 options weighed and a technical recommendation for later
+  automating static per-project share pages via `clasp`, if ever
+  revisited.
 
 ## Keep this file updated
 After a change affecting "Current status" or "Known placeholders," update

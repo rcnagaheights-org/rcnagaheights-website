@@ -1,5 +1,5 @@
 # Service Projects Page — Data-Driven Rework
-Version: v4 · Last updated: 2026-10-03
+Version: v4.1 · Last updated: 2026-10-03
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). **Updated 2026-10-03**: the page
@@ -380,11 +380,50 @@ sharing already works (every other page's social preview is one static
 image too). The tradeoff is purely cosmetic (a shared project's
 Facebook card shows the club's general photo, not that project's own).
 
-No option was implemented pending the user's decision.
+### Decision — 2026-10-03: Option C, for now
+The user chose Option C: ship the per-project share/URL system in
+section 8 as-is, accept the generic page-level OG preview, and
+explicitly do NOT build Option B (the Apps Script OG workaround) — its
+non-`rcnagaheights.org` share URL was judged not worth the brand/trust
+tradeoff. docs/PROJECTS-PAGE.md §4 (the original platform-constraint
+writeup this all traces back to) has been cross-referenced to this
+decision.
+
+### Future enhancement — automating Option A via `clasp`
+Not built now, but worth real consideration later, flagged per the
+user's request: Option A's usual objection ("a build step, and
+something has to re-run it whenever the Sheet changes") is weaker than
+it used to be, now that `clasp` gives direct, scriptable read access to
+the live "Service Projects" Sheet (confirmed working — see
+docs/BACKEND-CAPABILITY-TEST.md). A concrete shape this could take:
+
+1. A small script (Node, run in CI) calls the already-live
+   `?action=projects` endpoint — no `clasp`/OAuth needed for this part,
+   it's just a public GET, same as the browser does today.
+2. For each project, render a minimal static HTML file (e.g.
+   `projects/share/<slug>/index.html`) containing just that project's
+   real `og:title`/`og:description`/`og:image` tags plus a
+   meta-refresh/JS redirect on to `/projects/?project=<slug>` for human
+   visitors — Facebook's crawler only ever needs to read the static
+   tags, never follows the redirect.
+3. Run this on a schedule (e.g. a daily GitHub Action) that diffs the
+   generated output against what's committed and **opens a PR with the
+   diff** rather than pushing straight to `main` — deliberately
+   preserving human review for anything that changes this repo, the
+   same reasoning already applied to Rurok's PDF-archival automation
+   (see `Code.gs`'s own v10/v11 header comment: a scheduled trigger
+   should not be able to push unreviewed content to the live site).
+
+This would need: a new `projects/share/` (or similar) directory
+convention, a tiny render script and its own GitHub Action workflow
+(new CI surface for a repo that currently has none beyond GitHub Pages'
+own deploy), and share links updated to point at
+`/projects/share/<slug>/` instead of `/projects/?project=<slug>`
+directly. None of this is implemented — this is a recommendation for a
+future task, not a plan already in motion.
 
 Verified (Playwright, stubbing `navigator.share`/`canShare` both ways):
-primary path correctly fetches the real Featured photo and calls
-`navigator.share` with the right title/text/filename, no fallback
-triggered; forcing the unsupported case correctly opens
-`sharer.php?u=<page-url>` instead. Not yet confirmed on a real device/
+see section 8's own verification note — covers both the Featured
+section and an arbitrary carousel card via the lightbox, plus the
+`?project=<slug>` restore path. Not yet confirmed on a real device/
 Facebook app by the user.
