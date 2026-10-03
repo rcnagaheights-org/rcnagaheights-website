@@ -1,5 +1,5 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v1.1 · Last updated: 2026-10-03
+Version: v1.2 · Last updated: 2026-10-03
 
 ## Status
 **Design only, NOT implemented.** Written up specifically to be reviewed
@@ -111,6 +111,23 @@ Steps the job's script performs:
      rejects) that proposal, rather than the job deciding unilaterally.
      This is the same "propose, don't apply" principle as every other
      change type here, just for a deletion instead of an addition.
+     **Gated on a snapshot-validation check, run before any removal
+     reconciliation**: `Code.gs`'s `doGet`/`jsonResponse_` wraps any
+     caught exception into an HTTP-200 `{error: ...}` payload rather than
+     a non-200 status (see `backend/Code.gs:131-149`), and
+     `docs/DTC-DESIGN.md:527-534` documents that the partners response
+     can legitimately come back empty or erroring — so a plain "missing
+     from this fetch = gone" rule would treat a transient backend hiccup
+     as *every* merchant disappearing at once, generating a single PR
+     that proposes deleting the entire fallback. Before running any
+     disappearance diff, the job must confirm the fetched response: (a)
+     parses as the expected shape (a list of merchant objects, not an
+     `{error: ...}` payload), (b) contains a plausible nonempty count of
+     merchants (e.g. not fewer than some small floor, well under the
+     previously-committed count), and (c) has unique, nonempty
+     `merchant_id` values throughout. If any of those checks fail, the
+     job aborts immediately — no JSON file changes, no PR, just a logged
+     skip — rather than treating a bad fetch as a mass removal.
    - **Logos** in general: the backend only returns a raw filename
      string (`logo_file_id`), not an actual Drive file ID or downloadable
      URL — so actually fetching/committing a logo image stays entirely
@@ -127,8 +144,30 @@ Steps the job's script performs:
    changed and why) lives in the PR description, never silently dropped
    for lack of a file to attach it to. Never merges. Never pushes to
    `main` directly.
-5. If there is genuinely no detected change of any kind: does nothing —
-   no empty/noise PRs.
+   **Reconciles against an already-open sync PR first, rather than
+   always opening a new one**: the job always commits to the same
+   reserved branch name (e.g. `automated/merchants-sync`), never a
+   fresh/timestamped one. Before creating a PR, it checks whether a PR
+   from that branch is already open:
+   - If one is open, the job pushes its newly-computed diff as a new
+     commit onto that same branch (force-pushing a freshly regenerated
+     version of the two JSON files, since each run recomputes the full
+     diff against current `main` rather than layering onto a prior
+     run's output) and updates the PR body in place, rather than opening
+     a second, duplicate PR for the same drift. A human re-reviewing a
+     PR that changed since they last looked is an accepted, ordinary
+     part of this flow — the same way a human force-push to update an
+     open PR already behaves on this repo.
+   - If no PR is open from that branch (none ever existed, or the last
+     one was merged/closed), the job creates a new one as described
+     above.
+   - If the newly-computed diff is empty relative to current `main` but
+     a sync PR is still open from an earlier run, the job leaves that PR
+     exactly as-is (still open, unmerged) rather than closing it out
+     from under the human reviewing it — closing/merging a PR is always
+     a human action here, never this job's.
+5. If there is genuinely no detected change of any kind, and no sync PR
+   is already open: does nothing — no empty/noise PRs.
 
 Since Codex's automatic GitHub review is now confirmed working (see
 `AGENTS.md` and this session's integration test), a PR this job opens
@@ -164,6 +203,15 @@ write-scope principle already applied to Codex's own read-only role in
   rather than `business_name` (which can itself change — see PR #108) —
   this in turn surfaced that `merchant_id` isn't in the live feed yet,
   now its own prerequisite (2a-2).
+- **v1.2** (2026-10-03): revised per Codex's second automatic review on
+  #134 — both findings were valid and are now incorporated: (1) added a
+  snapshot-validation gate (expected shape, plausible nonempty merchant
+  count, unique nonempty `merchant_id` values) that must pass before any
+  removal-reconciliation runs, so a transient backend error/empty
+  response can never be misread as every merchant disappearing at once;
+  (2) added an idempotent PR lifecycle — the job always commits to the
+  same reserved branch and updates an already-open sync PR in place
+  instead of opening a duplicate on every scheduled run.
 
 Not implemented. No code written yet — this file is the entire proposed
 change, pending review.
