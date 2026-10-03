@@ -135,11 +135,15 @@ function validateSnapshot(response, committedPartners) {
 
   const idsPresent = flat.filter(p => p.merchant_id);
   if (idsPresent.length !== flat.length) {
-    problems.push(`${flat.length - idsPresent.length} merchant(s) in the live response have a missing/empty merchant_id`);
+    const nameless = flat.filter(p => !p.merchant_id).map(p => p.name);
+    problems.push(`${flat.length - idsPresent.length} merchant(s) in the live response have a missing/empty merchant_id: ${nameless.join(', ')}`);
   }
-  const uniqueIds = new Set(idsPresent.map(p => p.merchant_id));
-  if (uniqueIds.size !== idsPresent.length) {
-    problems.push(`live response contains duplicate merchant_id values (${idsPresent.length} entries, ${uniqueIds.size} unique)`);
+  const countsById = new Map();
+  idsPresent.forEach(p => countsById.set(p.merchant_id, (countsById.get(p.merchant_id) || []).concat(p.name)));
+  const duplicates = [...countsById.entries()].filter(([, names]) => names.length > 1);
+  if (duplicates.length) {
+    const detail = duplicates.map(([id, names]) => `${id} used by [${names.join(', ')}]`).join('; ');
+    problems.push(`live response contains duplicate merchant_id values (${idsPresent.length} entries, ${countsById.size} unique): ${detail}`);
   }
 
   return { ok: problems.length === 0, problems, flat };
