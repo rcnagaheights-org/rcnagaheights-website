@@ -93,10 +93,10 @@ for context, not as current operational guidance:
 - Partner logo image files — still entirely manual, always (the live
   feed only exposes a raw Drive filename, never a usable URL — see
   step 3 below).
-- `assets/merchants/live-snapshot.json` — a manual diff baseline from
-  before this job existed, superseded by it; never auto-updated, and now
-  arguably safe to delete (not read by the live site) — not yet done,
-  not blocking anything.
+- ~~`assets/merchants/live-snapshot.json` — a manual diff baseline from
+  before this job existed~~ — **removed**: fully superseded by this job
+  (never read by the live site, never auto-updated, and the sync job's
+  own diff is now the authoritative baseline).
 
 ## 2. Proposal: a scheduled sync job that opens a PR, never commits directly
 
