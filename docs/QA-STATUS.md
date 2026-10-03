@@ -48,12 +48,19 @@ Sign-In/Apps Script flow.
 - The two most recent hero/about-image mobile aspect-ratio fixes
   (commits `f0dc565`, `254f24a`) — landed after the last live
   screenshot confirmation, verified only via local Playwright.
-- The Service Projects data-driven rework's carousel/prev-next/lightbox
-  behavior with more than one project per category — verified only
-  with temporary test-only entries in the sandbox (never committed,
-  never seen by the user), since only one real Tracker row exists so
-  far. Re-verify live once a 2nd real project with a real photo lands
-  in a category.
+- **PARTIALLY RESOLVED**: the original gap this entry flagged — the
+  Service Projects carousel/prev-next/lightbox behavior with more than
+  one project per category, once only sandbox-verified with temporary
+  test-only entries (never committed) — is production-confirmed as of
+  2026-08-15: all 14 real Tracker rows are live, spanning both category
+  groups with multiple entries each. Still open: the 2026-10-03
+  live-sync rework (docs/SERVICE-PROJECTS-DESIGN.md §7) that replaced
+  the static JSON this behavior used to render from has itself only
+  been verified the same way this entry used to flag as a gap —
+  locally via Playwright against the real live backend (4 Areas of
+  Focus + 9 Avenues of Service cards, Featured correctly picked), not
+  yet reconfirmed by the user against the actual deployed GitHub Pages
+  site.
 - Any Code.gs change made in a sandboxed session can never be
   self-verified end-to-end before being handed to the user — this is a
   structural limitation (script.google.com is unreachable), not
