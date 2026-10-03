@@ -388,24 +388,20 @@ with a synthetic unrecognized category injected directly into
 silent gap — and re-confirmed the real 46-partner live data still
 renders identically to before (17 tiles, same order, same counts).
 
-**Live-data snapshot file added, 2026-08-17.**
-`assets/merchants/live-snapshot.json` is a raw, unmodified mirror of
-the live `getPartners` response (Sheet's own field names, raw Drive
-logo filenames, live category strings) plus a `fetched_at` date —
-*not* a duplicate of `partners.json` in purpose, even though the
-underlying merchant data overlaps. `partners.json` is the processed,
-site-serving file (simplified logo filenames, categories matched to
-`CATEGORY_ORDER`); the snapshot is an undigested diff baseline, read by
-nobody but whoever is reconciling the two, and only ever updated when
-explicitly asked to sync merchants — it is not fetched automatically
-and does not by itself detect drift. The intended workflow: fetch live,
-diff it against this file (a plain JSON diff catches every change,
-not just the ones normalization happens to preserve), apply only the
-real deltas to `partners.json`/`CATEGORY_ORDER`/`CATEGORY_ICONS`, then
-overwrite the snapshot with the new fetch. This complements the
-resilience fix above rather than replacing it — the snapshot makes a
-manual sync fast and precise; the resilience fix means a sync that
-never happens degrades gracefully instead of breaking the page.
+**Live-data snapshot file added 2026-08-17, removed 2026-10-03 —
+superseded by automation.** `assets/merchants/live-snapshot.json` used
+to be a raw, unmodified mirror of the live `getPartners` response kept
+as a manual diff baseline: fetch live, diff it against this file, apply
+only the real deltas to `partners.json`/`CATEGORY_ORDER`/
+`CATEGORY_ICONS` by hand, then overwrite the snapshot with the new
+fetch. **This manual workflow is no longer how merchant syncing
+happens.** It's now done by the Partner Merchants Sync job — a
+scheduled GitHub Action that performs this same kind of diff
+automatically and opens a PR with the result, confirmed working
+end-to-end (see `docs/MERCHANTS-SYNC-DESIGN.md`, including its §2b-1 for
+the one-time migration this repo's committed data went through). Do not
+try to recreate or manually diff against `live-snapshot.json` — it's
+gone, and the sync job is the current source of truth for this process.
 
 **Category taxonomy changed a third time, 2026-08-17 — the resilience
 fix's fallback caught it live, working exactly as designed.** The user

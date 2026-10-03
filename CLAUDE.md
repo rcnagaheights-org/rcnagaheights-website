@@ -277,7 +277,9 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   hiding its partners. Also added `assets/merchants/live-snapshot.json`,
   a raw mirror of the live `getPartners` response kept only as a manual
   diff baseline for future syncs (not read by the live site, not
-  auto-updated). **Updated again 2026-08-17**: categories changed a
+  auto-updated) — **removed 2026-10-03**, superseded by the automated
+  Partner Merchants Sync job (see its entry further below and
+  docs/MERCHANTS-SYNC-DESIGN.md). **Updated again 2026-08-17**: categories changed a
   third time (16 categories now, down from 17) — `Home & Car Care`/
   `Home Essentials` merged into one `Home & Car Essentials`, 2 more
   renamed. This time the resilience fix caught it live exactly as
