@@ -91,11 +91,9 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
          <h1 id="featured-title" class="text-3xl sm:text-5xl font-bold text-[#0c3c7c]">Our Service Projects</h1>
         </div>
         <p id="featured-desc" class="text-base sm:text-lg text-slate-600 mt-4 text-justify"></p>
-        <button type="button" id="featured-share-btn" class="mt-5 inline-flex items-center gap-2 bg-[#1877f2] text-white font-semibold text-sm px-5 py-2.5 rounded-full hover:brightness-110 transition">
-         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.025 4.388 11.016 10.125 11.927v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.696 4.533-4.696 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.089 24 18.098 24 12.073z"></path>
-         </svg>
-         Share to Facebook
+        <button type="button" class="share-btn mt-5 inline-flex items-center gap-2 bg-[#17458f] text-white font-semibold text-sm px-5 py-2.5 rounded-full hover:brightness-110 transition">
+         <i data-lucide="share-2" class="w-4 h-4"></i>
+         Share
         </button>
        </div>
       </div>
@@ -142,9 +140,29 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
      <div class="bg-white p-5 flex flex-col flex-1 min-h-0 overflow-hidden">
       <p id="lightbox-title" class="text-[#0c3c7c] font-bold text-lg shrink-0"></p>
       <p id="lightbox-desc" class="text-slate-600 text-sm mt-3 leading-relaxed text-justify overflow-y-auto min-h-0"></p>
+      <button type="button" class="share-btn mt-4 shrink-0 self-start inline-flex items-center gap-2 bg-[#17458f] text-white font-semibold text-sm px-5 py-2.5 rounded-full hover:brightness-110 transition">
+       <i data-lucide="share-2" class="w-4 h-4"></i>
+       Share
+      </button>
      </div>
     </div>
    </div>
+  </div>
+
+  <!-- Share fallback menu: shown instead of the native share sheet when
+       navigator.share isn't available. Positioned next to whichever
+       .share-btn was clicked. -->
+  <div id="share-fallback-menu" class="modal-hidden fixed z-[80] bg-white rounded-xl shadow-xl border py-2 w-48">
+   <button type="button" id="share-fb-btn" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#17324d] hover:bg-slate-50 text-left">
+    <svg class="w-4 h-4 text-[#1877f2]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+     <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.025 4.388 11.016 10.125 11.927v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.696 4.533-4.696 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.49 0-1.956.931-1.956 1.887v2.262h3.328l-.532 3.49h-2.796V24C19.612 23.089 24 18.098 24 12.073z"></path>
+    </svg>
+    Share to Facebook
+   </button>
+   <button type="button" id="share-copy-btn" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#17324d] hover:bg-slate-50 text-left">
+    <i data-lucide="link" class="w-4 h-4 text-slate-500"></i>
+    <span id="share-copy-label">Copy link</span>
+   </button>
   </div>
 <footer id="global-footer" class="bg-[#071f47] text-white py-12">
    <div class="max-w-7xl mx-auto px-4 sm:px-6">
@@ -210,16 +228,21 @@ const lightboxImg = document.getElementById('lightbox-img');
 const lightboxTitle = document.getElementById('lightbox-title');
 const lightboxDesc = document.getElementById('lightbox-desc');
 
-function openLightbox(title, imgUrl, desc){
-  lightboxTitle.textContent = title;
-  lightboxImg.src = imgUrl;
-  lightboxImg.alt = title;
-  lightboxDesc.textContent = desc || '';
+let currentLightboxProject = null;
+
+/** Takes a full project object (not just title/img/desc) so its own Share button works. */
+function openLightbox(project){
+  currentLightboxProject = project;
+  lightboxTitle.textContent = project.project_name;
+  lightboxImg.src = project.image;
+  lightboxImg.alt = project.project_name;
+  lightboxDesc.textContent = project.description || '';
   lightboxModal.classList.remove('modal-hidden');
 }
 function closeLightbox(){
   lightboxModal.classList.add('modal-hidden');
   lightboxImg.src = '';
+  currentLightboxProject = null;
 }
 document.getElementById('lightbox-close-btn').addEventListener('click', closeLightbox);
 lightboxModal.addEventListener('click', function(e){
@@ -227,6 +250,139 @@ lightboxModal.addEventListener('click', function(e){
 });
 document.addEventListener('keydown', function(e){
   if (e.key === 'Escape') closeLightbox();
+});
+
+/**
+ * Deterministic slug for a project's own shareable URL
+ * (?project=<slug>) -- same function used both to build a share link
+ * and to resolve an incoming one back to a project, so every current
+ * and future project gets a working URL automatically with no
+ * hardcoded list. Strips accents so names like "Café" slugify
+ * predictably.
+ */
+function slugify(str){
+  return String(str || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function projectUrl(project){
+  return `${window.location.origin}${window.location.pathname}?project=${encodeURIComponent(slugify(project.project_name))}`;
+}
+
+let shareFallbackTarget = null; // the project currently bound to the open fallback menu
+
+function openShareFallbackMenu(anchorBtn, project){
+  shareFallbackTarget = project;
+  const menu = document.getElementById('share-fallback-menu');
+  const rect = anchorBtn.getBoundingClientRect();
+  const estimatedMenuHeight = 100;
+  const top = (rect.bottom + 8 + estimatedMenuHeight > window.innerHeight)
+    ? Math.max(8, rect.top - estimatedMenuHeight - 8)
+    : rect.bottom + 8;
+  menu.style.top = `${top}px`;
+  menu.style.left = `${Math.min(rect.left, window.innerWidth - 200)}px`;
+  menu.classList.remove('modal-hidden');
+  document.getElementById('share-copy-label').textContent = 'Copy link';
+}
+function closeShareFallbackMenu(){
+  document.getElementById('share-fallback-menu').classList.add('modal-hidden');
+  shareFallbackTarget = null;
+}
+document.addEventListener('click', function(e){
+  const menu = document.getElementById('share-fallback-menu');
+  if (menu.classList.contains('modal-hidden')) return;
+  if (!menu.contains(e.target) && !e.target.closest('.share-btn')) closeShareFallbackMenu();
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeShareFallbackMenu();
+});
+
+document.getElementById('share-fb-btn').addEventListener('click', function(){
+  if (!shareFallbackTarget) return;
+  const shareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(projectUrl(shareFallbackTarget));
+  window.open(shareUrl, '_blank', 'noopener,noreferrer,width=600,height=500');
+  closeShareFallbackMenu();
+});
+document.getElementById('share-copy-btn').addEventListener('click', async function(){
+  if (!shareFallbackTarget) return;
+  const url = projectUrl(shareFallbackTarget);
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch (err) {
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e2) { /* ignore */ }
+    document.body.removeChild(ta);
+  }
+  document.getElementById('share-copy-label').textContent = 'Copied!';
+  setTimeout(closeShareFallbackMenu, 900);
+});
+
+/**
+ * Shares a specific project -- works for the Featured section's button
+ * and every lightbox's button alike, since both just pass their own
+ * current project object. Prefers the Web Share API with the actual
+ * photo file (lets the OS share sheet offer Facebook, Messenger, Viber,
+ * WhatsApp, SMS, Copy Link, or any other installed app -- nothing here
+ * is hardcoded to a specific target app); falls back to the small
+ * Facebook/Copy Link menu above only where file sharing isn't
+ * supported, or the share call fails for a reason other than the user
+ * cancelling.
+ *
+ * The fallback's shared URL (?project=<slug>) correctly deep-links a
+ * human back to this exact project (see the restore-on-load logic
+ * below), but Facebook's own preview card for that link will still
+ * show this page's generic static og:image/description, not this
+ * project's own photo -- Facebook's crawler never executes this JS.
+ * See docs/PROJECTS-PAGE.md section 4 and docs/SERVICE-PROJECTS-DESIGN.md
+ * section 8 for the full platform-constraint writeup; fixing that part
+ * needs an architecture change, tracked separately, not implemented here.
+ */
+async function shareProject(project, anchorBtn){
+  const { project_name, description, image } = project;
+  const url = projectUrl(project);
+
+  let file = null;
+  try {
+    const resp = await fetch(image);
+    const blob = await resp.blob();
+    const ext = (image.split('.').pop() || 'jpg').split('?')[0];
+    file = new File([blob], `${project_name}.${ext}`, { type: blob.type || 'image/jpeg' });
+  } catch (err) {
+    file = null;
+  }
+
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: project_name, text: description, url });
+      return;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+    }
+  } else if (navigator.share && navigator.canShare && navigator.canShare({ url })) {
+    try {
+      await navigator.share({ title: project_name, text: description, url });
+      return;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+    }
+  }
+
+  openShareFallbackMenu(anchorBtn, project);
+}
+
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.share-btn');
+  if (!btn) return;
+  const project = btn.closest('#lightbox-modal') ? currentLightboxProject : currentFeatured;
+  if (project) shareProject(project, btn);
 });
 
 /**
@@ -248,61 +404,22 @@ function renderFeatured(p){
   document.getElementById('featured-wrap').classList.remove('modal-hidden');
 }
 
-/**
- * Shares whichever project is CURRENTLY Featured -- always in sync with
- * renderFeatured above, so this needs no update when the Featured
- * project changes (it's driven by the same `date`-sort logic, not a
- * hardcoded project). Prefers the Web Share API with the actual photo
- * file (correct per-project image on any target app, including
- * Facebook's own share sheet on mobile); falls back to Facebook's
- * sharer.php link-share only where file sharing isn't supported.
- *
- * The sharer.php fallback is a known, deliberate compromise, not a bug:
- * it shares this PAGE's URL, which Facebook unfurls using the page's
- * one static og:image/description (the generic club photo), not this
- * specific project's own photo -- unavoidable without server-side
- * rendering, since Facebook's crawler never executes the JS that
- * renders the actual Featured project. See docs/PROJECTS-PAGE.md
- * section 4 for the full platform-constraint writeup (written for the
- * previous, since-removed Share button, same constraint applies here).
- */
-async function shareFeatured(){
-  if (!currentFeatured) return;
-  const { project_name, description, image } = currentFeatured;
-
-  let file = null;
-  try {
-    const resp = await fetch(image);
-    const blob = await resp.blob();
-    const ext = (image.split('.').pop() || 'jpg').split('?')[0];
-    file = new File([blob], `${project_name}.${ext}`, { type: blob.type || 'image/jpeg' });
-  } catch (err) {
-    file = null;
-  }
-
-  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-    try {
-      await navigator.share({ files: [file], title: project_name, text: description });
-      return;
-    } catch (err) {
-      if (err && err.name === 'AbortError') return;
-    }
-  }
-
-  const shareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href);
-  window.open(shareUrl, '_blank', 'noopener,noreferrer,width=600,height=500');
-}
-document.getElementById('featured-share-btn').addEventListener('click', shareFeatured);
-
 function wireCarouselCardEvents(track){
   track.addEventListener('click', function(e){
     const card = e.target.closest('.carousel-card');
-    if (card) openLightbox(card.dataset.title, card.dataset.img, card.dataset.desc);
+    if (card) {
+      const project = allProjects.find(function(p){ return slugify(p.project_name) === card.dataset.slug; });
+      if (project) openLightbox(project);
+    }
   });
   track.addEventListener('keydown', function(e){
     if (e.key !== 'Enter' && e.key !== ' ') return;
     const card = e.target.closest('.carousel-card');
-    if (card) { e.preventDefault(); openLightbox(card.dataset.title, card.dataset.img, card.dataset.desc); }
+    if (card) {
+      e.preventDefault();
+      const project = allProjects.find(function(p){ return slugify(p.project_name) === card.dataset.slug; });
+      if (project) openLightbox(project);
+    }
   });
 }
 
@@ -326,7 +443,7 @@ function renderCarousel(key, items){
   controls.classList.add('flex');
 
   track.innerHTML = items.map(function(p){
-    return `<div class="carousel-card lift rounded-2xl overflow-hidden border cursor-pointer shrink-0 snap-start w-64" role="button" tabindex="0" data-title="${escapeHtml(p.project_name)}" data-img="${escapeHtml(p.image)}" data-desc="${escapeHtml(p.description || '')}">
+    return `<div class="carousel-card lift rounded-2xl overflow-hidden border cursor-pointer shrink-0 snap-start w-64" role="button" tabindex="0" data-slug="${escapeHtml(slugify(p.project_name))}">
       <img class="w-full h-40 object-cover" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.project_name)}" loading="lazy">
       <div class="p-4">
        <b class="block text-sm text-[#17324d]">${escapeHtml(p.project_name)}</b>
@@ -371,6 +488,8 @@ const IMAGE_BY_PROJECT = {
   "GOVERNOR'S VISIT": '/assets/service-projects/avenues-of-service/governors-visit.jpg'
 };
 
+let allProjects = [];
+
 function renderProjects(projects){
   if (!projects.length) {
     document.getElementById('featured-empty').classList.remove('modal-hidden');
@@ -382,11 +501,37 @@ function renderProjects(projects){
     return Object.assign({}, p, { image: IMAGE_BY_PROJECT[p.project_name] || PLACEHOLDER_IMAGE });
   });
   const sorted = withImages.slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+  allProjects = sorted;
   const featured = sorted[0];
   const rest = sorted.slice(1);
   renderFeatured(featured);
   renderCarousel('areas_of_focus', rest.filter(function(p){ return p.category_group === 'areas_of_focus'; }));
   renderCarousel('avenues_of_service', rest.filter(function(p){ return p.category_group === 'avenues_of_service'; }));
+  restoreSharedProject();
+}
+
+/**
+ * Restores a project shared via ?project=<slug> (see projectUrl/slugify
+ * above): opens its lightbox and briefly highlights + scrolls to its
+ * carousel card if it has one (the Featured project has no carousel
+ * card of its own -- its own section is already the focus). Silently
+ * does nothing if the slug doesn't match any current project (e.g. a
+ * stale/bookmarked link to a project that no longer exists).
+ */
+function restoreSharedProject(){
+  const slug = new URLSearchParams(window.location.search).get('project');
+  if (!slug) return;
+  const project = allProjects.find(function(p){ return slugify(p.project_name) === slug; });
+  if (!project) return;
+
+  openLightbox(project);
+
+  const card = document.querySelector(`.carousel-card[data-slug="${CSS.escape(slug)}"]`);
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    card.classList.add('ring-4', 'ring-[#f7a81b]');
+    setTimeout(function(){ card.classList.remove('ring-4', 'ring-[#f7a81b]'); }, 2500);
+  }
 }
 
 /**

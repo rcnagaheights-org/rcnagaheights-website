@@ -1,5 +1,5 @@
 # Service Projects Page — Workflow & Design Detail (SUPERSEDED)
-Version: v1.1 · Last updated: 2026-07-20
+Version: v1.2 · Last updated: 2026-10-03
 
 ## Status
 **SUPERSEDED as of 2026-07-20 by docs/SERVICE-PROJECTS-DESIGN.md.**
@@ -7,9 +7,21 @@ Version: v1.1 · Last updated: 2026-07-20
 design that no longer exists in `projects/index.html` — it was fully
 replaced by a data-driven page organized by Rotary's Areas of Focus /
 Avenues of Service. Kept here for history only; do not treat §1-3 as
-current. **§4 (Share button) and §5 still apply** — the new page
-carried forward the same `shareProject()` mechanism and lightbox
-pattern unchanged, just fed by different data.
+current.
+
+**§4 (Share button platform constraints) is still the correct
+reasoning, but the mechanism it originally described is NOT what's
+live.** That `shareProject()` was actually removed entirely (PR #100),
+then rebuilt from scratch and generalized to every project on
+2026-10-03 — see docs/SERVICE-PROJECTS-DESIGN.md §8 for the current
+implementation (per-project `?project=<slug>` URLs, Web Share API
+first, Facebook + Copy Link fallback) and §9 for the current, explicit
+decision on the exact limitation §4 describes below: **confirmed true
+per-project Facebook preview CARDS are not possible without an
+architecture change, and that change is deliberately NOT being made
+right now** (option C chosen — generic page-level OG preview accepted
+as a known, documented limitation; see §9 there for the 3 options this
+was weighed against and a technical recommendation for later).
 
 ## 1. Succession/retirement workflow — manual, no CMS (HISTORICAL — see docs/SERVICE-PROJECTS-DESIGN.md §3-4 for the current logic)
 There is no data source or CMS for projects — the "Most Recent Service
