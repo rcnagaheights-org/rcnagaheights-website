@@ -214,26 +214,23 @@ document.addEventListener('keydown', e => {
 
 document.getElementById('terms-modal').classList.remove('modal-hidden');
 
-const CATEGORY_ICONS = {
-  'Grooming Services': 'scissors',
-  'Coffee & Milktea Houses': 'coffee',
-  'Home & Car Essentials': 'wrench',
-  'Entertainment': 'party-popper',
-  'Self-care Services': 'sparkles',
-  'Medical Services': 'stethoscope',
-  'Legal Services': 'scale',
-  'Multimedia Services': 'camera',
-  'Pastries': 'cake',
-  'Medical & Diagnostic Supplies': 'flask-conical',
-  'Mental Wellness Services': 'brain',
-  'Hotels': 'building',
-  'Restaurants': 'utensils',
-  'Training Services': 'graduation-cap',
-  'Dental Services': 'smile',
-  'Wholesale Supplies': 'boxes',
-  'Other': 'grid'
-};
-const CATEGORY_ORDER = ['Grooming Services', 'Coffee & Milktea Houses', 'Home & Car Essentials', 'Entertainment', 'Self-care Services', 'Medical Services', 'Legal Services', 'Multimedia Services', 'Pastries', 'Medical & Diagnostic Supplies', 'Mental Wellness Services', 'Hotels', 'Restaurants', 'Training Services', 'Dental Services', 'Wholesale Supplies', 'Other'];
+// CATEGORY_ICONS/CATEGORY_ORDER used to be hardcoded here; as of
+// 2026-10-03 they're loaded from assets/merchants/categories.json so a
+// future sync job (see docs/MERCHANTS-SYNC-DESIGN.md) has one
+// machine-parseable source of truth instead of inline JS to edit. Both
+// start empty and populate once the fetch resolves -- renderCategoryGrid
+// already treats an unrecognized/not-yet-loaded category as "generic
+// icon, appended last" rather than hiding it, so a slow or failed fetch
+// degrades gracefully instead of breaking the page.
+let CATEGORY_ICONS = {};
+let CATEGORY_ORDER = [];
+const categoriesReady = fetch('/assets/merchants/categories.json')
+  .then(r => r.json())
+  .then(cfg => {
+    CATEGORY_ICONS = cfg.icons || {};
+    CATEGORY_ORDER = cfg.order || [];
+  })
+  .catch(() => {});
 
 // Category keys match the live getPartners endpoint's own classification
 // strings exactly (used for grouping/icon lookup) -- this taxonomy
@@ -328,9 +325,8 @@ function normalizeName(name){
 }
 
 function loadStaticPartners(){
-  fetch('/assets/merchants/partners.json')
-    .then(r => r.json())
-    .then(partners => {
+  Promise.all([categoriesReady, fetch('/assets/merchants/partners.json').then(r => r.json())])
+    .then(([, partners]) => {
       partners.forEach(p => { if (p.logo) localLogoByName[normalizeName(p.name)] = p.logo; });
       if (!livePartnersRendered) renderCategoryGrid(groupByCategory(partners));
     })
@@ -352,8 +348,10 @@ fetch(`${APPS_SCRIPT_URL}?action=partners`)
   .then(r => r.json())
   .then(grouped => {
     if (isEmptyGrouped(grouped)) throw new Error('Live partner list is empty');
-    livePartnersRendered = true;
-    renderCategoryGrid(grouped);
+    return categoriesReady.then(() => {
+      livePartnersRendered = true;
+      renderCategoryGrid(grouped);
+    });
   })
   .catch(() => {});
 
