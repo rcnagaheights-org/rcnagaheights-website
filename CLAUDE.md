@@ -43,8 +43,12 @@ docs/DTC-DESIGN.md     -> full DiskwenTulong Card design detail
 docs/CONTENT-MANAGEMENT.md -> Google Drive content sync procedure
 docs/PROJECTS-PAGE.md  -> Service Projects page workflow, HISTORICAL —
                            superseded 2026-07-20 by the data-driven
-                           rework below (its Share-button section
-                           still applies, the rest does not)
+                           rework below. Its §4 Share-button platform-
+                           constraint analysis still applies, but the
+                           actual mechanism it describes was removed
+                           (PR #100) then rebuilt differently on
+                           2026-10-03 — see docs/SERVICE-PROJECTS-DESIGN.md
+                           §8 for the current one
 docs/SERVICE-PROJECTS-DESIGN.md -> data-driven Service Projects rework
                            (Areas of Focus / Avenues of Service), BUILT
                            and live, 12 real projects built as of
@@ -177,9 +181,10 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   images exist in Drive yet either.
 - Projects page was rebuilt 2026-07-20 as fully data-driven — no more
   manual "latest project" hero or hand-coded archive grid, that design
-  is retired (docs/PROJECTS-PAGE.md, marked historical, though its
-  Share-button section §4 still applies unchanged). See "Known
-  placeholders" below for exactly what's built vs. still missing.
+  is retired (docs/PROJECTS-PAGE.md, marked historical — its §4
+  platform-constraint reasoning still holds, but the Share mechanism
+  itself was rebuilt 2026-10-03, see docs/SERVICE-PROJECTS-DESIGN.md §8).
+  See "Known placeholders" below for exactly what's built vs. still missing.
 - DTC backend is now live: ONE Apps Script Web App deployment
   ("Access: Anyone", 2026-07-19), shared by `/diskwentulong/` (live
   getPartners, falls back to the static partners.json if empty/
