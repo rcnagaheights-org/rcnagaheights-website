@@ -69,25 +69,19 @@ docs/MERCHANTS-SYNC-DESIGN.md -> design + build record for a scheduled
                            categories/entries and opens a PR with the
                            diff, mirroring the review-preserving pattern
                            already used for Rurok's automation. Built,
-                           confirmed fetching/diffing real live data
-                           (.github/workflows/merchants-sync.yml +
-                           .github/scripts/merchants-sync.js) — but its
-                           actual PR-creation step is still unexercised
-                           (every real run so far has hit a data problem
-                           in the live Merchants Sheet first, two
-                           merchant_id collisions, and aborted before
-                           reaching it); see its Status section
+                           confirmed fully working end-to-end including
+                           its first real PR, merged (#140 + a logo-fix
+                           follow-up, #141); see its Status section
 .github/workflows/merchants-sync.yml -> scheduled (+ manually
                            dispatchable) GitHub Action, this repo's
-                           first piece of CI — see
+                           first piece of CI, confirmed opening/updating
+                           real PRs successfully — see
                            docs/MERCHANTS-SYNC-DESIGN.md §2b
 .github/scripts/merchants-sync.js -> the diff engine that workflow
-                           runs — unit-tested locally, confirmed fetching
-                           live data for real (3 runs, 2026-10-03), but
-                           its gh pr create/edit path is still unexercised
-                           — every run so far aborted before reaching it
-                           (2 real data problems, still unfixed in the
-                           Sheet); see docs/MERCHANTS-SYNC-DESIGN.md §2b-1
+                           runs — unit-tested locally and confirmed
+                           working against real live data, including its
+                           gh pr create/edit path (PR #140, 2026-10-03);
+                           see docs/MERCHANTS-SYNC-DESIGN.md §2b-1
 docs/Rotarians.md      -> /rotarians/ roster rules, incl. the Council of
                            Presidents section (added 2026-07-21) and how
                            to update it each Rotary Year
