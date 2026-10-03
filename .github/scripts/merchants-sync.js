@@ -221,9 +221,12 @@ function computeDiff(committedPartners, committedCategories, liveFlat) {
       committedPartners.push(newEntry);
       committedById.set(live.merchant_id, newEntry);
       changeLog.newMerchants.push(live.name);
-      if (live.logo_live_filename) {
-        changeLog.logoChecklist.push({ name: live.name, raw_filename: live.logo_live_filename });
-      }
+      // Every new merchant is committed with logo: null, so every new
+      // merchant needs this checklist entry -- not just the ones whose
+      // live logo_file_id happens to be set. A missing raw filename is
+      // still surfaced explicitly rather than silently dropping the
+      // merchant from the list a human reviews before merging.
+      changeLog.logoChecklist.push({ name: live.name, raw_filename: live.logo_live_filename || '(none on file)' });
       return;
     }
 
