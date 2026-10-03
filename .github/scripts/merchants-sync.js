@@ -45,6 +45,33 @@ function normalizeName(name) {
     .replace(/\s+/g, ' ');
 }
 
+// Empirically confirmed (2026-10-03, via Drive search) as the folder every
+// checked merchant logo lives in regardless of upload date -- not
+// documented anywhere authoritative on the backend side, so treat this as
+// a best-effort reviewer shortcut, not a guarantee it never changes.
+const APPROVED_LOGOS_FOLDER_ID = '1LZwGXNGvTltRGhnO_ye_3b2_eMbIwcXY';
+
+function driveFolderUrl() {
+  return `https://drive.google.com/drive/folders/${APPROVED_LOGOS_FOLDER_ID}`;
+}
+
+function driveSearchUrl(filename) {
+  return `https://drive.google.com/drive/search?q=${encodeURIComponent(filename)}`;
+}
+
+// `logo_file_id` on the live Sheet is a human-typed filename, never a
+// Drive file ID (see docs/DTC-DESIGN.md's logo history) -- this strips
+// extension/punctuation/a leading "logo" token so a committed asset name
+// like "aranco.jpg" and a raw Sheet value like "Logo.Aran&Co.JPG" compare
+// equal, without ever claiming to resolve either into a real file.
+function normalizeLogoToken(filename) {
+  return String(filename || '')
+    .toLowerCase()
+    .replace(/\.[a-z0-9]+$/, '')
+    .replace(/[^a-z0-9]/g, '')
+    .replace(/^logo/, '');
+}
+
 function warn(msg) {
   console.log(`::warning::${msg}`);
 }
@@ -230,7 +257,7 @@ function computeDiff(committedPartners, committedCategories, liveFlat) {
       // live logo_file_id happens to be set. A missing raw filename is
       // still surfaced explicitly rather than silently dropping the
       // merchant from the list a human reviews before merging.
-      changeLog.logoChecklist.push({ name: live.name, raw_filename: live.logo_live_filename || '(none on file)' });
+      changeLog.logoChecklist.push({ name: live.name, reason: 'new merchant', raw_filename: live.logo_live_filename || '(none on file)' });
       return;
     }
 
@@ -253,6 +280,29 @@ function computeDiff(committedPartners, committedCategories, liveFlat) {
     });
     if (changedFields.length) {
       changeLog.changedMerchants.push({ name: existing.name, merchant_id: live.merchant_id, fields: changedFields });
+    }
+
+    // Never auto-resolved and never written into `existing.logo` -- just
+    // surfaced for a human reviewer. These don't factor into `hasChanges`
+    // below, so they only ever ride along on a PR already opened for some
+    // other real reason, not trigger one on their own every single day.
+    if (!existing.logo) {
+      changeLog.logoChecklist.push({
+        name: existing.name,
+        reason: 'missing',
+        raw_filename: live.logo_live_filename || '(none on file)'
+      });
+    } else if (live.logo_live_filename) {
+      const liveToken = normalizeLogoToken(live.logo_live_filename);
+      const committedToken = normalizeLogoToken(existing.logo);
+      if (liveToken && committedToken && liveToken !== committedToken) {
+        changeLog.logoChecklist.push({
+          name: existing.name,
+          reason: 'potentially mismatched',
+          raw_filename: live.logo_live_filename,
+          committed_filename: existing.logo
+        });
+      }
     }
   });
 
@@ -320,9 +370,20 @@ function renderPrBody(changeLog, liveCount, previousCount) {
 
   if (changeLog.logoChecklist.length) {
     lines.push('### Logo checklist (always manual)');
-    changeLog.logoChecklist.forEach(l =>
-      lines.push(`- [ ] ${l.name} — live raw filename: \`${l.raw_filename}\` (download/resize/commit under assets/merchants/, then set its \`logo\` field)`)
+    lines.push(
+      "Never auto-resolved or auto-committed -- the live Sheet's `logo_file_id` column is a free-text filename, not a stable Drive ID, and has previously pointed at the wrong merchant's file (see docs/DTC-DESIGN.md). Use the links below to find the right file, then download/resize/commit it under `assets/merchants/` and set its `logo` field by hand."
     );
+    lines.push('');
+    changeLog.logoChecklist.forEach(l => {
+      const hasRawFilename = l.raw_filename && l.raw_filename !== '(none on file)';
+      const links = hasRawFilename
+        ? `[search Drive](${driveSearchUrl(l.raw_filename)}) · [approved logos folder](${driveFolderUrl()})`
+        : `[approved logos folder](${driveFolderUrl()})`;
+      let line = `- [ ] **${l.name}** (\`${l.reason}\`) — live raw filename: \`${l.raw_filename}\``;
+      if (l.committed_filename) line += `, currently committed as \`${l.committed_filename}\``;
+      line += ` — ${links}`;
+      lines.push(line);
+    });
     lines.push('');
   }
 

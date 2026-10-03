@@ -1,5 +1,5 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v3.1 · Last updated: 2026-10-03
+Version: v3.2 · Last updated: 2026-10-03
 
 ## Status
 **Fully built and confirmed working end-to-end, including the job's
@@ -220,7 +220,13 @@ Steps the job's script performs:
      URL — so actually fetching/committing a logo image stays entirely
      manual, always, for both new and existing merchants. The generated
      PR body lists exactly which merchants still need a logo downloaded,
-     resized, and committed, as a checklist.
+     resized, and committed, as a checklist. **Updated 2026-10-03(Phase
+     1, see §2b-2)**: this checklist also now flags existing merchants
+     whose committed `logo` is still missing, or whose live raw filename
+     no longer matches what's committed (a "potentially mismatched"
+     flag) — the same failure shape as the 2026-08-14 Sheet desync
+     incident — and gives the reviewer two direct Drive links per entry
+     instead of a bare filename to search for by hand.
 4. **A PR opens whenever ANY of the above diff types is detected** — new
    category, new merchant, changed field on an existing merchant, or a
    proposed removal — even if, in the disappearance-only case, neither
@@ -293,6 +299,43 @@ that this design didn't originally spell out:
   0 (no prior confirmed baseline exists yet), so the floor is a no-op
   until one does — the snapshot-validation gate still catches an
   `{error: ...}` payload or a non-object response regardless.
+
+### 2b-2. Logo checklist: visibility improvements (Phase 1, done) — 2026-10-03
+Prompted by investigating `logo_file_id`'s data-integrity history (see
+`docs/DTC-DESIGN.md`'s logo section) at the user's request. Explicitly
+scoped as lightweight/low-risk: **no new Google credential, no new Apps
+Script endpoint, no automatic logo download/commit** — just making the
+existing, always-manual checklist clearer and faster for a human to act
+on. Two changes to `.github/scripts/merchants-sync.js`:
+
+- **Missing/mismatched detection for existing merchants**, not just new
+  ones: for every merchant already in `partners.json`, the job now also
+  flags (a) `logo` still unset, and (b) a normalized-token mismatch
+  between the live Sheet's raw filename and the filename already
+  committed — a lightweight heuristic (strip extension/punctuation/a
+  leading "logo" token, lowercase, compare) built specifically to catch
+  the 2026-08-14 failure shape, where a Sheet row-insert silently
+  repointed ~30/44 rows at a different merchant's logo filename. It
+  cannot prove two filenames name the same merchant, only flag when they
+  look unrelated to what's already committed — a swap between two
+  similarly-named files could still slip past it.
+- **Direct Drive links per checklist entry**: a Drive search URL
+  pre-filled with the raw filename, plus a link straight to the
+  "approved logos" folder (`1LZwGXNGvTltRGhnO_ye_3b2_eMbIwcXY`, confirmed
+  2026-10-03 via `mcp__Google_Drive__search_files` to be the shared
+  parent folder for every merchant logo checked — Mercury, AlphaBarbers,
+  Aran & Co., Green Stock — regardless of upload date). This folder ID
+  is only empirically confirmed, not documented anywhere on the backend
+  side, so it's a reviewer shortcut, not a guarantee — it could silently
+  stop being where new logos land.
+
+These new checklist entries deliberately do **not** add to `hasChanges`
+(§2b step 4) — they only ever ride along on a PR already opened for some
+other real reason (a new merchant, a changed field, etc.), never trigger
+a PR by themselves. Without that guard, a permanently-missing legacy
+logo would re-flag on every single scheduled run forever, opening a new
+PR with nothing else in it — exactly the noise this design has avoided
+everywhere else (see the "no empty/noise PRs" rule in §2b step 5).
 
 ### 2c. Scope discipline
 This job only ever touches `assets/merchants/partners.json` and
@@ -380,7 +423,102 @@ settings genuinely work.
   logos already being manual-always), or have the job's PR body at least
   *list* orphaned logo files/empty categories as a checklist item (same
   pattern as the existing new-merchant logo checklist), without actually
-  deleting anything itself.
+  deleting anything itself. Still open as of v3.2 — distinct from the
+  missing/mismatched-logo detection added in §2b-2, which flags a
+  merchant that's still active but whose logo needs attention, not an
+  asset left behind by one that's gone.
+- Whether/how to migrate `logo_file_id` off a free-text filename onto a
+  stable identifier — see §3b for a full proposal, not yet approved or
+  implemented.
+
+## 3b. Phase 2 proposal — Apps-Script-resolved logo lookup (NOT APPROVED, NOT IMPLEMENTED)
+Written up per the user's explicit request to propose, but not build,
+a tighter long-term fix for the `logo_file_id` data-integrity problem.
+**Do not implement any part of this without separate, explicit
+approval** — everything below is design only.
+
+### 5a. The underlying problem
+The Merchants Sheet's `logo_file_id` column is a human-typed **filename
+string**, never a real Drive file ID — `getPartners_()` in `Code.gs`
+returns it verbatim (`row[col['logo_file_id']] || null`), with zero
+validation anywhere in the pipeline. This has already caused one real
+incident (2026-08-14: a Sheet row-insert silently repointed ~30/44 rows
+at a different merchant's logo, caught only by a human cross-checking
+business names) and is architecturally capable of recurring, since
+nothing stops a future Sheet edit from doing the same thing again. The
+frontend (`diskwentulong/index.html`) and now this sync job both
+deliberately never trust this field for anything beyond a human-facing
+hint — which is the right call today, but leaves the underlying mapping
+exactly as fragile as it's always been.
+
+### 5b. Recommended data-model direction
+Move the authoritative partner↔logo mapping out of a free-text Sheet
+column and into something Apps Script itself maintains and can validate
+— e.g. a `merchant_id`-keyed mapping to a real Drive **file ID** (not a
+filename), either populated by a human picking the file once via a
+script-bound UI, or resolved server-side by matching business name
+against files in the one confirmed "approved logos" folder
+(`1LZwGXNGvTltRGhnO_ye_3b2_eMbIwcXY`) and requiring a human to confirm
+the match before it's trusted. Either way, this is a backend/process
+change to `Code.gs` and the Sheet schema itself (`CLAUDE.md`'s Hard
+Rules and `docs/DTC-DESIGN.md`'s schema table would both need updating)
+— not something to change unilaterally.
+
+### 5c. Scope constraints this design must honor (user-specified, hard)
+- **No new GCP service account, GitHub-held Google credential, or
+  long-lived Google secret** of any kind.
+- **No generic/public Apps Script endpoint capable of fetching arbitrary
+  Drive files by ID or name.** Any new endpoint must be tightly scoped —
+  e.g. it only ever resolves the logo for one specific, already-known
+  `merchant_id`, only from within the one approved folder, never an
+  arbitrary file lookup.
+- **No automatic commit/publish of a logo image** until this design is
+  separately approved and built — Phase 1 (above) stays the only thing
+  live today.
+
+### 5d. Sketch: a tightly-scoped resolution endpoint
+A new Apps Script function (not yet written), callable only as part of
+the existing Web App deployment, that takes a `merchant_id` already
+confirmed to exist in the Merchants Sheet and returns metadata for the
+one file in `1LZwGXNGvTltRGhnO_ye_3b2_eMbIwcXY` whose name best matches
+that merchant's business name — never a raw "fetch this file ID" call a
+client could point anywhere else. `DriveApp` is already in active,
+working use in `Code.gs` for Rurok PDF archival (`CONFIG.RUROK_PDF_FOLDER_ID`,
+lines ~132/638/641), and the code's own header comment states Drive
+access is implicit for any Apps Script bound to a Sheet — favorable
+signal that a new read-only folder lookup likely wouldn't repeat the
+new-OAuth-scope deployment outage from earlier this session, but this is
+not proven for this specific operation without an actual test deploy.
+
+### 5e. Required image-integrity validation before any future automated download becomes a commit candidate
+Per the user's explicit requirement, any future automated path from
+"Apps Script resolves a logo" to "a file lands in `assets/merchants/`"
+must validate, in this order, before the file is ever treated as
+mergeable:
+1. **Successful image decode** (e.g. Pillow or equivalent opens it
+   without error) — this alone would have caught the Green Stock
+   corruption this session hit from the Drive MCP tool's
+   `download_file_content` (reproducibly truncated by exactly 279
+   bytes, confirmed via `Pillow` raising `OSError`).
+2. **Expected file type/MIME** (the declared type matches what the
+   bytes actually decode as — not just trusting a `.jpg` extension).
+3. **Sensible file size** (a floor to catch a near-empty/placeholder
+   file, a ceiling to catch something absurdly large for a web logo).
+4. **Non-truncated/non-corrupt content** — not fully separable from (1)
+   above, but worth stating explicitly since the Green Stock bug was a
+   *partial*, cleanly-structured-looking truncation, not an obviously
+   broken file.
+5. **Correct association with the intended partner** — the hardest of
+   the five to automate with confidence; likely needs either a strict
+   filename-to-business-name match threshold with anything ambiguous
+   routed to manual review, or (safer) always requiring a human to
+   confirm the match in the PR before merge, same as the rest of this
+   job's "propose, a human decides" philosophy.
+
+This validation would need its own code (likely in
+`.github/scripts/merchants-sync.js` or a sibling script, running in CI
+where Python/Node image libraries are available — Apps Script itself has
+no equivalent `Image.open()`), not inside `Code.gs`.
 
 ## 4. Revision history
 - **v1** (2026-10-03): initial proposal, opened as PR #134.
@@ -484,3 +622,18 @@ settings genuinely work.
   behind, and nothing prunes a category once nothing in it remains
   active. Not yet decided whether to leave this as accepted manual
   cleanup or have the PR body at least list it as a checklist item.
+- **v3.2** (2026-10-03): per the user's request, investigated the
+  `logo_file_id` data-integrity problem (it's a free-text filename, not
+  a Drive ID, with a documented history of pointing at the wrong
+  merchant) and implemented the lightweight, pre-approved Phase 1
+  improvements (§2b-2): the logo checklist now flags existing merchants
+  with a missing or "potentially mismatched" logo, not just new ones,
+  and every checklist entry gets a direct Drive search link plus a link
+  to the confirmed approved-logos folder. No new credentials, no new
+  endpoint, no automatic logo download/commit. Also wrote up (§3b), but
+  explicitly did NOT implement, a Phase 2 proposal for an Apps-Script-
+  resolved logo lookup scoped to one `merchant_id` at a time from the
+  approved folder, including the required image-integrity validation
+  gates (decode, MIME, size, non-truncation, partner association) any
+  future automated download must pass before becoming a commit
+  candidate — pending separate approval.

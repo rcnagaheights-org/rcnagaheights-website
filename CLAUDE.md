@@ -81,7 +81,10 @@ docs/MERCHANTS-SYNC-DESIGN.md -> design + build record for a scheduled
                            runs — unit-tested locally and confirmed
                            working against real live data, including its
                            gh pr create/edit path (PR #140, 2026-10-03);
-                           see docs/MERCHANTS-SYNC-DESIGN.md §2b-1
+                           see docs/MERCHANTS-SYNC-DESIGN.md §2b-1. Its
+                           logo checklist also flags existing merchants'
+                           missing/mismatched logos with Drive deep
+                           links (Phase 1, 2026-10-03) — see §2b-2
 docs/Rotarians.md      -> /rotarians/ roster rules, incl. the Council of
                            Presidents section (added 2026-07-21) and how
                            to update it each Rotary Year
@@ -348,6 +351,21 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   JSON with `merchant_id` present on every entry, closing out the one
   remaining unconfirmed claim from `Code.gs` v13 above. See
   docs/MERCHANTS-SYNC-DESIGN.md's Status section for the full account.
+- **Updated again 2026-10-03**: investigated the `logo_file_id`
+  data-integrity problem (it's a human-typed filename, never a real
+  Drive file ID, and has a documented history — see
+  docs/DTC-DESIGN.md — of pointing at the wrong merchant after a Sheet
+  edit) and shipped the lightweight, pre-approved Phase 1 fix: the sync
+  job's logo checklist now also flags existing merchants with a missing
+  or "potentially mismatched" logo (not just new merchants), and every
+  checklist entry links the reviewer straight to a Drive search for the
+  raw filename plus the confirmed approved-logos folder, instead of a
+  bare filename string. No new credentials, no new Apps Script endpoint,
+  still no automatic logo download/commit. A Phase 2 proposal (an
+  Apps-Script-side lookup scoped to one `merchant_id` at a time, with
+  required image-integrity validation before any future automated
+  download could become a commit candidate) was written up but
+  explicitly NOT implemented — see docs/MERCHANTS-SYNC-DESIGN.md §3b.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
