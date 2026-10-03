@@ -1,21 +1,23 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v2 · Last updated: 2026-10-03
+Version: v2.1 · Last updated: 2026-10-03
 
 ## Status
 **Built — `.github/workflows/merchants-sync.yml` +
-`.github/scripts/merchants-sync.js` — but NOT yet confirmed running
-successfully end-to-end.** Both prerequisites are done: §2a
-(category-config extraction, PR #135) and §2a-2 (`merchant_id` exposed
-from the live feed, `Code.gs` v13, deployed via `clasp`). §2b (the sync
-job itself) is now real code, unit-tested locally against mocked live
-data (every diff path: new category, new merchant, changed field,
-proposed removal, snapshot-validation failure, and a one-time
-name-based bootstrap match — see §2b's "Implementation notes" below for
-that last one, a real behavior this design didn't originally spell out).
-**Not yet triggered against the real live endpoint** — needs a manual
-`workflow_dispatch` run after this merges, and needs one manual
-repository setting enabled first (see §2d). Until both of those happen,
-nothing here has affected `/diskwentulong/` or any committed file.
+`.github/scripts/merchants-sync.js` — but BLOCKED from running for
+real.** Both prerequisites are done: §2a (category-config extraction, PR
+#135) and §2a-2 (`merchant_id` exposed from the live feed, `Code.gs`
+v13, deployed via `clasp`). §2b (the sync job itself) is real code,
+unit-tested locally against mocked live data (every diff path: new
+category, new merchant, changed field, proposed removal,
+snapshot-validation failure, and a one-time name-based bootstrap match —
+see §2b's "Implementation notes" below for that last one, a real
+behavior this design didn't originally spell out). **Confirmed blocked
+by an organization-level GitHub policy** that locks `GITHUB_TOKEN` to
+read-only and can't be overridden at the repo level — see §2d for the
+exact fix needed, which requires an organization owner. Until that's
+resolved, the workflow will run on schedule but every attempt to open or
+update a PR will fail. Nothing here has affected `/diskwentulong/` or
+any committed file.
 
 ## 1. What's already automated vs. not
 
@@ -251,9 +253,24 @@ fail at the `gh pr create`/`gh pr edit` step with a permissions error),
 a human needs to enable, once: **repo Settings → Actions → General →
 Workflow permissions → "Allow GitHub Actions to create and approve pull
 requests"**. This isn't something available through this session's
-GitHub tools (it's an organization/repo admin setting, not an API this
-session's credentials cover) — flagging it plainly rather than silently
-assuming it's already on.
+GitHub tools (it's an admin setting, not an API this session's
+credentials cover).
+
+**Confirmed 2026-10-03 (user's own screenshot): this repo's Workflow
+permissions are locked to "Read repository contents and packages
+permissions" (read-only), with both that checkbox AND the "Read and
+write permissions" radio button above it greyed out/unselectable at the
+repo level.** This is an **organization-level policy** overriding the
+repo setting, not just an unchecked repo-level box — the repo-level
+toggle can't even be reached until the org-wide default changes. Fix
+needs an **organization owner**, at the org's own Settings → Actions →
+General (not this repo's settings page) — either loosening the org-wide
+default directly, or enabling a per-repository-override option if the
+org's plan offers one, after which this repo's own toggle becomes
+reachable. Until this is resolved, `merchants-sync.yml` is fully built
+and unit-tested but **cannot open or update any PR against the real
+GitHub API** — its `gh pr create`/`gh pr edit` step will fail with a
+permissions error on every run.
 
 ## 3. Open questions for review
 - Is a new scheduled GitHub Actions workflow an acceptable first piece of
@@ -322,3 +339,11 @@ assuming it's already on.
   **Not yet triggered against the real live endpoint or confirmed
   working end-to-end** — pending §2d's manual setting and a first
   `workflow_dispatch` run.
+- **v2.1** (2026-10-03): §2d updated with what the user's own screenshot
+  confirmed — this isn't a simple unchecked repo-level box. Workflow
+  permissions are locked to read-only at the **organization** level,
+  with the repo's own "Read and write permissions" radio button itself
+  greyed out/unreachable, not just the PR-creation checkbox beneath it.
+  Needs an organization owner at the org's own Actions settings, not
+  this repo's. Confirmed the workflow is fully blocked from opening or
+  updating any real PR until that's resolved.
