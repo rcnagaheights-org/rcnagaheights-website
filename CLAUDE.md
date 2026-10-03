@@ -64,16 +64,26 @@ docs/SEO.md            -> SEO checklist to run on any copy-changing
                            commit, per-page audit state, audit history
 docs/BACKEND-CAPABILITY-TEST.md -> what Claude has actually tested (not
                            assumed) it can/can't do against Drive/Sheets
-docs/MERCHANTS-SYNC-DESIGN.md -> design proposal for a scheduled job
-                           (NOT yet built) that detects new Partner
-                           Merchants categories/entries and opens a PR
-                           with the diff, mirroring the review-preserving
-                           pattern already used for Rurok's automation;
-                           its two prerequisites ARE done (category
-                           config extracted to categories.json, PR #135;
+docs/MERCHANTS-SYNC-DESIGN.md -> design + build record for a scheduled
+                           job that detects new Partner Merchants
+                           categories/entries and opens a PR with the
+                           diff, mirroring the review-preserving pattern
+                           already used for Rurok's automation. Both
+                           prerequisites are done (category config
+                           extracted to categories.json, PR #135;
                            merchant_id exposed from the live feed,
-                           Code.gs v13) — the sync job itself (§2b) is
-                           still design only
+                           Code.gs v13) and the job itself is now real
+                           code (.github/workflows/merchants-sync.yml +
+                           .github/scripts/merchants-sync.js) — but not
+                           yet confirmed running successfully against
+                           the real live endpoint, see its §2d
+.github/workflows/merchants-sync.yml -> scheduled (+ manually
+                           dispatchable) GitHub Action, this repo's
+                           first piece of CI — see
+                           docs/MERCHANTS-SYNC-DESIGN.md §2b
+.github/scripts/merchants-sync.js -> the diff engine that workflow
+                           runs — unit-tested locally, NOT yet run for
+                           real; see docs/MERCHANTS-SYNC-DESIGN.md §2b-1
 docs/Rotarians.md      -> /rotarians/ roster rules, incl. the Council of
                            Presidents section (added 2026-07-21) and how
                            to update it each Rotary Year
@@ -313,6 +323,19 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   unbuilt) Partner Merchants sync job — not yet confirmed by the user's
   own browser that `?action=partners` actually returns the new field
   end-to-end.
+- **Updated again 2026-10-03**: the Partner Merchants sync job itself
+  (§2b) is now built — this repo's first GitHub Action
+  (`.github/workflows/merchants-sync.yml`, scheduled daily +
+  manually dispatchable) runs `.github/scripts/merchants-sync.js` to
+  diff the live partner feed against the committed
+  `assets/merchants/partners.json`/`categories.json` and open or update
+  a PR with the result — never commits to `main` directly. Unit-tested
+  locally (every diff path, including a full dry run against the real
+  committed 49-entry file) but **not yet triggered against the real
+  live endpoint**. Needs one manual one-time repo setting first ("Allow
+  GitHub Actions to create and approve pull requests" — see
+  docs/MERCHANTS-SYNC-DESIGN.md §2d) before its first real
+  `workflow_dispatch` run.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

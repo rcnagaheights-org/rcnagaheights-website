@@ -1,0 +1,68 @@
+name: Partner Merchants Sync
+
+# Diffs the live, public ?action=partners Apps Script feed against the
+# committed assets/merchants/partners.json + categories.json, and opens
+# or updates a pull request with the diff. Never commits to main
+# directly, never merges, never force-closes a PR on its own -- every
+# change needs a human review. See docs/MERCHANTS-SYNC-DESIGN.md §2b.
+on:
+  schedule:
+    # Daily -- merchant updates land irregularly, same cadence reasoning
+    # as Rurok's syncRurokIssues trigger. Minute 37 to avoid the
+    # top-of-hour pileup on GitHub's own scheduler.
+    - cron: '37 3 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Never run two sync attempts at once against the same reserved branch.
+concurrency:
+  group: merchants-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch live partners and compute diff
+        id: sync
+        run: node .github/scripts/merchants-sync.js
+
+      - name: Open or update sync PR
+        if: steps.sync.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BRANCH="automated/merchants-sync"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Scope discipline (§2c): only these two files are ever staged.
+          git checkout -B "$BRANCH"
+          git add assets/merchants/partners.json assets/merchants/categories.json
+          git commit -m "Automated Partner Merchants sync"
+
+          # Each run recomputes the full diff against current main, so a
+          # force-push of the reserved branch is expected and safe -- it
+          # never layers onto a prior run's output.
+          git push --force origin "$BRANCH"
+
+          EXISTING_PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING_PR" ]; then
+            gh pr edit "$EXISTING_PR" --repo "$GITHUB_REPOSITORY" --body-file .github/scripts/pr-body.md
+            echo "Updated existing sync PR #$EXISTING_PR"
+          else
+            gh pr create --repo "$GITHUB_REPOSITORY" --title "Automated Partner Merchants sync" --body-file .github/scripts/pr-body.md --base main --head "$BRANCH"
+          fi
