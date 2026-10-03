@@ -69,6 +69,11 @@ docs/agent-teams.md    -> reference guide for Claude Code's agent-teams
                            .claude/settings.local.json (git-ignored, not
                            committed) — a fresh clone won't have it on
                            until that file is (re)created locally
+.claude/settings.json  -> committed, project-scoped Claude Code
+                           permission rules (added 2026-10-03) — currently
+                           just allow-listing the PR subscribe/unsubscribe
+                           MCP tools so they don't prompt; distinct from
+                           the untracked settings.local.json above
 ```
 
 `foundation/` has been removed entirely (no redirect, deliberately a 404)
