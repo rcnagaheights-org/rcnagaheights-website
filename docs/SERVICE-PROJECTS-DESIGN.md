@@ -1,5 +1,5 @@
 # Service Projects Page — Data-Driven Rework
-Version: v3.1 · Last updated: 2026-10-03
+Version: v4 · Last updated: 2026-10-03
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). **Updated 2026-10-03**: the page
@@ -245,35 +245,142 @@ the user's own browser against the actual deployed `/projects/` page (the
 HTML change was written and tested but not yet deployed to GitHub Pages
 as of this doc's last update).
 
-## 8. Featured section Share-to-Facebook button (added 2026-10-03)
-A Share button was re-added to the Featured section specifically (the
+## 8. Per-project sharing (added 2026-10-03, generalized 2026-10-03)
+A Share button was re-added — first to the Featured section only (the
 old one, documented in docs/PROJECTS-PAGE.md §4, was removed from this
 page entirely in PR #100 — that doc's platform-constraint analysis still
-applies and is the reasoning behind this one too). It's automatically
-in sync with whichever project is currently Featured — there's no
-hardcoded project, it reads from the same `currentFeatured` object
-`renderFeatured()` already populates from the live/fallback data, so a
-new Featured project (whenever its `date` becomes the newest) needs zero
-button-related update.
+applies and is the reasoning behind this one too), then generalized the
+same day so **every** project has a working Share button: one on the
+Featured section, and one inside the lightbox that opens for any
+carousel card. Both call the same `shareProject(project, anchorBtn)`
+function — there's no hardcoded project or per-project handler, so this
+needs zero code change for any future project.
 
-Two-path behavior, in order:
+### Unique per-project URL
+Every project gets a shareable URL of the form
+`https://rcnagaheights.org/projects/?project=<slug>`, where `<slug>` is
+computed from `project_name` by a single `slugify()` function used both
+to build the link and to resolve one back to a project — no stored/
+hardcoded slug list, works automatically for any project present in the
+live or fallback data.
+
+**Why a query param, not a path** (`/projects/<slug>/`): this site is
+plain GitHub Pages with no build step (see this repo's top-level
+CLAUDE.md) and no `.nojekyll`/custom `404.html` SPA-routing setup.
+A path-based URL would need either a real generated file per project
+(a build step, needing to re-run on every live Sheet change — a bigger
+architecture change than this warrants) or a client-side-routing hack
+via a custom 404 page (extra fragility for no real benefit here). A
+query param needs no hosting change at all and works today.
+
+**Restoring a shared link**: on page load, after project data finishes
+loading (live or fallback), `restoreSharedProject()` reads `?project=`,
+finds the matching project, opens its lightbox, and — if it has a
+carousel card (the Featured project doesn't need one, it's already the
+page's main focus) — scrolls that card into view and briefly highlights
+it with a gold ring. A slug that doesn't match any current project
+(e.g. a stale bookmark to a retired project) silently does nothing,
+same as before.
+
+### Share behavior, in order
 1. **Primary — Web Share API with the actual photo file**: fetches the
-   Featured project's own image, wraps it as a `File`, and calls
-   `navigator.share({ files, title, text })`. This is correct
-   per-project on whatever app the visitor's OS share sheet offers
-   (including Facebook's own app on mobile), since it hands over real
-   image bytes, not a URL/OG-tag-dependent link.
-2. **Fallback — Facebook's `sharer.php` link-share**: used only if
-   `navigator.canShare({ files })` isn't supported (common on several
-   desktop browsers) or the share call itself fails for a reason other
-   than the user cancelling. This shares the `/projects/` page URL,
-   which Facebook unfurls using the page's one static `og:image`/
-   description (the generic club photo) — NOT the specific Featured
-   project's own photo. This is an unavoidable platform limitation, not
-   a bug: Facebook's crawler never executes the JS that picks the
-   Featured project, so it can only ever see this page's static meta
-   tags. Accepted as the best available fallback for browsers that
-   can't do the primary, file-based path.
+   project's own image, wraps it as a `File`, and calls
+   `navigator.share({ files, title, text, url })` — `url` is this
+   project's own `?project=<slug>` link. This opens the device's real
+   native share sheet, offering whatever apps are installed (Facebook,
+   Messenger, Viber, WhatsApp, SMS, Copy Link, etc.) — nothing here is
+   hardcoded to a specific target app, per the build instructions. If
+   file sharing specifically isn't supported but URL sharing is
+   (`canShare({ url })`), falls back to a `files`-less `navigator.share`
+   call instead of skipping straight to the menu below.
+2. **Fallback menu — Facebook + Copy Link**: a small popover (`#share-
+   fallback-menu`, styled to match the rest of the site) with two
+   options, used only when neither `navigator.share` variant above is
+   available, or the call fails for a reason other than the user
+   cancelling:
+   - **Share to Facebook**: opens `sharer.php?u=<project URL>` — no
+     Facebook SDK, just the plain share-link mechanism, per the build
+     instructions.
+   - **Copy link**: copies the project's own URL via
+     `navigator.clipboard.writeText`, with an `execCommand('copy')`
+     fallback for older browsers, and a brief "Copied!" confirmation.
+
+**Known limitation, not a bug**: the fallback's shared URL correctly
+deep-links a human visitor back to the right project (see "Restoring a
+shared link" above), but Facebook's own preview CARD for that link
+still shows this page's one static `og:image`/description (the generic
+club photo), not the specific project's own photo — Facebook's crawler
+never executes this page's JS, so it can only ever see whichever OG
+tags are statically in `projects/index.html`'s `<head>`. Fixing that
+needs an architecture change — see section 9 below. Not implemented as
+part of this change, per the build instructions' explicit instruction
+to stop and present options first.
+
+Verified (Playwright): native-share path correctly fetches the real
+project photo and calls `navigator.share` with the right title/url/
+filename for both the Featured project and an arbitrary carousel card;
+forcing the unsupported case correctly opens the fallback menu,
+Facebook link carries the correct per-project URL, and Copy Link
+correctly copies it; loading `?project=<slug>` directly restores the
+right lightbox. Not yet confirmed on a real device/Facebook app by the
+user.
+
+## 9. True per-project Facebook/OG previews — assessment, NOT implemented
+Investigated per explicit instruction before any implementation: can
+sharing a project ever show that project's own image/title/description
+in Facebook's preview CARD (not just correctly link to it)?
+
+**Short answer: not with this site's current architecture (plain
+GitHub Pages, no build step, no server).** Facebook's (and virtually
+every other platform's) link-unfurling crawler fetches the shared URL
+and parses the raw HTML `<head>` it gets back — it does not execute
+JavaScript. Since `projects/index.html` is one static file with one
+fixed set of `og:title`/`og:description`/`og:image` tags, the crawler
+sees exactly those tags for every `?project=` value, with no way for
+client-side JS to change what it sees. This is the same limitation
+already documented in docs/PROJECTS-PAGE.md §4 from the last time this
+was investigated (for the pre-rework page's own Share button).
+
+Three real options, none implemented here:
+
+**Option A — Static per-project pages (a build step).** Generate a
+real HTML file per project (e.g. `assets/service-projects/share/
+<slug>.html` or similar) with that project's own OG tags baked in at
+generation time, and point share links at those pages instead of
+`/projects/?project=<slug>` (each page would redirect a human visitor
+on to the real `/projects/?project=<slug>` for the actual UI, while the
+crawler only ever reads the static tags). This is the standard way
+static sites solve this ("pre-rendering"), and keeps hosting as plain
+GitHub Pages. **Real cost**: introduces an actual build step to a repo
+whose whole convention is "no build step, no framework" — and since
+project data now lives in a live Google Sheet rather than only this
+repo, something would need to re-run this generation step whenever the
+Sheet changes (a GitHub Action on a schedule, or triggered by hand) —
+new infrastructure, not a one-time cost.
+
+**Option B — Dynamic OG page via the existing Apps Script backend.**
+The DTC Apps Script Web App (`backend/Code.gs`) already executes real
+server-side code per request, unlike GitHub Pages. It could add a new
+action (e.g. `?action=projectShare&project=<slug>`) that reads the live
+Sheet and returns a small HTML response with that project's correct OG
+tags, plus a redirect (meta-refresh or JS) sending a human visitor on
+to `https://rcnagaheights.org/projects/?project=<slug>`. No new
+infrastructure needed (the backend is already live and already proven
+editable via `clasp` — see docs/BACKEND-CAPABILITY-TEST.md) and no
+build step. **Real cost**: the URL a visitor would need to actually
+share (the one Facebook's crawler fetches) would be a
+`script.google.com` address, not `rcnagaheights.org` — a real
+brand/trust tradeoff for a link people see in their Facebook/Messenger
+feed, even though clicking it correctly lands on the real site.
+
+**Option C — Leave it as-is.** Keep what's built in section 8: correct
+deep-linking for humans, generic preview card for crawlers. Zero new
+infrastructure, zero new risk, matches how the rest of this site's
+sharing already works (every other page's social preview is one static
+image too). The tradeoff is purely cosmetic (a shared project's
+Facebook card shows the club's general photo, not that project's own).
+
+No option was implemented pending the user's decision.
 
 Verified (Playwright, stubbing `navigator.share`/`canShare` both ways):
 primary path correctly fetches the real Featured photo and calls

@@ -379,6 +379,17 @@ doing any Drive-related content work.
   backend, screenshot-verified).
   Homepage's separate "What We Do" carousel
   (`assets/recent-projects/`) is untouched by this rework.
+  **Updated again 2026-10-03**: every project (not just Featured) now
+  has a working Share button — native Web Share API first (opens the
+  real OS share sheet, no hardcoded target apps), Facebook + Copy Link
+  fallback otherwise — and a unique `?project=<slug>` URL that restores/
+  highlights the right project on load. See
+  docs/SERVICE-PROJECTS-DESIGN.md §8. True per-project Facebook preview
+  CARDS (showing that project's own photo, not the generic club photo)
+  are NOT implemented — confirmed not possible without a real
+  architecture change (static per-build pages, or a dynamic OG endpoint
+  on the Apps Script backend); see §9 for the 3 options and their
+  tradeoffs, awaiting the user's decision.
 
 ## Keep this file updated
 After a change affecting "Current status" or "Known placeholders," update
