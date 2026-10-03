@@ -1,5 +1,5 @@
 # Claude Backend Capability Test — Results
-Version: v2 · Last updated: 2026-10-03
+Version: v2.1 · Last updated: 2026-10-03
 
 Reference doc recording what Claude actually tested (not assumed) about its
 ability to build the DiskwenTulong Card backend described in
@@ -56,18 +56,30 @@ existing "DTC Card Database" Apps Script project (script ID
   production incident. Confirmed via the user's own browser DevTools Network
   tab (HAR file) that anonymous requests were failing with HTTP 403 during
   the window the authorization was outstanding.
-- **This environment cannot reliably self-test the live `/exec` endpoint.**
-  Both plain `curl` and a real headless Chromium (Playwright) got blocked
-  identically (`403`/`Failed to fetch`) on requests to this exact URL, even
-  for actions that were simultaneously confirmed working for the user in
-  their own browser — almost certainly this environment's outbound proxy/IP
-  being treated as suspicious by Google's abuse-prevention layer specifically
-  for Apps Script Web App execution, not a reflection of the deployment's
-  real state. **The user's own browser (ideally with a HAR export from
-  DevTools' Network tab) is the only reliable way to confirm this kind of
-  change is actually live** — don't trust this environment's own curl/
-  Playwright tests on this specific type of request, confirm with the user
-  instead.
+- **This environment's own ability to self-test the live `/exec` endpoint is
+  inconsistent, not reliably broken.** Earlier in this same project, both
+  plain `curl` and headless Chromium (Playwright) got blocked identically
+  (`403`/`Failed to fetch`) on requests to this exact URL, even for actions
+  simultaneously confirmed working for the user in their own browser —
+  attributed to this environment's outbound proxy/IP being treated as
+  suspicious by Google's abuse-prevention layer for Apps Script Web App
+  execution. **Updated 2026-10-03**: in a later session, a plain anonymous
+  `fetch('…/exec?action=partners')` run via Playwright against the real
+  live site (`https://rcnagaheights.org/diskwentulong/`) succeeded cleanly
+  — HTTP 200 after following Apps Script's normal 302 redirect to
+  `script.googleusercontent.com`, with real JSON (confirmed `merchant_id`
+  present on every entry, closing out the open question from `Code.gs`
+  v13's rollout). Whatever caused the earlier block wasn't a permanent,
+  structural limitation of this environment — the two sessions differ in
+  more than one way (different point in time, a plain public GET with no
+  auth vs. whatever was being tested before), so the exact cause of the
+  earlier block, and whether it could recur, is unconfirmed. **Practical
+  guidance unchanged**: still don't treat a single self-test (success or
+  failure) from this environment as proof of the live endpoint's state —
+  verify a one-off, consequential change via the user's own browser
+  (ideally a HAR export from DevTools' Network tab) before relying on it,
+  especially for anything involving auth (`/verify/`, `/register/`), which
+  this particular success didn't exercise.
 - **Credential handling**: `/root/.clasprc.json` holds the live OAuth
   `refresh_token`/`client_secret` in plain text. Never print this file's
   values directly — inspect keys/structure only first. (A real leak
