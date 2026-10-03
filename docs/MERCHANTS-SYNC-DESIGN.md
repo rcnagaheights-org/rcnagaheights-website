@@ -551,8 +551,17 @@ afterward and re-checking `?action=partners` still returns correctly.
   printed) — no new Google credential, service account, or secret of any
   kind was created for this.
 - After testing, the temporary deployment was deleted (`clasp undeploy`)
-  and the script's HEAD was restored to exactly `backend/Code.gs`'s
-  content (`clasp push`, diffed byte-identical afterward).
+  and the script's HEAD was restored: `Code.js` back to exactly
+  `backend/Code.gs`'s content, **and** `appsscript.json`'s `webapp.access`
+  back to `ANYONE_ANONYMOUS` (it had been temporarily set to `MYSELF` for
+  the test deployment above) — both diffed byte-identical against the
+  repo's tracked `backend/Code.gs`/`backend/appsscript.json` afterward
+  (re-confirmed via a fresh `clasp pull` after Codex's review on PR #146
+  caught that the original write-up only showed the `Code.js` diff, not
+  the manifest's; re-pulling live confirmed the manifest genuinely was
+  restored correctly all along — the one remaining difference is a
+  trailing-newline-only artifact in `backend/appsscript.json` that
+  predates this session, from when that file was first tracked in #125).
 
 ### Results — PASS / BLOCKED per the 8 requested capabilities
 
@@ -567,7 +576,7 @@ afterward and re-checking `?action=partners` still returns correctly.
 | 4d | Incorrect/unmatchable partner↔logo mapping | **PASS as a safety property, but reveals a real gap** | Found **3 real merchants (6% of 50) whose correctly-assigned live logo cannot be found by name matching at all**: Santigwar → `Logo.Sntgwr.JPG`, Mendoza Law Office → `Logo.SFOM Law.JPG` (a different legal/trade name entirely), White Bean Cafe → `Logo.WB.png`. All three correctly returned `no_match` (safe — it never guessed a wrong file) rather than a false positive, but this means full hands-off automation isn't realistic; a human-confirmed pass is required for these. |
 | 4e | File outside the approved folder | **PASS, but not via the mechanism this design sketch assumed** | See the `getParents()` finding below — real safety here came from Google Drive's own per-account access control (the executing identity had no access at all to an out-of-folder file, full stop), not from an app-level containment check. |
 | 5 | GitHub/CI retrieval without a new service account/credential/secret | **PASS (by design reuse)** | The existing production deployment is already `Access: Anyone` and already called anonymously by `merchants-sync.js` today for `?action=partners`. A future `?action=partnerLogo&merchant_id=...` action on that *same* deployment needs no new credential — merchant logos are already public-facing content on the live site, so nothing new is exposed. (The Bearer-token mechanism above was used *only* to keep this test's own harness non-public — it is not part of the recommended real design.) |
-| 6 | Retrieved image validated before use (decode, MIME, size, truncation) | **PASS** | Fetched 3 real files (JPEG 86,270 B, PNG 48,427 B, JPEG 2,538,660 B) — all byte-exact vs. Drive's own reported size, all cleanly Pillow-decoded with correct format/mode/dimensions, declared MIME matched Pillow's detected format in all 3. Deliberately truncated a copy by the **same 279 bytes** as this session's real Green Stock corruption incident — Pillow correctly raised `OSError: image file is truncated`. |
+| 6 | Retrieved image validated before use (decode, MIME, size, truncation) | **PASS** | Fetched 3 real files (JPEG 86,270 B, PNG 48,427 B, JPEG 2,538,660 B) — all byte-exact vs. Drive's own reported size, all cleanly Pillow-decoded with correct format/mode/dimensions, declared MIME matched Pillow's detected format in all 3. Deliberately truncated a copy by the **same 279 bytes** as this session's real Green Stock corruption incident — Pillow correctly raised `OSError: image file is truncated`. Per Codex's review on PR #146, also implemented and tested the sensible-size floor/ceiling gate itself (not just transfer completeness) with controlled synthetic inputs: a 3-byte garbage file was rejected as below a 1 KB floor, and a 3.45 MB inflated file was rejected as above a 3 MB ceiling, while the real 86,270 B logo correctly passed both bounds. |
 | 7 | Endpoint can be tightly scoped, not arbitrary-file-capable | **PASS** | The resolver's only parameter is a business name in the real design. Confirmed the test deployment's `MYSELF` access genuinely blocks anonymous callers (redirected to a Google sign-in page, not JSON) as an independent backstop verified during testing. |
 | 8 | Apps Script Web App limitations | **Documented, no blocker found for this use case** | See below. |
 
