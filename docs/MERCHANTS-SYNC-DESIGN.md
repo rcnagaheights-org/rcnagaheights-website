@@ -1,23 +1,51 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v2.1 · Last updated: 2026-10-03
+Version: v2.2 · Last updated: 2026-10-03
 
 ## Status
-**Built — `.github/workflows/merchants-sync.yml` +
-`.github/scripts/merchants-sync.js` — but BLOCKED from running for
-real.** Both prerequisites are done: §2a (category-config extraction, PR
-#135) and §2a-2 (`merchant_id` exposed from the live feed, `Code.gs`
-v13, deployed via `clasp`). §2b (the sync job itself) is real code,
-unit-tested locally against mocked live data (every diff path: new
-category, new merchant, changed field, proposed removal,
-snapshot-validation failure, and a one-time name-based bootstrap match —
-see §2b's "Implementation notes" below for that last one, a real
-behavior this design didn't originally spell out). **Confirmed blocked
-by an organization-level GitHub policy** that locks `GITHUB_TOKEN` to
-read-only and can't be overridden at the repo level — see §2d for the
-exact fix needed, which requires an organization owner. Until that's
-resolved, the workflow will run on schedule but every attempt to open or
-update a PR will fail. Nothing here has affected `/diskwentulong/` or
-any committed file.
+**Built and confirmed fetching/diffing real live data end-to-end — but
+the job's actual PR-creation step has NEVER been exercised yet, and
+remains unconfirmed.** The org-level GitHub Actions policy (§2d) has
+been fixed by the user — `GITHUB_TOKEN`'s declared scopes now show
+`Contents: write, PullRequests: write`, confirmed via a real
+`workflow_dispatch` run. **That is not the same thing as GitHub's
+separate "Allow GitHub Actions to create and approve pull requests"
+setting** (a distinct gate on top of those scopes — see
+[GitHub's docs](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#preventing-github-actions-from-creating-or-approving-pull-requests)),
+and all three real runs so far have aborted before the workflow's
+`gh pr create`/`gh pr edit` step ever ran — so whether that setting is
+actually enabled is still unverified, not just assumed fine. Both
+prerequisites are done: §2a (category-config extraction, PR #135) and
+§2a-2 (`merchant_id` exposed from the live feed, `Code.gs` v13, deployed
+via `clasp`).
+
+**First three real runs (2026-10-03), in order — none reached the
+PR-creation step:**
+1. Fetched the live endpoint successfully, but the snapshot-validation
+   gate correctly caught a real data problem — a duplicate
+   `merchant_id` — and aborted with no JSON changes and no PR, exactly
+   as designed.
+2. Got an HTML page back instead of JSON from the live endpoint (a
+   transient hiccup, not reproduced since) — the job correctly treated
+   this as a fetch failure and aborted the same way.
+3. Fetched successfully again and, thanks to the diagnostic improvement
+   from run 1 (PR #138), pinpointed the exact problem: **`M-0045`** is
+   assigned to both "LabCom Laboratory Supplies" and "Villa Caceres
+   Hotel", and **`M-0046`** to both "White Bean Cafe" and "Flavours by
+   RooRoo Café" — two real `merchant_id` collisions in the live
+   Merchants Sheet, not a bug in this job. **User is fixing these
+   directly in the Sheet.** Once resolved, the next run (scheduled or a
+   manual `workflow_dispatch`) should produce this job's first real
+   PR — expected to be large, since it will also bootstrap-match or
+   flag all currently-committed partners in the same pass (see §2b-1) —
+   **and will be the first real test of whether PR creation actually
+   works.** If the org-level "Allow GitHub Actions to create..."
+   setting is still off, that run will fail at the `gh pr create` step
+   with a permissions error, and §2d is not actually resolved yet.
+
+This is a genuinely good outcome for the safety design: the validation
+gate did exactly what it was built for on its very first live exposure,
+on two different kinds of bad input, without ever touching a committed
+file.
 
 ## 1. What's already automated vs. not
 
@@ -272,6 +300,17 @@ and unit-tested but **cannot open or update any PR against the real
 GitHub API** — its `gh pr create`/`gh pr edit` step will fail with a
 permissions error on every run.
 
+**Updated 2026-10-03**: the user reports this has been addressed, and a
+real `workflow_dispatch` run now shows `GITHUB_TOKEN` declared scopes of
+`Contents: write, PullRequests: write` (widened from read-only). That
+confirms the *Workflow permissions* radio button is now "Read and write
+permissions." **It does NOT by itself confirm the separate "Allow GitHub
+Actions to create and approve pull requests" checkbox is checked** —
+that's a distinct setting layered on top, and no run yet has reached the
+`gh pr create` step to prove it either way (all three real runs aborted
+earlier, on real data problems in the live Sheet — see Status above).
+This will be confirmed the first time a run gets past a valid snapshot.
+
 ## 3. Open questions for review
 - Is a new scheduled GitHub Actions workflow an acceptable first piece of
   CI for this repo, given its "no build step" convention so far?
@@ -281,9 +320,15 @@ permissions error on every run.
   every later run). Is that acceptable as a one-time event, or should the
   very first run be done manually (`workflow_dispatch`) and reviewed with
   extra care rather than waiting for the daily schedule to trigger it?
-- §2d's repository setting ("Allow GitHub Actions to create and approve
-  pull requests") needs a human to enable it — is that done, or still
-  pending?
+- §2d's organization-level policy blocking `GITHUB_TOKEN` write access
+  has been loosened (confirmed: declared scopes now include
+  `Contents: write, PullRequests: write`). But the separate "Allow
+  GitHub Actions to create and approve pull requests" setting that
+  actually gates `gh pr create`/`gh pr edit` has NOT been separately
+  confirmed — no run has reached that step yet to prove it either way.
+  This needs to be verified the first time a run gets past a valid
+  snapshot (i.e. once the two `merchant_id` collisions are fixed),
+  not assumed from the scopes alone.
 - Any further failure mode in the diff logic (section 2b step 3, or the
   bootstrap-matching/plausibility-floor behavior in 2b-1) that's still
   been missed?
@@ -347,3 +392,23 @@ permissions error on every run.
   Needs an organization owner at the org's own Actions settings, not
   this repo's. Confirmed the workflow is fully blocked from opening or
   updating any real PR until that's resolved.
+- **v2.2** (2026-10-03): user widened the org-level policy from v2.1 —
+  confirmed via a real `workflow_dispatch` run showing `GITHUB_TOKEN`
+  declared scopes of `Contents: write, PullRequests: write`. Per Codex's
+  review on #139: this confirms the Workflow-permissions radio button,
+  but NOT the separate "Allow GitHub Actions to create and approve pull
+  requests" checkbox — no run has reached the `gh pr create` step yet to
+  prove that setting either way, so §2d/§3 now say so explicitly instead
+  of assuming it from the scopes alone. The job's first three real runs
+  each hit genuine real-world findings before reaching that step, and
+  handled every one correctly: a duplicate `merchant_id` (validation
+  gate caught it, aborted cleanly); a transient HTML-instead-of-JSON
+  response from the live endpoint (treated as a fetch failure, aborted
+  cleanly, not reproduced since); and, after improving the validation
+  error to name names (this session's other small PR), pinpointed the
+  exact duplicate-id collisions: `M-0045` (LabCom Laboratory Supplies /
+  Villa Caceres Hotel) and `M-0046` (White Bean Cafe / Flavours by
+  RooRoo Café). User is fixing these in the live Sheet directly. No
+  code or docs changes needed for this finding — the job worked exactly
+  as designed on real, previously-unseen bad input, on its very first
+  live exposure.
