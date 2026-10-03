@@ -224,13 +224,22 @@ document.getElementById('terms-modal').classList.remove('modal-hidden');
 // degrades gracefully instead of breaking the page.
 let CATEGORY_ICONS = {};
 let CATEGORY_ORDER = [];
-const categoriesReady = fetch('/assets/merchants/categories.json')
+const categoriesFetch = fetch('/assets/merchants/categories.json')
   .then(r => r.json())
   .then(cfg => {
     CATEGORY_ICONS = cfg.icons || {};
     CATEGORY_ORDER = cfg.order || [];
   })
   .catch(() => {});
+// plain fetch() has no built-in timeout, and both the static-fallback and
+// live render paths await this -- without a deadline, a stalled same-origin
+// request would leave the page showing neither, instead of the documented
+// generic-icon fallback. Racing against a short timeout means a slow/failed
+// fetch still lets rendering proceed (with whatever CATEGORY_ICONS/ORDER
+// happen to be set by then); the underlying fetch keeps running regardless,
+// so a later render (e.g. the live partners call, which is always slower
+// than this local file) still picks up the real values once they land.
+const categoriesReady = Promise.race([categoriesFetch, new Promise(resolve => setTimeout(resolve, 2000))]);
 
 // Category keys match the live getPartners endpoint's own classification
 // strings exactly (used for grouping/icon lookup) -- this taxonomy
