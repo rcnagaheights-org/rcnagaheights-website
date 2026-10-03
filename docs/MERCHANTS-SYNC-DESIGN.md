@@ -1,25 +1,17 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v2.2 · Last updated: 2026-10-03
+Version: v3 · Last updated: 2026-10-03
 
 ## Status
-**Built and confirmed fetching/diffing real live data end-to-end — but
-the job's actual PR-creation step has NEVER been exercised yet, and
-remains unconfirmed.** The org-level GitHub Actions policy (§2d) has
-been fixed by the user — `GITHUB_TOKEN`'s declared scopes now show
-`Contents: write, PullRequests: write`, confirmed via a real
-`workflow_dispatch` run. **That is not the same thing as GitHub's
-separate "Allow GitHub Actions to create and approve pull requests"
-setting** (a distinct gate on top of those scopes — see
-[GitHub's docs](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#preventing-github-actions-from-creating-or-approving-pull-requests)),
-and all three real runs so far have aborted before the workflow's
-`gh pr create`/`gh pr edit` step ever ran — so whether that setting is
-actually enabled is still unverified, not just assumed fine. Both
-prerequisites are done: §2a (category-config extraction, PR #135) and
-§2a-2 (`merchant_id` exposed from the live feed, `Code.gs` v13, deployed
-via `clasp`).
+**Fully built and confirmed working end-to-end, including the job's
+first real PR, merged.** Both prerequisites are done: §2a
+(category-config extraction, PR #135) and §2a-2 (`merchant_id` exposed
+from the live feed, `Code.gs` v13, deployed via `clasp`). The org-level
+GitHub Actions policy (§2d) is confirmed fully resolved — not just the
+`GITHUB_TOKEN` write scopes, but the separate "Allow GitHub Actions to
+create and approve pull requests" setting too, since the job has now
+actually reached `gh pr create` and succeeded.
 
-**First three real runs (2026-10-03), in order — none reached the
-PR-creation step:**
+**Real runs (2026-10-03), in order:**
 1. Fetched the live endpoint successfully, but the snapshot-validation
    gate correctly caught a real data problem — a duplicate
    `merchant_id` — and aborted with no JSON changes and no PR, exactly
@@ -28,24 +20,48 @@ PR-creation step:**
    transient hiccup, not reproduced since) — the job correctly treated
    this as a fetch failure and aborted the same way.
 3. Fetched successfully again and, thanks to the diagnostic improvement
-   from run 1 (PR #138), pinpointed the exact problem: **`M-0045`** is
+   from run 1 (PR #138), pinpointed the exact problem: **`M-0045`** was
    assigned to both "LabCom Laboratory Supplies" and "Villa Caceres
    Hotel", and **`M-0046`** to both "White Bean Cafe" and "Flavours by
    RooRoo Café" — two real `merchant_id` collisions in the live
-   Merchants Sheet, not a bug in this job. **User is fixing these
-   directly in the Sheet.** Once resolved, the next run (scheduled or a
-   manual `workflow_dispatch`) should produce this job's first real
-   PR — expected to be large, since it will also bootstrap-match or
-   flag all currently-committed partners in the same pass (see §2b-1) —
-   **and will be the first real test of whether PR creation actually
-   works.** If the org-level "Allow GitHub Actions to create..."
-   setting is still off, that run will fail at the `gh pr create` step
-   with a permissions error, and §2d is not actually resolved yet.
+   Merchants Sheet, not a bug in this job. User fixed these directly in
+   the Sheet.
+4. First real PR (**#140**), opened by the workflow itself
+   (`github-actions[bot]`, confirming the PR-creation path genuinely
+   works): bootstrap-matched all 49 legacy `partners.json` entries by
+   name (zero unmatched — see Open Questions below), added one new
+   merchant (Green Stock), and updated 9 merchants' changed fields
+   (mostly `commitment` text, plus White Bean Cafe's name). Reviewed and
+   merged.
+5. One follow-up (**#141**) closed the one remaining manual item —
+   Green Stock's logo. Codex caught that the first download was
+   genuinely corrupted (confirmed independently: Pillow raised "broken
+   data stream when reading image file"); traced to the Google Drive
+   MCP tool's `download_file_content` reproducibly truncating this
+   specific file by 279 bytes across two separate calls. Worked around
+   via a direct `curl` against the Drive file (same pattern as the
+   Governor's Visit photo, `docs/SERVICE-PROJECTS-DESIGN.md`) — verified
+   byte-exact, clean decode, visually correct. Merged.
+6. Post-merge verification (not from the sync job itself): re-ran the
+   workflow once more and got "no diff detected," confirming full parity
+   between the live feed and the committed file, and that none of the 49
+   bootstrap matches needs a second look. Separately audited all 50
+   committed logo files for the same class of corruption Codex caught on
+   Green Stock — all present and decode cleanly. Checked the live site
+   directly (`https://rcnagaheights.org/diskwentulong/`): all 50 partners
+   render, Green Stock's logo loads, and the live `?action=partners` call
+   itself (not just the static fallback) returns real JSON with
+   `merchant_id` on every entry — closing out the one open question left
+   from `Code.gs` v13's rollout. See `docs/BACKEND-CAPABILITY-TEST.md`
+   for a related finding: this environment's own Playwright, which had
+   previously been unable to reach this exact endpoint, succeeded this
+   time.
 
-This is a genuinely good outcome for the safety design: the validation
+This was a genuinely good outcome for the safety design: the validation
 gate did exactly what it was built for on its very first live exposure,
 on two different kinds of bad input, without ever touching a committed
-file.
+file — and the one real defect that did reach a human review (the
+corrupted logo) was caught by Codex before merge, not after.
 
 ## 1. What's already automated vs. not
 
@@ -311,27 +327,29 @@ that's a distinct setting layered on top, and no run yet has reached the
 earlier, on real data problems in the live Sheet — see Status above).
 This will be confirmed the first time a run gets past a valid snapshot.
 
-## 3. Open questions for review
-- Is a new scheduled GitHub Actions workflow an acceptable first piece of
-  CI for this repo, given its "no build step" convention so far?
-- The first real run will bootstrap-match (or flag as unmatched) all 49
-  currently-committed partners in one go, likely producing one unusually
-  large first PR (compared to the small incremental diffs expected on
-  every later run). Is that acceptable as a one-time event, or should the
-  very first run be done manually (`workflow_dispatch`) and reviewed with
-  extra care rather than waiting for the daily schedule to trigger it?
-- §2d's organization-level policy blocking `GITHUB_TOKEN` write access
-  has been loosened (confirmed: declared scopes now include
-  `Contents: write, PullRequests: write`). But the separate "Allow
-  GitHub Actions to create and approve pull requests" setting that
-  actually gates `gh pr create`/`gh pr edit` has NOT been separately
-  confirmed — no run has reached that step yet to prove it either way.
-  This needs to be verified the first time a run gets past a valid
-  snapshot (i.e. once the two `merchant_id` collisions are fixed),
-  not assumed from the scopes alone.
+## 3. Resolved questions (kept for history)
+- ~~Is a new scheduled GitHub Actions workflow an acceptable first piece
+  of CI for this repo?~~ **Yes** — built, merged, running.
+- ~~Should the very first run be manual (`workflow_dispatch`) and
+  reviewed with extra care rather than waiting for the daily schedule?~~
+  **Done this way** — triggered manually once the Sheet was fixed,
+  reviewed, merged as PR #140. All 49 legacy entries bootstrap-matched
+  successfully; zero came back as unmatched legacy.
+- ~~Does the separate "Allow GitHub Actions to create and approve pull
+  requests" setting actually work, not just the declared token scopes?~~
+  **Confirmed working** — PR #140 was opened and merged successfully.
+
+## 3a. Open questions still live
 - Any further failure mode in the diff logic (section 2b step 3, or the
   bootstrap-matching/plausibility-floor behavior in 2b-1) that's still
-  been missed?
+  been missed? (None found in the real run, but only one real run has
+  happened so far — worth re-checking after a few more scheduled runs
+  accumulate.)
+- The Google Drive MCP tool's `download_file_content` reproducibly
+  truncated one specific logo file by 279 bytes (see the Status
+  section's run 5 above). Is this worth a general warning in
+  `docs/CONTENT-MANAGEMENT.md` for any future Drive-sourced binary
+  download in this repo, not just merchant logos?
 
 ## 4. Revision history
 - **v1** (2026-10-03): initial proposal, opened as PR #134.
@@ -412,3 +430,19 @@ This will be confirmed the first time a run gets past a valid snapshot.
   code or docs changes needed for this finding — the job worked exactly
   as designed on real, previously-unseen bad input, on its very first
   live exposure.
+- **v3** (2026-10-03): the Sheet was fixed and the full cycle completed.
+  §2d is now confirmed fully resolved (PR #140 opened and merged
+  successfully, not just token-scope confirmation). PR #140 (the job's
+  first real output) bootstrap-matched all 49 legacy partners cleanly,
+  added Green Stock, updated 9 fields, and merged. A follow-up (PR #141)
+  fixed a genuine corruption in Green Stock's downloaded logo — caught
+  by Codex, root-caused to a reproducible truncation bug in the Drive
+  MCP tool's `download_file_content`, worked around via direct `curl` —
+  and merged. Post-merge, re-running the workflow confirmed "no diff
+  detected" (full live/committed parity, zero bootstrap mismatches), a
+  full audit of all 50 committed logo files found no other corruption,
+  and a direct check of the live site confirmed everything renders
+  correctly, including the live `?action=partners` call itself (not
+  just the static fallback) returning `merchant_id` on every entry.
+  Rewrote the Status section to reflect this end state and resolved the
+  Open Questions that this completed (moved to §3, kept for history).
