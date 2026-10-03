@@ -1,5 +1,5 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v3 · Last updated: 2026-10-03
+Version: v3.1 · Last updated: 2026-10-03
 
 ## Status
 **Fully built and confirmed working end-to-end, including the job's
@@ -365,6 +365,22 @@ settings genuinely work.
   section's run 5 above). Is this worth a general warning in
   `docs/CONTENT-MANAGEMENT.md` for any future Drive-sourced binary
   download in this repo, not just merchant logos?
+- **File-level staleness is only partly handled.** A disappeared
+  merchant's *record* gets proposed for removal from `partners.json`
+  (§2b step 3) — but nothing removes the orphaned asset that merchant
+  leaves behind:
+  - Its committed **logo image** (e.g. `greenstock.jpg`) stays in
+    `assets/merchants/` forever unless a human deletes it by hand — the
+    job's scope discipline (§2c) never touches files outside the two
+    JSON files, by design.
+  - A **category** that no longer has any active partner is never
+    pruned from `categories.json` either — the job only ever *adds* new
+    categories (step 3), never removes ones that emptied out.
+  Worth deciding: leave both as accepted manual cleanup (consistent with
+  logos already being manual-always), or have the job's PR body at least
+  *list* orphaned logo files/empty categories as a checklist item (same
+  pattern as the existing new-merchant logo checklist), without actually
+  deleting anything itself.
 
 ## 4. Revision history
 - **v1** (2026-10-03): initial proposal, opened as PR #134.
@@ -461,3 +477,10 @@ settings genuinely work.
   just the static fallback) returning `merchant_id` on every entry.
   Rewrote the Status section to reflect this end state and resolved the
   Open Questions that this completed (moved to §3, kept for history).
+- **v3.1** (2026-10-03): added a new open question — file-level
+  staleness (orphaned logo images, categories that have emptied out) is
+  only partly handled. A disappeared merchant's *record* is correctly
+  proposed for removal, but nothing cleans up the logo file it leaves
+  behind, and nothing prunes a category once nothing in it remains
+  active. Not yet decided whether to leave this as accepted manual
+  cleanup or have the PR body at least list it as a checklist item.
