@@ -1,0 +1,22 @@
+{
+  "icons": {
+    "Grooming Services": "scissors",
+    "Coffee & Milktea Houses": "coffee",
+    "Home & Car Essentials": "wrench",
+    "Entertainment": "party-popper",
+    "Self-care Services": "sparkles",
+    "Medical Services": "stethoscope",
+    "Legal Services": "scale",
+    "Multimedia Services": "camera",
+    "Pastries": "cake",
+    "Medical & Diagnostic Supplies": "flask-conical",
+    "Mental Wellness Services": "brain",
+    "Hotels": "building",
+    "Restaurants": "utensils",
+    "Training Services": "graduation-cap",
+    "Dental Services": "smile",
+    "Wholesale Supplies": "boxes",
+    "Other": "grid"
+  },
+  "order": ["Grooming Services", "Coffee & Milktea Houses", "Home & Car Essentials", "Entertainment", "Self-care Services", "Medical Services", "Legal Services", "Multimedia Services", "Pastries", "Medical & Diagnostic Supplies", "Mental Wellness Services", "Hotels", "Restaurants", "Training Services", "Dental Services", "Wholesale Supplies", "Other"]
+}
