@@ -68,15 +68,14 @@ docs/MERCHANTS-SYNC-DESIGN.md -> design + build record for a scheduled
                            job that detects new Partner Merchants
                            categories/entries and opens a PR with the
                            diff, mirroring the review-preserving pattern
-                           already used for Rurok's automation. Both
-                           prerequisites are done (category config
-                           extracted to categories.json, PR #135;
-                           merchant_id exposed from the live feed,
-                           Code.gs v13) and the job itself is now real
-                           code (.github/workflows/merchants-sync.yml +
-                           .github/scripts/merchants-sync.js) — but not
-                           yet confirmed running successfully against
-                           the real live endpoint, see its §2d
+                           already used for Rurok's automation. Built,
+                           confirmed working against the real live
+                           endpoint (.github/workflows/merchants-sync.yml
+                           + .github/scripts/merchants-sync.js) —
+                           currently blocked only on a real data problem
+                           in the live Merchants Sheet (two merchant_id
+                           collisions), not on anything in this repo;
+                           see its Status section
 .github/workflows/merchants-sync.yml -> scheduled (+ manually
                            dispatchable) GitHub Action, this repo's
                            first piece of CI — see
@@ -329,13 +328,19 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   manually dispatchable) runs `.github/scripts/merchants-sync.js` to
   diff the live partner feed against the committed
   `assets/merchants/partners.json`/`categories.json` and open or update
-  a PR with the result — never commits to `main` directly. Unit-tested
-  locally (every diff path, including a full dry run against the real
-  committed 49-entry file) but **not yet triggered against the real
-  live endpoint**. Needs one manual one-time repo setting first ("Allow
-  GitHub Actions to create and approve pull requests" — see
-  docs/MERCHANTS-SYNC-DESIGN.md §2d) before its first real
-  `workflow_dispatch` run.
+  a PR with the result — never commits to `main` directly. **Confirmed
+  working against the real live endpoint** (org-level Actions policy
+  fixed by the user; `GITHUB_TOKEN` now has write + PR-creation access).
+  Its first three real runs each hit genuine findings and handled every
+  one correctly: a duplicate `merchant_id` and a transient HTML-not-JSON
+  response from the live endpoint were both safely aborted with no
+  changes, and a diagnostics improvement then pinpointed the exact
+  duplicate-id collisions live in the Merchants Sheet (`M-0045`:
+  LabCom Laboratory Supplies / Villa Caceres Hotel; `M-0046`: White Bean
+  Cafe / Flavours by RooRoo Café) — user is fixing these in the Sheet
+  directly. See docs/MERCHANTS-SYNC-DESIGN.md's Status section for the
+  full account; once the Sheet is fixed, the next run should produce
+  this job's first real (and likely large, first-run bootstrap) PR.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

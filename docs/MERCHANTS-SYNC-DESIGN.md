@@ -1,23 +1,39 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v2.1 · Last updated: 2026-10-03
+Version: v2.2 · Last updated: 2026-10-03
 
 ## Status
-**Built — `.github/workflows/merchants-sync.yml` +
-`.github/scripts/merchants-sync.js` — but BLOCKED from running for
-real.** Both prerequisites are done: §2a (category-config extraction, PR
-#135) and §2a-2 (`merchant_id` exposed from the live feed, `Code.gs`
-v13, deployed via `clasp`). §2b (the sync job itself) is real code,
-unit-tested locally against mocked live data (every diff path: new
-category, new merchant, changed field, proposed removal,
-snapshot-validation failure, and a one-time name-based bootstrap match —
-see §2b's "Implementation notes" below for that last one, a real
-behavior this design didn't originally spell out). **Confirmed blocked
-by an organization-level GitHub policy** that locks `GITHUB_TOKEN` to
-read-only and can't be overridden at the repo level — see §2d for the
-exact fix needed, which requires an organization owner. Until that's
-resolved, the workflow will run on schedule but every attempt to open or
-update a PR will fail. Nothing here has affected `/diskwentulong/` or
-any committed file.
+**Built and confirmed working against the real live endpoint — but
+currently blocked on a real data problem in the live Merchants Sheet,
+not on anything in this repo.** The org-level GitHub Actions policy
+(§2d) has been fixed by the user — `GITHUB_TOKEN` now has write + PR
+creation access, confirmed via a real `workflow_dispatch` run. Both
+prerequisites are done: §2a (category-config extraction, PR #135) and
+§2a-2 (`merchant_id` exposed from the live feed, `Code.gs` v13, deployed
+via `clasp`).
+
+**First three real runs (2026-10-03), in order:**
+1. Fetched the live endpoint successfully, but the snapshot-validation
+   gate correctly caught a real data problem — a duplicate
+   `merchant_id` — and aborted with no JSON changes and no PR, exactly
+   as designed.
+2. Got an HTML page back instead of JSON from the live endpoint (a
+   transient hiccup, not reproduced since) — the job correctly treated
+   this as a fetch failure and aborted the same way.
+3. Fetched successfully again and, thanks to the diagnostic improvement
+   from run 1 (PR #138), pinpointed the exact problem: **`M-0045`** is
+   assigned to both "LabCom Laboratory Supplies" and "Villa Caceres
+   Hotel", and **`M-0046`** to both "White Bean Cafe" and "Flavours by
+   RooRoo Café" — two real `merchant_id` collisions in the live
+   Merchants Sheet, not a bug in this job. **User is fixing these
+   directly in the Sheet.** Once resolved, the next run (scheduled or a
+   manual `workflow_dispatch`) should produce this job's first real
+   PR — expected to be large, since it will also bootstrap-match or
+   flag all currently-committed partners in the same pass (see §2b-1).
+
+This is a genuinely good outcome for the safety design: the validation
+gate did exactly what it was built for on its very first live exposure,
+on two different kinds of bad input, without ever touching a committed
+file.
 
 ## 1. What's already automated vs. not
 
@@ -347,3 +363,18 @@ permissions error on every run.
   Needs an organization owner at the org's own Actions settings, not
   this repo's. Confirmed the workflow is fully blocked from opening or
   updating any real PR until that's resolved.
+- **v2.2** (2026-10-03): user fixed the org-level policy from v2.1 —
+  confirmed via a real `workflow_dispatch` run showing
+  `GITHUB_TOKEN Permissions: Contents: write, PullRequests: write`. The
+  job's first three real runs each hit genuine real-world findings and
+  handled every one correctly: a duplicate `merchant_id` (validation
+  gate caught it, aborted cleanly); a transient HTML-instead-of-JSON
+  response from the live endpoint (treated as a fetch failure, aborted
+  cleanly, not reproduced since); and, after improving the validation
+  error to name names (this session's other small PR), pinpointed the
+  exact duplicate-id collisions: `M-0045` (LabCom Laboratory Supplies /
+  Villa Caceres Hotel) and `M-0046` (White Bean Cafe / Flavours by
+  RooRoo Café). User is fixing these in the live Sheet directly. No
+  code or docs changes needed for this finding — the job worked exactly
+  as designed on real, previously-unseen bad input, on its very first
+  live exposure.
