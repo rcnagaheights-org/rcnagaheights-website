@@ -1,5 +1,5 @@
 # Claude Backend Capability Test — Results
-Version: v1.1 · Last updated: 2026-07-24
+Version: v2 · Last updated: 2026-10-03
 
 Reference doc recording what Claude actually tested (not assumed) about its
 ability to build the DiskwenTulong Card backend described in
@@ -12,10 +12,70 @@ blindly if the available connectors change later.
 |---|---|
 | Create a Google Sheet with data | **Works** |
 | Read a Google Sheet back | **Works** (two independent methods) |
-| Edit/append rows on an existing Sheet | **Not possible** — no tool for it |
-| Delete/trash a Drive file | **Not possible** — no tool for it |
-| Create/edit/deploy a Google Apps Script project | **Not possible** — no Apps Script tool connected at all |
-| Write Apps Script (`Code.gs`) source for the user to paste in | **Works** — just can't run/deploy it |
+| Edit/append rows on an existing Sheet | **Not possible via the Drive connector** — but Code.gs itself can do this at runtime, and see the clasp finding below for a possible direct path |
+| Delete/trash a Drive file | **Works** (as of 2026-08-14 — this environment gained Drive delete access; superseded the 2026-07-24 "not possible" finding below) |
+| Create/edit/deploy a Google Apps Script project via a built-in connector | **Not possible** — no Apps Script MCP tool connected |
+| Clone/edit/push/deploy the REAL, LIVE Apps Script project via `clasp` (npm CLI + OAuth) | **Works** — see "clasp" section below. This is a materially different, more capable path than anything in the rest of this doc. |
+| Write Apps Script (`Code.gs`) source for the user to paste in | **Works** — no longer the only option, see clasp below |
+
+## clasp (Apps Script CLI) — confirmed 2026-10-03
+
+`npm install -g @google/clasp`, then `clasp login --no-localhost` (the
+device/manual-code OAuth flow, since this environment has no browser the
+user can complete an interactive login in directly — the human completes
+the Google OAuth consent in their OWN browser, then pastes the resulting
+redirect URL back). Confirmed working end-to-end against the real,
+existing "DTC Card Database" Apps Script project (script ID
+`1_c1Mdc4i1rJ6muonXHejam7WVvlUd6I8-fR6_tBS32lWCbJ2ZwaRbCr5`):
+
+- `clasp clone <scriptId>` — pulls the real live `Code.js`/`appsscript.json`
+  directly, no manual copy-paste
+- `clasp push` — pushes edited source back to the project's HEAD
+- `clasp deploy -i <deploymentId> --versionNumber <n>` — points an existing
+  deployment (e.g. the live `/exec` Web App URL used by `/verify/`,
+  `/register/`, `/diskwentulong/`) at a new or specific version
+
+**Caveats found the hard way, read before relying on this again:**
+- **Account matters.** `clasp list` (Drive-based script discovery) returned
+  nothing for either account tried — likely the `drive.file` OAuth scope
+  only seeing app-created/app-opened files, not pre-existing ones. Clone by
+  *known* Script ID bypasses this and works regardless. Separately, write
+  access (`clasp push`) only worked under `secretariat@rcnagaheights.org`,
+  not `publicimage@rcnagaheights.org` (read/clone worked under either) —
+  likely the per-account "Google Apps Script API" toggle at
+  `script.google.com/home/usersettings`, which must be enabled on whichever
+  account clasp is logged in as.
+- **A code change that adds a new Google API scope (e.g. this session's
+  `SpreadsheetApp.openById()` on a second, non-bound spreadsheet) blocks
+  the ENTIRE deployment — not just the new code path — until a human
+  manually clicks through Google's "Authorize access" consent prompt**
+  (Deploy → Manage deployments → the "Web App requires you to authorize
+  access to your data" dialog). This took down the *already-working*
+  `?action=partners`/`verify`/`register` endpoints for about 15 minutes
+  during this session's work until caught and fixed — a real, if brief,
+  production incident. Confirmed via the user's own browser DevTools Network
+  tab (HAR file) that anonymous requests were failing with HTTP 403 during
+  the window the authorization was outstanding.
+- **This environment cannot reliably self-test the live `/exec` endpoint.**
+  Both plain `curl` and a real headless Chromium (Playwright) got blocked
+  identically (`403`/`Failed to fetch`) on requests to this exact URL, even
+  for actions that were simultaneously confirmed working for the user in
+  their own browser — almost certainly this environment's outbound proxy/IP
+  being treated as suspicious by Google's abuse-prevention layer specifically
+  for Apps Script Web App execution, not a reflection of the deployment's
+  real state. **The user's own browser (ideally with a HAR export from
+  DevTools' Network tab) is the only reliable way to confirm this kind of
+  change is actually live** — don't trust this environment's own curl/
+  Playwright tests on this specific type of request, confirm with the user
+  instead.
+- **Credential handling**: `/root/.clasprc.json` holds the live OAuth
+  `refresh_token`/`client_secret` in plain text. Never print this file's
+  values directly — inspect keys/structure only first. (A real leak
+  happened once this session from assuming the wrong top-level key name
+  in a "redact known secrets" script; the user revoked it immediately at
+  myaccount.google.com/permissions and a clean re-login was done.) This
+  credential is also **not persistent** — this session's container is
+  ephemeral, so a future session needs a fresh `clasp login`.
 
 ## Test 1 — Google Sheets: create + read
 

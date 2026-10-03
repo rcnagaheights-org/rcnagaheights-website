@@ -286,35 +286,80 @@ function renderCarousel(key, items){
   document.getElementById(`${key}-next`).onclick = function(){ track.scrollBy({ left: 280, behavior: 'smooth' }); };
 }
 
+const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/rcnagaheights.org/s/AKfycbyC6GIQA0BObLJ7UFUNdjt0moznACBfk-kUeWuzckl_9qyv3LONFx_WTiX42pAXirqC/exec';
+const PLACEHOLDER_IMAGE = '/assets/rotary-logo.png';
+
 /**
- * Data-driven rework -- see docs/SERVICE-PROJECTS-DESIGN.md. Renders from
- * a generated JSON file (same pattern as assets/merchants/partners.json),
- * not a live Sheets/Drive API call -- regenerate this file by hand
- * whenever the "Service Projects Tracker" Drive sheet changes.
+ * Live project_name -> committed local photo path. The live
+ * ?action=projects endpoint (see getServiceProjects_ in Code.gs) only
+ * returns metadata plus the Sheet's raw image_filename, which does NOT
+ * reliably match the final resized/renamed asset under
+ * assets/service-projects/<group>/ -- that mapping has always been a
+ * manual human step (download from Drive, resize, rename), so a brand
+ * new project row shows PLACEHOLDER_IMAGE until someone adds its real
+ * entry here. See docs/SERVICE-PROJECTS-DESIGN.md.
  */
-fetch('/assets/service-projects/service-projects.json')
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    const projects = data.projects || [];
-    if (!projects.length) {
-      document.getElementById('featured-empty').classList.remove('modal-hidden');
-      renderCarousel('areas_of_focus', []);
-      renderCarousel('avenues_of_service', []);
-      return;
-    }
-    const sorted = projects.slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
-    const featured = sorted[0];
-    const rest = sorted.slice(1);
-    renderFeatured(featured);
-    renderCarousel('areas_of_focus', rest.filter(function(p){ return p.category_group === 'areas_of_focus'; }));
-    renderCarousel('avenues_of_service', rest.filter(function(p){ return p.category_group === 'avenues_of_service'; }));
-  })
-  .catch(function(){
-    const emptyEl = document.getElementById('featured-empty');
-    emptyEl.textContent = 'Could not load service projects right now. Please try again later.';
-    emptyEl.classList.remove('modal-hidden');
+const IMAGE_BY_PROJECT = {
+  'BINHI NG KINABUKASAN': '/assets/service-projects/areas-of-focus/binhi-ng-kinabukasan.jpg',
+  'SUMMER CLUB TURNOVER AND STRATEGIC PLANNING': '/assets/service-projects/avenues-of-service/summer-club-turnover-and-strategic-planning.jpg',
+  'TALK ON ETHICAL LEADERSHIP FOR LAW STUDENTS': '/assets/service-projects/avenues-of-service/talk-on-ethical-leadership-for-law-students.jpg',
+  'UNLOCKING MENTAL WELL-BEING': '/assets/service-projects/areas-of-focus/unlocking-mental-well-being.jpg',
+  'DISKWENTULONG CARD': '/assets/service-projects/avenues-of-service/diskwentulong-card.jpg',
+  'CHARTERING OF THE NCF INTERACT CLUB': '/assets/service-projects/avenues-of-service/chartering-of-the-ncf-interact-club.jpg',
+  'LEAD': '/assets/service-projects/avenues-of-service/lead.jpg',
+  'LIWANAG SA DILIM: Sustainable Alternative Lighting': '/assets/service-projects/areas-of-focus/liwanag-sa-dilim.jpg',
+  '27TH UP HARONG ACADEMIC FESTIVAL': '/assets/service-projects/avenues-of-service/27th-up-harong-academic-festival.jpg',
+  'RCNH WEBSITE': '/assets/service-projects/avenues-of-service/rcnh-website.jpg',
+  'RUROK: THE RCNH MAGAZINE': '/assets/service-projects/avenues-of-service/rurok-the-rcnh-magazine.jpg',
+  '4 IN 1 DISTRICT LEARNING SEMINAR': '/assets/service-projects/avenues-of-service/4-in-1-district-learning-seminar.jpg',
+  'BRIGADA ESKWELA @ MAHABANG DAHILIG SHS': '/assets/service-projects/areas-of-focus/brigada-eskwela-mahabang-dahilig-shs.jpg',
+  "GOVERNOR'S VISIT": '/assets/service-projects/avenues-of-service/governors-visit.jpg'
+};
+
+function renderProjects(projects){
+  if (!projects.length) {
+    document.getElementById('featured-empty').classList.remove('modal-hidden');
     renderCarousel('areas_of_focus', []);
     renderCarousel('avenues_of_service', []);
+    return;
+  }
+  const withImages = projects.map(function(p){
+    return Object.assign({}, p, { image: IMAGE_BY_PROJECT[p.project_name] || PLACEHOLDER_IMAGE });
+  });
+  const sorted = withImages.slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+  const featured = sorted[0];
+  const rest = sorted.slice(1);
+  renderFeatured(featured);
+  renderCarousel('areas_of_focus', rest.filter(function(p){ return p.category_group === 'areas_of_focus'; }));
+  renderCarousel('avenues_of_service', rest.filter(function(p){ return p.category_group === 'avenues_of_service'; }));
+}
+
+/**
+ * Data-driven rework -- see docs/SERVICE-PROJECTS-DESIGN.md. Fetches live
+ * from the DTC Apps Script backend's ?action=projects (getServiceProjects_
+ * in Code.gs, reading the "Service Projects" Google Sheet directly --
+ * same live-then-static-fallback pattern as /diskwentulong/'s getPartners
+ * and /rurok/'s getRurokIssues), falling back to the committed
+ * assets/service-projects/service-projects.json only if the live call
+ * fails or returns no projects.
+ */
+fetch(`${APPS_SCRIPT_URL}?action=projects`)
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if (data.error || !data.projects || !data.projects.length) throw new Error(data.error || 'empty');
+    renderProjects(data.projects);
+  })
+  .catch(function(){
+    fetch('/assets/service-projects/service-projects.json')
+      .then(function(r){ return r.json(); })
+      .then(function(data){ renderProjects(data.projects || []); })
+      .catch(function(){
+        const emptyEl = document.getElementById('featured-empty');
+        emptyEl.textContent = 'Could not load service projects right now. Please try again later.';
+        emptyEl.classList.remove('modal-hidden');
+        renderCarousel('areas_of_focus', []);
+        renderCarousel('avenues_of_service', []);
+      });
   });
 
 lucide.createIcons();
