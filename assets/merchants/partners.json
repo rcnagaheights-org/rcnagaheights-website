@@ -4,342 +4,399 @@
     "category": "Grooming Services",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/alphabarberph",
-    "logo": "alphabarber.jpg"
+    "logo": "alphabarber.jpg",
+    "merchant_id": "M-0001"
   },
   {
     "name": "Aran & Co.",
     "category": "Coffee & Milktea Houses",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/helloaran.co",
-    "logo": "aranco.jpg"
+    "logo": "aranco.jpg",
+    "merchant_id": "M-0002"
   },
   {
     "name": "Bicol Cladding",
     "category": "Home & Car Essentials",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/profile.php?id=61577592862354",
-    "logo": "bicolcladding.jpg"
+    "logo": "bicolcladding.jpg",
+    "merchant_id": "M-0003"
   },
   {
     "name": "Blanche Skin Care and Laser Clinic",
     "category": "Self-care Services",
     "commitment": "20% Discount",
     "facebook_url": "https://www.facebook.com/blancheskincareclinic",
-    "logo": "blancheskincare.jpg"
+    "logo": "blancheskincare.jpg",
+    "merchant_id": "M-0005"
   },
   {
     "name": "Caltex AutoPro - Pili Diversion",
     "category": "Home & Car Essentials",
     "commitment": "5% off all services",
     "facebook_url": "https://www.facebook.com/caltexautoPro.pili",
-    "logo": "caltexautopro.jpg"
+    "logo": "caltexautopro.jpg",
+    "merchant_id": "M-0008"
   },
   {
     "name": "Centro Barbero",
     "category": "Grooming Services",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/CentroBarbero",
-    "logo": "centrobarbero.jpg"
+    "logo": "centrobarbero.jpg",
+    "merchant_id": "M-0009"
   },
   {
     "name": "CPD Law",
     "category": "Legal Services",
-    "commitment": "Free notarization of three (3) simple affidavits",
+    "commitment": "Free Notarization of Three (3) Simple Affidavits",
     "facebook_url": "https://www.facebook.com/CHOLOLOLOL",
-    "logo": "cpdlaw.jpg"
+    "logo": "cpdlaw.jpg",
+    "merchant_id": "M-0010"
   },
   {
     "name": "Cricket Peeks",
     "category": "Multimedia Services",
     "commitment": "10% Discount on all photography services (capped at Php 500)",
     "facebook_url": "https://www.facebook.com/profile.php?id=61557144605281",
-    "logo": "cricketpeeks.jpg"
+    "logo": "cricketpeeks.jpg",
+    "merchant_id": "M-0011"
   },
   {
     "name": "Gentry Barbers",
     "category": "Grooming Services",
     "commitment": "10% Discount for Online Booking",
     "facebook_url": "https://www.facebook.com/gentrybarbersph",
-    "logo": "gentrybarbers.jpg"
+    "logo": "gentrybarbers.jpg",
+    "merchant_id": "M-0012"
   },
   {
     "name": "J. Emmanuel Pastries - the House of Pili",
     "category": "Pastries",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/houseofpili",
-    "logo": "jemmanuelpastries.jpg"
+    "logo": "jemmanuelpastries.jpg",
+    "merchant_id": "M-0014"
   },
   {
     "name": "Jamer Law",
     "category": "Legal Services",
-    "commitment": "Free notarization of three (3) simple affidavits",
+    "commitment": "Free Notarization of Three (3) Simple Affidavits",
     "facebook_url": "https://www.facebook.com/jamerlaw",
-    "logo": "jamerlaw.png"
+    "logo": "jamerlaw.png",
+    "merchant_id": "M-0015"
   },
   {
     "name": "Julia Advertising",
     "category": "Multimedia Services",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/juliaadvertising",
-    "logo": "juliaadvertising.png"
+    "logo": "juliaadvertising.png",
+    "merchant_id": "M-0016"
   },
   {
     "name": "Km.eight coffee",
     "category": "Coffee & Milktea Houses",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/km8.coffee",
-    "logo": "kmeightcoffee.jpg"
+    "logo": "kmeightcoffee.jpg",
+    "merchant_id": "M-0017"
   },
   {
     "name": "Knopper",
     "category": "Medical & Diagnostic Supplies",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/knopperpharmacy",
-    "logo": "knopperpharmacy.jpg"
+    "logo": "knopperpharmacy.jpg",
+    "merchant_id": "M-0018"
   },
   {
     "name": "LabWorx Diagnostic and Health Services, Inc.",
     "category": "Medical Services",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/labworxdiagnostic2015",
-    "logo": "labworx.jpg"
+    "logo": "labworx.jpg",
+    "merchant_id": "M-0019"
   },
   {
     "name": "Lift",
     "category": "Self-care Services",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/profile.php?id=61579032807471",
-    "logo": "lift.jpg"
+    "logo": "lift.jpg",
+    "merchant_id": "M-0021"
   },
   {
     "name": "Magayon Coffee",
     "category": "Coffee & Milktea Houses",
     "commitment": "Buy 1, Get 1 at Php 50 off (Valid Monday-Thursday. One redemption per visit; for every Php 1,000 purchase, get a free Php 100 gift certificate.",
     "facebook_url": "https://www.facebook.com/magayoncoffee",
-    "logo": "magayoncoffee.jpg"
+    "logo": "magayoncoffee.jpg",
+    "merchant_id": "M-0022"
   },
   {
     "name": "Naga Slides Inflatables",
     "category": "Entertainment",
     "commitment": "50% OFF (Rotarians); 40% OFF (Non-Rotarians); ONE FREE Slide Set-Up for Rotary Club of Naga Heights children's outreach activity until December 31, 2026 only, subject to availability.",
     "facebook_url": "https://www.facebook.com/nagaslidesinflatables",
-    "logo": "nagaslidesinflatables.jpg"
+    "logo": "nagaslidesinflatables.jpg",
+    "merchant_id": "M-0026"
   },
   {
     "name": "Nagaland Hotel",
     "category": "Hotels",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/NagalandHotel",
-    "logo": "nagalandhotel.jpg"
+    "logo": "nagalandhotel.jpg",
+    "merchant_id": "M-0027"
   },
   {
     "name": "Patron CamSur",
     "category": "Restaurants",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/patronfelipecamsur",
-    "logo": "patroncamsur.jpg"
+    "logo": "patroncamsur.jpg",
+    "merchant_id": "M-0029"
   },
   {
     "name": "R&Y Laundry Shop",
     "category": "Home & Car Essentials",
     "commitment": "5% Discount; Free Fabric Dryer Sheets for New Customers",
     "facebook_url": "https://www.facebook.com/profile.php?id=61584740678104",
-    "logo": "rylaundryshop.jpg"
+    "logo": "rylaundryshop.jpg",
+    "merchant_id": "M-0030"
   },
   {
     "name": "Rosales Law Office",
     "category": "Legal Services",
-    "commitment": "Free notarization of three (3) simple affidavits",
+    "commitment": "Free Notarization of Three (3) Simple Affidavits",
     "facebook_url": "https://www.facebook.com/ghielr",
-    "logo": "rosaleslaw.jpg"
+    "logo": "rosaleslaw.jpg",
+    "merchant_id": "M-0036"
   },
   {
     "name": "Mendoza Law Office",
     "category": "Legal Services",
-    "commitment": "Free notarization of three (3) simple affidavits",
+    "commitment": "Free Notarization of Three (3) Simple Affidavits",
     "facebook_url": "https://www.facebook.com/fwancis.mendoza",
-    "logo": "mendozalaw.jpg"
+    "logo": "mendozalaw.jpg",
+    "merchant_id": "M-0023"
   },
   {
     "name": "Smile Right Dental Clinic",
     "category": "Dental Services",
-    "commitment": "10% Discount on Basic Procedures; 5% Discount Dentures",
+    "commitment": "10% Discount on Basic Procedures;\n5% Discount Dentures",
     "facebook_url": "https://www.facebook.com/smilerightnaga",
-    "logo": "smilerightdentalclinic.jpg"
+    "logo": "smilerightdentalclinic.jpg",
+    "merchant_id": "M-0039"
   },
   {
     "name": "Sundaze Hotel",
     "category": "Hotels",
-    "commitment": "Enjoy 10% Room Discount for Cardholders.  ID verification required upon check-in.",
+    "commitment": "Enjoy 10% Room Discount for Cardholders. \nID verification required upon check-in.",
     "facebook_url": "https://www.facebook.com/sundazehotel",
-    "logo": "sundazehotel.jpg"
+    "logo": "sundazehotel.jpg",
+    "merchant_id": "M-0042"
   },
   {
     "name": "Trangkilo Massage Hut",
     "category": "Self-care Services",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/kamalawellnessspa",
-    "logo": "trangkilomassagehut.jpg"
+    "logo": "trangkilomassagehut.jpg",
+    "merchant_id": "M-0043"
   },
   {
     "name": "Villa Caceres Hotel",
     "category": "Hotels",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity",
-    "logo": "villacaceres.jpg"
+    "logo": "villacaceres.jpg",
+    "merchant_id": "M-0045"
   },
   {
     "name": "R98 Driving Academy",
     "category": "Training Services",
     "commitment": "20% Discount - 15-hr. Theoretical Driving Course",
     "facebook_url": "https://www.facebook.com/r98.drivingacademy",
-    "logo": "R98.jpg"
+    "logo": "R98.jpg",
+    "merchant_id": "M-0031"
   },
   {
     "name": "Santigwar",
     "category": "Coffee & Milktea Houses",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/share/1Jpzw5tTxf/?mibextid=wwXIfr",
-    "logo": "Sntgwr.jpg"
+    "logo": "Sntgwr.jpg",
+    "merchant_id": "M-0037"
   },
   {
     "name": "Southern Crate",
     "category": "Wholesale Supplies",
     "commitment": "2% OFF on a minimum single-receipt purchase of ₱2,500",
     "facebook_url": "https://www.facebook.com/southerncrate",
-    "logo": "SouthernCrate.jpg"
+    "logo": "SouthernCrate.jpg",
+    "merchant_id": "M-0041"
   },
   {
     "name": "Rebel Coffee",
     "category": "Coffee & Milktea Houses",
     "commitment": "5% OFF on a minimum single-receipt purchase of ₱1,000 and FREE Cookie during the cardholder's birthday month",
     "facebook_url": "https://www.facebook.com/rebelcoffeeroasters.ph",
-    "logo": "Rebel.jpg"
+    "logo": "Rebel.jpg",
+    "merchant_id": "M-0032"
   },
   {
-    "name": "White Bean Café",
+    "name": "White Bean Cafe",
     "category": "Restaurants",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/whitebeancafe",
-    "logo": "whitebeancafe.png"
+    "logo": "whitebeancafe.png",
+    "merchant_id": "M-0046"
   },
   {
     "name": "RJ's Buffet",
     "category": "Restaurants",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/RJsBuffet",
-    "logo": "rjsbuffet.jpg"
+    "logo": "rjsbuffet.jpg",
+    "merchant_id": "M-0034"
   },
   {
     "name": "Rolando's",
     "category": "Restaurants",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/profile.php?id=61584270377141",
-    "logo": "rolandos.jpg"
+    "logo": "rolandos.jpg",
+    "merchant_id": "M-0035"
   },
   {
     "name": "Smesh",
     "category": "Restaurants",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/smash.burgers4400",
-    "logo": "smesh.jpg"
+    "logo": "smesh.jpg",
+    "merchant_id": "M-0038"
   },
   {
     "name": "Bistro Roberto",
     "category": "Entertainment",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/VCHBistroRoberto",
-    "logo": "bistroroberto.jpg"
+    "logo": "bistroroberto.jpg",
+    "merchant_id": "M-0004"
   },
   {
     "name": "BNPL Ant-Rabies Animal Bite Center",
     "category": "Medical Services",
     "commitment": "20% Discount; Free Vaccine for Category 3 Animal Bite if also a PhilHealth Member",
     "facebook_url": "https://www.facebook.com/share/1CdRbpftGy/",
-    "logo": "bnpl.jpg"
+    "logo": "bnpl.jpg",
+    "merchant_id": "M-0006"
   },
   {
     "name": "CABS Medical and Diagnostic Clinic",
     "category": "Medical Services",
     "commitment": "10% Discount; Free Vaccine for Category 3 Animal Bite if also a PhilHealth Member",
     "facebook_url": "https://www.facebook.com/share/19XDJyBZmP/",
-    "logo": "cabs.jpg"
+    "logo": "cabs.jpg",
+    "merchant_id": "M-0007"
   },
   {
     "name": "LEX Press",
     "category": "Multimedia Services",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/profile.php?id=61555187114287",
-    "logo": "lexpress.jpg"
+    "logo": "lexpress.jpg",
+    "merchant_id": "M-0020"
   },
   {
     "name": "Gluta Nail & Lashes Aesthetic Clinic",
     "category": "Self-care Services",
     "commitment": "20% Discount",
     "facebook_url": "https://www.facebook.com/share/1DaoBdRU8n/",
-    "logo": "glutanaillashes.jpg"
+    "logo": "glutanaillashes.jpg",
+    "merchant_id": "M-0013"
   },
   {
     "name": "VCH Health Resort Club",
     "category": "Self-care Services",
     "commitment": "10% Discount",
     "facebook_url": "https://www.facebook.com/VillaCaceresHotelNagaCity",
-    "logo": "vchhrc.jpg"
+    "logo": "vchhrc.jpg",
+    "merchant_id": "M-0044"
   },
   {
     "name": "MiPanda Naga",
     "category": "Coffee & Milktea Houses",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/mipandanaga",
-    "logo": "mipandanaga.jpg"
+    "logo": "mipandanaga.jpg",
+    "merchant_id": "M-0024"
   },
   {
     "name": "MVisions Diagnostic Center & Psychological Services",
     "category": "Mental Wellness Services",
-    "commitment": "10% Discount",
+    "commitment": "10% Discount on the following services:\ni. Consultation \nii. Psychotherapy/Counseling \niii. Psychological Assessment \niv. Psychological Testing for School and OJT purposes \nv. Neuro Psychiatric & Psychological Exam for Employment \nvi. Occupational Therapy \nvii. Speech therapy \nviii. Physical Therapy \nix. Training and Seminars",
     "facebook_url": "https://www.facebook.com/mvisionsdiagnosticcenter",
-    "logo": "mvisions.jpg"
+    "logo": "mvisions.jpg",
+    "merchant_id": "M-0025"
   },
   {
     "name": "Sorsogon's Psychological Center",
     "category": "Mental Wellness Services",
-    "commitment": "10% Discount",
+    "commitment": "10% Discount on the following services:\ni. Consultation \nii. Psychotherapy/Counseling \niii. Psychological Assessment \niv. Psychological Testing for School and OJT purposes \nv. Neuro Psychiatric & Psychological Exam for Employment \nvi. Training and Seminars",
     "facebook_url": "https://www.facebook.com/profile.php?id=61590541211510",
-    "logo": "sorsogonpsych.jpg"
+    "logo": "sorsogonpsych.jpg",
+    "merchant_id": "M-0040"
   },
   {
     "name": "Redflame Enterprises",
     "category": "Home & Car Essentials",
     "commitment": "20% Discount",
     "facebook_url": "https://www.facebook.com/Redflame.Enterprises/",
-    "logo": "redflame.jpg"
+    "logo": "redflame.jpg",
+    "merchant_id": "M-0033"
   },
   {
     "name": "Noeia Psychological Services",
     "category": "Mental Wellness Services",
     "commitment": "10% Discount on the following services: i. Consultation\nii. Psychotherapy/Counseling\niii. Psychological Assessment\niv. Psychological Testing for School and OJT purposes\nv. Neuro Psychiatric & Psychological Exam for Employment\nvi. Training and Seminars",
     "facebook_url": "https://www.facebook.com/61593332758873/",
-    "logo": "noeia.jpg"
+    "logo": "noeia.jpg",
+    "merchant_id": "M-0028"
   },
   {
     "name": "LabCom Laboratory Supplies",
     "category": "Medical & Diagnostic Supplies",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/blueknight1969",
-    "logo": "labcom.png"
+    "logo": "labcom.png",
+    "merchant_id": "M-0047"
   },
   {
     "name": "Mercury Drug",
     "category": "Medical & Diagnostic Supplies",
     "commitment": "15% Discount for purchase of at least 15 pcs. of the ff. medicine from RiteMed: Atorvastatin 10 mg, Atorvastatin 20 mg, Clopidogrel 775 mg, Losartan 500 mg, Rosuvastatin 10 mg, Rosuvastatin 20 mg, Telmisartan 40 mg, Amlodipine 5 mg, Losartan + Amlodipine 50/5 mg, Losartan + Amlodipine 100/5 mg, Amlodipine 10 mg, Metformin 500 mg, and Trimetazidine 35 mg.",
     "facebook_url": "https://www.facebook.com/mercurydrugph",
-    "logo": "mercurydrug.png"
+    "logo": "mercurydrug.png",
+    "merchant_id": "M-0049"
   },
   {
     "name": "Flavours by RooRoo Café",
     "category": "Restaurants",
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/flavoursgastronomica/",
-    "logo": "flavours.jpg"
+    "logo": "flavours.jpg",
+    "merchant_id": "M-0048"
+  },
+  {
+    "merchant_id": "M-0050",
+    "name": "Green Stock",
+    "category": "Restaurants",
+    "commitment": "5% Discount",
+    "facebook_url": "https://www.facebook.com/greenstockPH",
+    "logo": null
   }
 ]

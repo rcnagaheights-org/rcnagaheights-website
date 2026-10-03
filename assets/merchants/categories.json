@@ -18,5 +18,23 @@
     "Wholesale Supplies": "boxes",
     "Other": "grid"
   },
-  "order": ["Grooming Services", "Coffee & Milktea Houses", "Home & Car Essentials", "Entertainment", "Self-care Services", "Medical Services", "Legal Services", "Multimedia Services", "Pastries", "Medical & Diagnostic Supplies", "Mental Wellness Services", "Hotels", "Restaurants", "Training Services", "Dental Services", "Wholesale Supplies", "Other"]
+  "order": [
+    "Grooming Services",
+    "Coffee & Milktea Houses",
+    "Home & Car Essentials",
+    "Entertainment",
+    "Self-care Services",
+    "Medical Services",
+    "Legal Services",
+    "Multimedia Services",
+    "Pastries",
+    "Medical & Diagnostic Supplies",
+    "Mental Wellness Services",
+    "Hotels",
+    "Restaurants",
+    "Training Services",
+    "Dental Services",
+    "Wholesale Supplies",
+    "Other"
+  ]
 }
