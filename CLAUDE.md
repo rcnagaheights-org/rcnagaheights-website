@@ -64,12 +64,16 @@ docs/SEO.md            -> SEO checklist to run on any copy-changing
                            commit, per-page audit state, audit history
 docs/BACKEND-CAPABILITY-TEST.md -> what Claude has actually tested (not
                            assumed) it can/can't do against Drive/Sheets
-docs/MERCHANTS-SYNC-DESIGN.md -> design proposal (2026-10-03, NOT yet
-                           implemented) for a scheduled job that detects
-                           new Partner Merchants categories/entries and
-                           opens a PR with the diff, mirroring the
-                           review-preserving pattern already used for
-                           Rurok's automation
+docs/MERCHANTS-SYNC-DESIGN.md -> design proposal for a scheduled job
+                           (NOT yet built) that detects new Partner
+                           Merchants categories/entries and opens a PR
+                           with the diff, mirroring the review-preserving
+                           pattern already used for Rurok's automation;
+                           its two prerequisites ARE done (category
+                           config extracted to categories.json, PR #135;
+                           merchant_id exposed from the live feed,
+                           Code.gs v13) — the sync job itself (§2b) is
+                           still design only
 docs/Rotarians.md      -> /rotarians/ roster rules, incl. the Council of
                            Presidents section (added 2026-07-21) and how
                            to update it each Rotary Year
@@ -298,6 +302,17 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   Script change actually works — only the user's own browser can.
   `backend/Code.gs` in this repo is now a tracked mirror of that live
   source, kept in sync after any future `clasp push`.
+- **Updated 2026-10-03**: `Code.gs` v13 — `getPartners_()` now returns
+  `merchant_id` on every entry (purely additive, no other field changed,
+  no new Google API scope), via `clasp push` + a new version (17) +
+  redeploying the existing live Web App deployment to it — confirmed
+  live via a direct Apps Script REST API read of the deployment, not
+  just `clasp`'s own CLI listing (which showed a stale cached
+  description after the redeploy). This is
+  docs/MERCHANTS-SYNC-DESIGN.md's §2a-2 prerequisite for the (still
+  unbuilt) Partner Merchants sync job — not yet confirmed by the user's
+  own browser that `?action=partners` actually returns the new field
+  end-to-end.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

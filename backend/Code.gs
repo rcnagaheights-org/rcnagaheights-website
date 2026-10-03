@@ -1,7 +1,20 @@
 /**
  * DiskwenTulong Card (DTC) — Apps Script backend
- * v12 — matches docs/DTC-DESIGN.md, docs/RUROK-DESIGN.md, and
- * docs/SERVICE-PROJECTS-DESIGN.md in the rcnagaheights-website repo.
+ * v13 — matches docs/DTC-DESIGN.md, docs/RUROK-DESIGN.md,
+ * docs/SERVICE-PROJECTS-DESIGN.md, and docs/MERCHANTS-SYNC-DESIGN.md in
+ * the rcnagaheights-website repo.
+ *
+ * CHANGES FROM v12:
+ * - getPartners_() now returns merchant_id (the Merchants sheet's own
+ *   stable identity column, e.g. "M-0001") on every entry, in addition
+ *   to the existing name/commitment/facebook_url/website_url/logo
+ *   fields. Purely additive -- no existing field removed or renamed, no
+ *   other endpoint touched. This is docs/MERCHANTS-SYNC-DESIGN.md's §2a-2
+ *   prerequisite: the planned Partner Merchants sync job needs a stable
+ *   per-merchant key to diff against, since business_name can itself
+ *   change (see PR #108's "MiPanda Naga" correction) and would otherwise
+ *   misread a rename as one merchant disappearing and a different one
+ *   appearing.
  *
  * CHANGES FROM v11:
  * - Added ?action=projects (getServiceProjects_), reading the "Service
@@ -394,6 +407,7 @@ function getPartners_() {
     var category = row[col['category']] || 'Other';
     if (!result[category]) result[category] = [];
     result[category].push({
+      merchant_id: row[col['merchant_id']] || null,
       name: row[col['business_name']],
       commitment: row[col['offer_details']],
       facebook_url: row[col['facebook_url']],
