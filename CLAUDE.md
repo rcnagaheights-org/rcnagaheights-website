@@ -30,6 +30,14 @@ rurok/index.html         -> /rurok/   ("Rurok" bulletin — was
                              docs/RUROK-DESIGN.md)
 contact/index.html       -> /contact/    (also holds "Get Involved")
 assets/rotary-logo.png -> real logo file (was a Drive hotlink, now local)
+backend/Code.gs         -> mirror of the live DTC Apps Script backend
+                             source (added 2026-10-03 — first time this
+                             repo has tracked it; previously only lived
+                             in the Apps Script editor's own revision
+                             history). Edit via `clasp` against the real
+                             project, not by hand here — see
+                             docs/BACKEND-CAPABILITY-TEST.md's clasp
+                             section. Keep in sync after any live push.
 CNAME                  -> custom domain config, do not remove
 docs/DTC-DESIGN.md     -> full DiskwenTulong Card design detail
 docs/CONTENT-MANAGEMENT.md -> Google Drive content sync procedure
@@ -259,6 +267,21 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   result's card status is ACTIVE. Hardcoded per-merchant for now (one
   partner); see docs/DTC-DESIGN.md §4 for the pattern if more partners
   want this.
+- **New 2026-10-03**: this session confirmed `clasp` (the Apps Script
+  CLI) can directly clone/edit/push/deploy the real, live DTC Apps
+  Script backend — a real capability upgrade from only being able to
+  hand the user plain-text `Code.gs` to paste in by hand. Used it to add
+  the live Service Projects sync above. See docs/BACKEND-CAPABILITY-TEST.md
+  for the full writeup, including: the OAuth credential does NOT persist
+  across sessions (this container is ephemeral — a future session needs
+  a fresh `clasp login`); a real ~15-minute incident where a scope change
+  blocked the entire live deployment (including the already-working
+  partners/verify/register actions) until the user manually clicked
+  through Google's re-authorization prompt; and why this environment's
+  own curl/Playwright tests can't reliably confirm whether a live Apps
+  Script change actually works — only the user's own browser can.
+  `backend/Code.gs` in this repo is now a tracked mirror of that live
+  source, kept in sync after any future `clasp push`.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
@@ -337,7 +360,23 @@ doing any Drive-related content work.
   the last attempt, and a direct `curl` against its Drive share link
   (bypassing the Drive MCP tool, which kept returning the file inline
   instead of to disk) pulled it down cleanly. All 14 of 14 rows are now
-  live. See design doc §6.
+  live. See design doc §6. **Updated 2026-10-03**: the page now fetches
+  this data LIVE from a new `?action=projects` Apps Script endpoint
+  (`getServiceProjects_`, reading a converted-to-native "Service
+  Projects" Google Sheet), falling back to the committed
+  `service-projects.json` only if that call fails — a new project row
+  needs zero HTML edit now, the same pattern already used by
+  `/diskwentulong/`'s partners and `/rurok/`'s issues. Built and tested
+  via `clasp` (see docs/BACKEND-CAPABILITY-TEST.md) — this is the first
+  time this repo's own docs/code reflect direct `clasp` access to the
+  live Apps Script backend, a capability upgrade from the prior
+  "Claude can only write Code.gs as text for the user to paste in" state.
+  Photos are still a manual step (download/resize/commit + one entry in
+  `projects/index.html`'s `IMAGE_BY_PROJECT` map) — see
+  docs/SERVICE-PROJECTS-DESIGN.md §7 for exactly why that part isn't
+  automated. Not yet confirmed live on the deployed GitHub Pages site by
+  the user as of this update (tested locally against the real live
+  backend, screenshot-verified).
   Homepage's separate "What We Do" carousel
   (`assets/recent-projects/`) is untouched by this rework.
 
