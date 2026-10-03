@@ -1,5 +1,5 @@
 # Automated Partner Merchants Sync — Design Proposal
-Version: v4 · Last updated: 2026-10-03
+Version: v4.1 · Last updated: 2026-10-03
 
 ## Status
 **Fully built and confirmed working end-to-end, including the job's
@@ -562,22 +562,31 @@ afterward and re-checking `?action=partners` still returns correctly.
   restored correctly all along — the one remaining difference is a
   trailing-newline-only artifact in `backend/appsscript.json` that
   predates this session, from when that file was first tracked in #125).
+- **A second round of this exact same method** (fresh `clasp pull` →
+  verified clean baseline → appended a new, separately-labeled
+  "ROUND 2" test block → new temporary `MYSELF` deployment → tested →
+  deleted deployment and transient fixtures → restored and re-diffed
+  both files byte-identical, `appsscript.json` included this time) was
+  run specifically to address two further Codex findings: the
+  production-shaped `merchant_id` boundary (#2/#7) and a genuine,
+  not-vacuous cross-folder containment proof (#4e) — see those rows
+  below for what it found.
 
 ### Results — PASS / BLOCKED per the 8 requested capabilities
 
 | # | Capability | Result | Evidence |
 |---|---|---|---|
 | 1 | Apps Script can access the approved logo folder under the existing authorization model | **PASS** | `DriveApp.getFolderById(...).getFiles()` returned all 50 files (folder name "Partner Merchants") with zero new OAuth consent prompt — consistent with the existing Rurok-archival `DriveApp` usage already covering this scope. |
-| 2 | Resolve one partner to exactly one logo without a generic arbitrary-file mechanism | **PASS, with a reliability caveat** | The resolver's only input is a business name; it only ever enumerates the one approved folder; it never accepts/returns based on a caller-supplied file ID in the real design. But name-matching itself only succeeds for some merchants — see #4. |
+| 2 | Resolve one partner to exactly one logo without a generic arbitrary-file mechanism | **PASS, with a reliability caveat** | Per Codex's review, re-tested in the production-shaped order: a `merchant_id` resolves server-side to a business name (read from the real Merchants sheet, read-only) before any Drive lookup. A valid id (`M-0002`) correctly resolved to Aran & Co.'s real logo; a fabricated, unknown id (`M-9999`) was correctly rejected as `unknown_merchant_id` rather than falling through to anything. The resolver never accepts a caller-supplied file ID or raw business name in this shape — only an already-public `merchant_id`. Name-matching itself only succeeds for some merchants regardless — see #4. |
 | 3 | Real Drive file ID vs. filename-based `logo_file_id`: practical? | **PASS (practical), migration recommended** | The resolver returns a real, stable `file.getId()` (e.g. `12eP6TR-WqWsFlvsZ_k4N1snXwO4sU8on` for Aran & Co.) — exactly the kind of value that should be the authoritative mapping instead of a free-text filename. But see #4: automatically *discovering* that ID by name match fails for real merchants, so populating this mapping needs a one-time human-confirmed pass, not blind automation. |
 | 4a | Valid partner + valid logo | **PASS** | "Aran & Co." → exact match; "Green Stock" → exact match (both real merchants, real files). |
 | 4b | Partner with no logo | **PASS** | A fabricated name ("Totally Fake Test Merchant Zzz") correctly returned `no_match`, not a false positive. |
 | 4c | Duplicate/ambiguous filenames | **PASS (logic only — no real case exists today)** | Exhaustively checked all 50 real filenames pairwise offline: no real duplicate/substring collision exists in the live folder right now. Verified the `ambiguous` code path instead via a controlled synthetic pair (two files both normalizing to `greenstock`, differing only by extension) — correctly refused to guess and reported `ambiguous` rather than picking one. |
 | 4d | Incorrect/unmatchable partner↔logo mapping | **PASS as a safety property, but reveals a real gap** | Found **3 real merchants (6% of 50) whose correctly-assigned live logo cannot be found by name matching at all**: Santigwar → `Logo.Sntgwr.JPG`, Mendoza Law Office → `Logo.SFOM Law.JPG` (a different legal/trade name entirely), White Bean Cafe → `Logo.WB.png`. All three correctly returned `no_match` (safe — it never guessed a wrong file) rather than a false positive, but this means full hands-off automation isn't realistic; a human-confirmed pass is required for these. |
-| 4e | File outside the approved folder | **PASS, but not via the mechanism this design sketch assumed** | See the `getParents()` finding below — real safety here came from Google Drive's own per-account access control (the executing identity had no access at all to an out-of-folder file, full stop), not from an app-level containment check. |
+| 4e | File outside the approved folder | **PASS — re-tested properly after Codex correctly flagged the first attempt as unproven** | The original test used a file the executing identity had *zero* access to at all, so it proved nothing about containment specifically. Re-tested with a real, genuinely-accessible file: created a transient fixture named `Logo.Aran&Co.jpg` inside the **Rurok PDF archival folder** (`CONFIG.RUROK_PDF_FOLDER_ID` — a different folder this same identity already reads/writes in production, per `backend/Code.gs:638`), deliberately colliding by name with the real "Aran & Co." logo. Confirmed the identity *can* read it (`accessibleOutsideMatch` found it) — proving Drive ACLs alone do **not** confine this identity to the approved folder — yet the folder-scoped resolver still correctly returned only the real approved-folder file (`12eP6TR-WqWsFlvsZ_k4N1snXwO4sU8on`), never the outside fixture. Containment held because the resolver structurally only ever enumerates one hardcoded folder, not because of any ACL boundary. Fixture deleted immediately after. |
 | 5 | GitHub/CI retrieval without a new service account/credential/secret | **PASS (by design reuse)** | The existing production deployment is already `Access: Anyone` and already called anonymously by `merchants-sync.js` today for `?action=partners`. A future `?action=partnerLogo&merchant_id=...` action on that *same* deployment needs no new credential — merchant logos are already public-facing content on the live site, so nothing new is exposed. (The Bearer-token mechanism above was used *only* to keep this test's own harness non-public — it is not part of the recommended real design.) |
 | 6 | Retrieved image validated before use (decode, MIME, size, truncation) | **PASS** | Fetched 3 real files (JPEG 86,270 B, PNG 48,427 B, JPEG 2,538,660 B) — all byte-exact vs. Drive's own reported size, all cleanly Pillow-decoded with correct format/mode/dimensions, declared MIME matched Pillow's detected format in all 3. Deliberately truncated a copy by the **same 279 bytes** as this session's real Green Stock corruption incident — Pillow correctly raised `OSError: image file is truncated`. Per Codex's review on PR #146, also implemented and tested the sensible-size floor/ceiling gate itself (not just transfer completeness) with controlled synthetic inputs: a 3-byte garbage file was rejected as below a 1 KB floor, and a 3.45 MB inflated file was rejected as above a 3 MB ceiling, while the real 86,270 B logo correctly passed both bounds. |
-| 7 | Endpoint can be tightly scoped, not arbitrary-file-capable | **PASS** | The resolver's only parameter is a business name in the real design. Confirmed the test deployment's `MYSELF` access genuinely blocks anonymous callers (redirected to a Google sign-in page, not JSON) as an independent backstop verified during testing. |
+| 7 | Endpoint can be tightly scoped, not arbitrary-file-capable | **PASS** | Per Codex's review, re-tested against the actual production-shaped parameter: a `merchant_id`, not a raw business name or file ID (see #2) — resolution happens server-side from there. An unknown `merchant_id` is cleanly rejected, never silently falls through to any file. Also confirmed the test deployment's `MYSELF` access genuinely blocks anonymous callers (redirected to a Google sign-in page, not JSON) as an independent backstop verified during testing. |
 | 8 | Apps Script Web App limitations | **Documented, no blocker found for this use case** | See below. |
 
 ### Capability #8 in detail
@@ -791,3 +800,28 @@ is proof-of-capability evidence only, per the user's explicit request.
   Phase 1's "potentially mismatched" flag (already live, PR #145) has a
   34% false-positive rate on real data — flagged as a follow-up, not yet
   fixed. Phase 2 remains NOT APPROVED, NOT IMPLEMENTED.
+- **v4.1** (2026-10-03): addressed 4 Codex findings on PR #146's proof
+  (2 from the first automatic review, missed before this session
+  subscribed to the PR's activity, surfaced only once fetched directly;
+  2 from a second review after "@codex review" was re-tagged). All 4
+  were valid: (1) the manifest-restoration claim only showed `Code.js`
+  diffed, not `appsscript.json` — re-pulled live and confirmed the
+  manifest genuinely was restored correctly all along; (2) the
+  sensible-size validation gate was asserted PASS without ever testing
+  its actual floor/ceiling rejection logic — implemented and tested it
+  with controlled synthetic inputs (a 3-byte file below a 1 KB floor, a
+  3.45 MB file above a 3 MB ceiling, both correctly rejected); (3) the
+  resolver had only been tested with a raw business name, not the
+  production-shaped `merchant_id` → business-name → logo path — re-ran
+  with a real valid id (resolved correctly) and a fabricated unknown id
+  (cleanly rejected); (4) the "file outside the approved folder" test
+  used a file the executing identity had zero access to at all, proving
+  nothing about containment specifically — re-ran with a real,
+  genuinely-accessible fixture placed in a different folder the same
+  identity already uses in production (Rurok PDF archival), deliberately
+  name-colliding with a real approved-folder logo: the identity could
+  read it, but the folder-scoped resolver still never returned it,
+  proving containment is structural, not ACL-based. All test deployments
+  and transient fixtures were deleted and the script restored (both
+  files, byte-diffed) after each round. Phase 2 remains NOT APPROVED,
+  NOT IMPLEMENTED.
