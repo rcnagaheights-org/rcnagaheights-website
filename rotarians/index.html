@@ -43,6 +43,9 @@
     "slogan": "Service Above Self"
   }
   </script>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&amp;family=Playfair+Display:wght@600;700;800&amp;display=swap" rel="stylesheet">
@@ -70,7 +73,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
    <nav class="max-w-7xl mx-auto h-[112px] px-4 sm:px-6 flex items-center justify-between"><a href="/" class="flex items-center">
 <img data-template-id="nav-logo" class="h-20 lg:h-24 w-auto" src="/assets/header-logo.png" alt="Rotary Club of Naga Heights"></a>
     <div class="hidden xl:flex gap-1"><a data-template-id="nav-about" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">About Rotary</a> <a data-template-id="nav-rotarians" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f] active" href="/rotarians/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">The Rotarians</a> <a data-template-id="nav-projects" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/projects/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">Service Projects</a> <a data-template-id="nav-diskwentulong" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/diskwentulong/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">DiskwenTulong Card</a> <a data-template-id="nav-rurok" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/rurok/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">Rurok</a> <a data-template-id="nav-contact" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/contact/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">Contact Us</a>
-    </div><button id="menu-button" class="xl:hidden w-11 h-11 grid place-items-center"><i data-lucide="menu"></i></button>
+    </div><button id="menu-button" class="xl:hidden w-11 h-11 grid place-items-center" aria-expanded="false" aria-label="Menu"><i data-lucide="menu"></i></button>
    </nav>
    <div id="mobile-menu" class="hidden xl:hidden border-t bg-white px-5 py-3 grid"><a class="nav-link text-left py-3 border-b" href="/">About Rotary</a> <a class="nav-link text-left py-3 border-b active" href="/rotarians/">The Rotarians</a> <a class="nav-link text-left py-3 border-b" href="/projects/">Service Projects</a> <a class="nav-link text-left py-3 border-b" href="/diskwentulong/">DiskwenTulong Card</a> <a class="nav-link text-left py-3 border-b" href="/rurok/">Rurok</a> <a class="nav-link text-left py-3" href="/contact/">Contact Us</a>
    </div>
@@ -96,33 +99,33 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
       <h2 class="canva-text text-center text-3xl font-bold text-[#0c3c7c] mb-10" style="color: rgb(12, 60, 124); font-weight: 700; font-style: normal; font-size: 30px;">Council of Presidents</h2>
       <div class="flex flex-wrap justify-center gap-6">
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/rosales.jpg" alt="Ghiel Rosales" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/rosales.jpg" alt="Ghiel Rosales" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Ghiel Rosales</h3>
         <p class="text-xs text-[#f7a81b] mt-1 font-semibold">Charter President</p>
         <p style="color:#17324d" class="text-sm mt-1">Serve to Change Lives (RY 2021-22)</p>
         <p style="color:#17324d" class="text-sm mt-1 font-semibold">The Rotary Foundation Chair</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/labordo.jpg" alt="Dannin Joy Labordo" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/labordo.jpg" alt="Dannin Joy Labordo" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Dannin Joy Labordo</h3>
         <p class="text-xs text-[#f7a81b] mt-1 font-semibold">Immediate Past President</p>
         <p style="color:#17324d" class="text-sm mt-1">Unite For Good (RY 2025-26)</p>
         <p style="color:#17324d" class="text-sm mt-1 font-semibold">Club Learning Facilitator</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/sierra.jpg" alt="Carlo Ricardo Sierra" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/sierra.jpg" alt="Carlo Ricardo Sierra" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Carlo Ricardo Sierra</h3>
         <p class="text-xs text-[#f7a81b] mt-1 font-semibold">Past President</p>
         <p style="color:#17324d" class="text-sm mt-1">The Magic of Rotary (RY 2024-25)</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/felipeb.jpg" alt="Brian Kierby Felipe" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/felipeb.jpg" alt="Brian Kierby Felipe" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Brian Kierby Felipe</h3>
         <p class="text-xs text-[#f7a81b] mt-1 font-semibold">Past President</p>
         <p style="color:#17324d" class="text-sm mt-1">Create Hope in the World (RY 2023-24)</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/bagadiong.jpg" alt="Jason Bagadiong" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/bagadiong.jpg" alt="Jason Bagadiong" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Jason Bagadiong</h3>
         <p class="text-xs text-[#f7a81b] mt-1 font-semibold">Past President</p>
         <p style="color:#17324d" class="text-sm mt-1">Imagine Rotary (RY 2022-23)</p>
@@ -135,59 +138,59 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
       <h2 class="canva-text text-center text-3xl font-bold text-[#0c3c7c] mb-10" style="color: rgb(12, 60, 124); font-weight: 700; font-style: normal; font-size: 30px;">Club Officers &amp; Committee Chairs</h2>
       <div class="flex flex-wrap justify-center gap-6">
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/felipek.jpg" alt="Kathleen Felipe" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/felipek.jpg" alt="Kathleen Felipe" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Kathleen Felipe</h3>
         <p style="color:#17324d">Secretary</p>
         <p class="text-xs text-[#f7a81b] mt-1 font-semibold">President-Elect</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/dadua.jpg" alt="Charles Oliver Dadua III" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/dadua.jpg" alt="Charles Oliver Dadua III" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Charles Oliver Dadua III</h3>
         <p style="color:#17324d">Treasurer</p>
         <p class="text-xs text-[#f7a81b] mt-1 font-semibold">President-Nominee</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/crescini.jpg" alt="Nelvin Charles Crescini" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/crescini.jpg" alt="Nelvin Charles Crescini" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Nelvin Charles Crescini</h3>
         <p style="color:#17324d">Deputy Secretary</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/delrosario.jpg" alt="Jose Leo Raphaello Del Rosario" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/delrosario.jpg" alt="Jose Leo Raphaello Del Rosario" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Jose Leo Raphaello Del Rosario</h3>
         <p style="color:#17324d">Auditor, Community Service Chair</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/balmes.jpg" alt="Odessa Balmes" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/balmes.jpg" alt="Odessa Balmes" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Odessa Balmes</h3>
         <p style="color:#17324d">Public Image Chair</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/bron.jpg" alt="Raymar Bron" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/bron.jpg" alt="Raymar Bron" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Raymar Bron</h3>
         <p style="color:#17324d">Club Administration and Vocational Service Chair</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/chancoco.jpg" alt="Kimberly Chancoco" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/chancoco.jpg" alt="Kimberly Chancoco" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Kimberly Chancoco</h3>
         <p style="color:#17324d">Youth Service Chair</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/mendoza.jpg" alt="Sherwin Francis Mendoza" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/mendoza.jpg" alt="Sherwin Francis Mendoza" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Sherwin Francis Mendoza</h3>
         <p style="color:#17324d">Membership Chair and Rotary Community Corps (RCC) Chair</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/mendozacabral.jpg" alt="Krista Carmina Mendoza-Cabral" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/mendozacabral.jpg" alt="Krista Carmina Mendoza-Cabral" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Krista Carmina Mendoza-Cabral</h3>
         <p style="color:#17324d">International Service Chair</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/ngo.jpg" alt="Melissa Ngo" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/ngo.jpg" alt="Melissa Ngo" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Melissa Ngo</h3>
         <p style="color:#17324d">Resource Development Chair</p>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/palmes.jpg" alt="Edmund John Palmes" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/palmes.jpg" alt="Edmund John Palmes" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Edmund John Palmes</h3>
         <p style="color:#17324d">Service Projects Chair</p>
        </div>
@@ -195,55 +198,55 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
       <h2 class="canva-text text-center text-3xl font-bold text-[#0c3c7c] mt-16 mb-10" style="color: rgb(12, 60, 124); font-weight: 700; font-style: normal; font-size: 30px;">Members</h2>
       <div class="flex flex-wrap justify-center gap-6">
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/aguilar.jpg" alt="Junmar Rey Aguilar" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/aguilar.jpg" alt="Junmar Rey Aguilar" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Junmar Rey Aguilar</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/ayubo.jpg" alt="Kim Bryan Ayubo" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/ayubo.jpg" alt="Kim Bryan Ayubo" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Kim Bryan Ayubo</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/dy.jpg" alt="Johnson Dy" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/dy.jpg" alt="Johnson Dy" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Johnson Dy</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/dytecklo.jpg" alt="Dick Micholson Dy Tecklo" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/dytecklo.jpg" alt="Dick Micholson Dy Tecklo" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Dick Micholson Dy Tecklo</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/ebona.jpg" alt="Cyrus Eboña" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/ebona.jpg" alt="Cyrus Eboña" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Cyrus Eboña</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/ranola.jpg" alt="Florence Mae Rañola" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/ranola.jpg" alt="Florence Mae Rañola" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Florence Mae Rañola</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/janculan.jpg" alt="Jason Janculan" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/janculan.jpg" alt="Jason Janculan" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Jason Janculan</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/julia.jpg" alt="Jean Paul Julia" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/julia.jpg" alt="Jean Paul Julia" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Jean Paul Julia</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/gumabao.jpg" alt="Maria Francesca Gumabao" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/gumabao.jpg" alt="Maria Francesca Gumabao" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Maria Francesca Gumabao</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/lomibao.jpg" alt="Joseph Lemuel Lomibao" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/lomibao.jpg" alt="Joseph Lemuel Lomibao" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Joseph Lemuel Lomibao</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/cortina.jpg" alt="Mateo Cortina" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/cortina.jpg" alt="Mateo Cortina" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Mateo Cortina</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/zabaldicaj.jpg" alt="Mark Japhet Zabaldica" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/zabaldicaj.jpg" alt="Mark Japhet Zabaldica" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Mark Japhet Zabaldica</h3>
        </div>
        <div class="lift bg-white rounded-2xl p-5 text-center border w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
-        <img src="/assets/rotarians/portraits/zabaldicah.jpg" alt="Marvin Ham Zabaldica" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm">
+        <img src="/assets/rotarians/portraits/zabaldicah.jpg" alt="Marvin Ham Zabaldica" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-[#f4f7fc] shadow-sm" loading="lazy">
         <h3 class="font-bold text-xl" style="color:#17324d">Marvin Ham Zabaldica</h3>
        </div>
       </div>
@@ -292,7 +295,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
    </div>
   </footer>
   <script>
-document.getElementById('menu-button').onclick=()=>document.getElementById('mobile-menu').classList.toggle('hidden');
+document.getElementById('menu-button').onclick=function(){var btn=this;var hidden=document.getElementById('mobile-menu').classList.toggle('hidden');btn.setAttribute('aria-expanded', hidden?'false':'true');};
 (function(){
   document.querySelectorAll('a[href^="tel:"]').forEach(a=>{
     if(a.getAttribute('href').includes('XXX')){

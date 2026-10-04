@@ -1,5 +1,24 @@
 # Content Management — Google Drive Sync
-Version: v1.3 · Last updated: 2026-08-04
+Version: v1.4 · Last updated: 2026-10-04
+
+## Status
+**The "Known real content already in Drive" section below is stale as of
+2026-10-04** (flagged by `docs/OPTIMIZATION-AUDIT-2026-10.md`) — it
+describes the pre-rework state for several items that have since moved
+on substantially: the roster is now 30 people with portrait photos and a
+Council of Presidents section (see `docs/Rotarians.md`, not the 29-person/
+no-portraits description below); Service Projects went from 6
+Tracker rows missing category/date to 14 complete rows plus a live
+Apps-Script-backed sync (see `docs/SERVICE-PROJECTS-DESIGN.md`, not the
+"6 real rows... 5 missing category/date" description below); Partner
+Merchants now sync automatically via a scheduled GitHub Action (see
+`docs/MERCHANTS-SYNC-DESIGN.md`), not the manual-paste workflow described
+below. The general Drive-sync *procedure* above this section (availability,
+freshness rules, the retire-oldest-file convention) is still current and
+accurate — only the dated inventory below has drifted. Kept as historical
+record rather than rewritten, per this repo's own documentation
+convention; check the docs named above for current state before acting
+on anything in the section below.
 
 ## Availability
 A Google Drive connector IS available to you. Use it to read/pull

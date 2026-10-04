@@ -96,12 +96,6 @@ docs/OPTIMIZATION-AUDIT-2026-10.md -> whole-repo optimization audit
                            Rotarians data — a dated snapshot, not a living
                            design doc; see its own header before treating
                            any finding in it as still open
-docs/agent-teams.md    -> reference guide for Claude Code's agent-teams
-                           feature (generic, not project content); it IS
-                           enabled, but only via a local, untracked
-                           .claude/settings.local.json (git-ignored, not
-                           committed) — a fresh clone won't have it on
-                           until that file is (re)created locally
 .claude/settings.json  -> committed, project-scoped Claude Code
                            permission rules (added 2026-10-03) — currently
                            just allow-listing the PR subscribe/unsubscribe
@@ -374,6 +368,22 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   required image-integrity validation before any future automated
   download could become a commit candidate) was written up but
   explicitly NOT implemented — see docs/MERCHANTS-SYNC-DESIGN.md §3b.
+- **Started 2026-10-04**: Phase A of docs/OPTIMIZATION-AUDIT-2026-10.md's
+  roadmap (quick wins / low risk). Done so far, frontend/docs only: all
+  31 Rotarians portraits now have `loading="lazy"`; all 8 pages preconnect
+  to `cdn.tailwindcss.com`/`fonts.googleapis.com`/`fonts.gstatic.com`; the
+  homepage hero carousel now respects `prefers-reduced-motion` (matching
+  the DTC banner's existing handling); the mobile menu button on all 6
+  nav-bearing pages now reports `aria-expanded`; `docs/agent-teams.md`
+  (generic Claude Code reference, no project content) removed from the
+  repo per the audit's own recommendation; `docs/QA-STATUS.md` and
+  `docs/CONTENT-MANAGEMENT.md` got explicit staleness banners pointing to
+  their current replacements instead of silently going stale further.
+  **Not yet done from Phase A**: the Sheets-formula-injection fix in
+  `backend/Code.gs` (blocked on a fresh `clasp login` — the session's
+  saved credential expired mid-session, `invalid_rapt`) and Google Search
+  Console verification (needs the user's own action/token, not something
+  this session can do unilaterally).
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
