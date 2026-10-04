@@ -301,7 +301,12 @@ function renderIssues(data){
   if (!data || !data.current || !data.current.url) throw new Error('No current Rurok issue in data');
 
   featuredIframe.title = `Rurok — Rotary Club of Naga Heights Bulletin, ${data.current.label || ''}`;
-  featuredIframe.src = data.current.url;
+  // Reassigning an iframe's src to the SAME url still re-navigates it in
+  // some cases, which would discard the static fallback's loading head
+  // start (or flash/restart the slow Heyzine embed right as it becomes
+  // usable) on every normal load, since live and static usually agree.
+  // Same guard already used by preloadIssue() below for the other iframe.
+  if (featuredIframe.src !== data.current.url) featuredIframe.src = data.current.url;
 
   const past = Array.isArray(data.past) ? data.past : [];
   const stillViewable = past.filter(issue => !issue.pdf_url);
@@ -330,20 +335,42 @@ function renderIssues(data){
   lucide.createIcons();
 }
 
+// The live Apps Script call is the source of truth but routinely takes
+// 2-3s (Apps Script Web App overhead, not something this frontend can
+// fix) -- previously this page waited for that call to fail before even
+// starting the static fallback, so every load was at least that slow.
+// Firing the same-origin static fallback in parallel instead means
+// visitors see the featured issue almost instantly; the live call still
+// wins and re-renders on top once it resolves. Same pattern already
+// fixed on /diskwentulong/ and /projects/.
+let liveIssuesRendered = false;
+
+function loadStaticIssues(){
+  fetch('/assets/rurok/issues.json')
+    .then(r => r.json())
+    .then(data => {
+      if (!liveIssuesRendered) renderIssues(data);
+    })
+    .catch(() => {
+      if (!liveIssuesRendered) {
+        featuredLoading.innerHTML = '<p class="text-slate-500 text-sm px-6 text-center">Could not load the latest issue right now. Please try again shortly.</p>';
+      }
+    });
+}
+loadStaticIssues();
+
 fetch(`${APPS_SCRIPT_URL}?action=rurokIssues`)
   .then(r => r.json())
   .then(data => {
     if (!data || data.error || !data.current) throw new Error('Live Rurok issues unavailable');
+    // renderIssues() has its own stricter check (data.current.url must
+    // exist too) and can still throw here -- only mark live as rendered
+    // once it actually succeeds, so a late static response isn't wrongly
+    // suppressed by a live response that looked valid but failed to render.
     renderIssues(data);
+    liveIssuesRendered = true;
   })
-  .catch(() => {
-    fetch('/assets/rurok/issues.json')
-      .then(r => r.json())
-      .then(renderIssues)
-      .catch(() => {
-        featuredLoading.innerHTML = '<p class="text-slate-500 text-sm px-6 text-center">Could not load the latest issue right now. Please try again shortly.</p>';
-      });
-  });
+  .catch(() => {});
 
 const issueIframe = document.getElementById('issue-modal-iframe');
 const issueLoading = document.getElementById('issue-modal-loading');
