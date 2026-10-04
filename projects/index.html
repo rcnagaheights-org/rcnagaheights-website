@@ -256,12 +256,11 @@ document.addEventListener('keydown', function(e){
 });
 
 /**
- * Deterministic slug for a project's own shareable URL
- * (?project=<slug>) -- same function used both to build a share link
- * and to resolve an incoming one back to a project, so every current
- * and future project gets a working URL automatically with no
- * hardcoded list. Strips accents so names like "Café" slugify
- * predictably.
+ * Deterministic slug -- also used by .github/scripts/generate-project-pages.js
+ * (must stay byte-for-byte identical there) to name each project's own
+ * static page folder, and by the ?project=<slug> deep-link restore logic
+ * below for legacy/bookmarked links. Strips accents so names like "Café"
+ * slugify predictably.
  */
 function slugify(str){
   return String(str || '')
@@ -271,8 +270,17 @@ function slugify(str){
     .replace(/^-+|-+$/g, '');
 }
 
+/**
+ * Points at this project's own generated static page
+ * (projects/<slug>/index.html, see docs/OPTIMIZATION-AUDIT-2026-10.md §5),
+ * not the old /projects/?project=<slug> query-string form -- that page had
+ * no OG tags of its own, so sharing it always showed this index page's
+ * generic photo/description regardless of which project was shared. The
+ * generated page has its own real title/OG image/description, so sharing
+ * this URL now correctly shows the right project on Facebook/etc.
+ */
 function projectUrl(project){
-  return `${window.location.origin}${window.location.pathname}?project=${encodeURIComponent(slugify(project.project_name))}`;
+  return `${window.location.origin}/projects/${encodeURIComponent(slugify(project.project_name))}/`;
 }
 
 let shareFallbackTarget = null; // the project currently bound to the open fallback menu
