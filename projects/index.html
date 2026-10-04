@@ -492,12 +492,18 @@ let allProjects = [];
 let liveProjectsRendered = false;
 
 function renderProjects(projects){
+  const emptyEl = document.getElementById('featured-empty');
   if (!projects.length) {
-    document.getElementById('featured-empty').classList.remove('modal-hidden');
+    emptyEl.classList.remove('modal-hidden');
     renderCarousel('areas_of_focus', []);
     renderCarousel('avenues_of_service', []);
     return;
   }
+  // A prior render (the static fallback failing before the live call
+  // resolves) may have left the "could not load"/"no projects" message
+  // showing -- clear it now that real data is actually rendering.
+  emptyEl.textContent = 'No projects yet — check back soon.';
+  emptyEl.classList.add('modal-hidden');
   const withImages = projects.map(function(p){
     return Object.assign({}, p, { image: IMAGE_BY_PROJECT[p.project_name] || PLACEHOLDER_IMAGE });
   });
@@ -515,15 +521,22 @@ function renderProjects(projects){
  * Restores a project shared via ?project=<slug> (see projectUrl/slugify
  * above): opens its lightbox and briefly highlights + scrolls to its
  * carousel card if it has one (the Featured project has no carousel
- * card of its own -- its own section is already the focus). Silently
- * does nothing if the slug doesn't match any current project (e.g. a
- * stale/bookmarked link to a project that no longer exists).
+ * card of its own -- its own section is already the focus). Does
+ * nothing if the slug never matched (e.g. a stale/bookmarked link to a
+ * project that no longer exists) -- and, since this runs again once the
+ * live render replaces the static fallback's data, closes an already-
+ * open lightbox if the live source of truth no longer has that project
+ * (e.g. the static fallback still had a project since renamed/retired
+ * live), rather than leaving stale project details on screen.
  */
 function restoreSharedProject(){
   const slug = new URLSearchParams(window.location.search).get('project');
   if (!slug) return;
   const project = allProjects.find(function(p){ return slugify(p.project_name) === slug; });
-  if (!project) return;
+  if (!project) {
+    closeLightbox();
+    return;
+  }
 
   openLightbox(project);
 
