@@ -444,11 +444,14 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   `?action=partners`/`verify`/unknown-action all still respond correctly
   afterward.
 - **Started 2026-10-04**: Phase B of docs/OPTIMIZATION-AUDIT-2026-10.md's
-  roadmap — scoped down to B1 only (per-project static pages); B2 (Rurok
-  per-issue text summary) and B3 (`Event` JSON-LD for projects) deferred,
-  both blocked on real gaps (B2 needs per-issue summary content to be
-  written; B3 needs real per-project location/date-range data the Sheet
-  doesn't have yet — see docs/OPTIMIZATION-AUDIT-2026-10.md §5).
+  roadmap — scoped down to B1 only (per-project static pages). **B2**
+  (Rurok per-issue text summary) **and B3** (`Event` JSON-LD for
+  projects) **are explicitly skipped by the user's decision, not just
+  deferred** — not planned as follow-up work unless revisited later.
+  Both had real blockers anyway (B2 needs per-issue summary content to
+  be written; B3 needs real per-project location/date-range data the
+  Sheet doesn't have yet — see docs/OPTIMIZATION-AUDIT-2026-10.md §5),
+  but the operative reason they're not happening is the explicit skip.
   **B1 done**: a new `.github/scripts/generate-project-pages.js`
   generates one static `projects/<slug>/index.html` per Service Projects
   row (14 today) — own title/canonical/OG image (that project's real
