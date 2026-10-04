@@ -406,6 +406,24 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   deployment ID); confirmed `?action=partners`/`projects`/`rurokIssues`/
   `verify` all still work correctly afterward. This closes Phase A in
   full — all 8 items now done.
+  **Updated again 2026-10-04**: `Code.gs` v14.1 — Codex's automatic
+  review of the v14 fix on PR #150 caught a real TOCTOU race it
+  introduced: `appendRowSafely_` replaced the atomic `sheet.appendRow()`
+  with a manual `getLastRow()+1` read then per-cell writes, so two
+  concurrent public requests (e.g. simultaneous `?action=verify` calls,
+  both logging via `logVerification_`) could read the same row number
+  and both write to it, corrupting/interleaving `Logs`/`Verifications`
+  data. Fixed by wrapping `appendRowSafely_`'s body in
+  `LockService.getScriptLock()`/`waitLock`/try-finally — same pattern
+  `registerCard_` already used around its own full body. Confirmed via a
+  temporary test harness (deleted after) that `LockService`'s script
+  lock is safely re-entrant within one execution (no self-deadlock when
+  called from inside `registerCard_`'s own already-held lock), then
+  re-ran all 8 formula-injection adversarial cases through the new
+  lock-wrapped path — all still stored correctly as literal strings.
+  Deployed to the existing live Web App deployment; confirmed
+  `?action=partners`/`verify`/unknown-action all still respond correctly
+  afterward.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
