@@ -88,6 +88,14 @@ docs/MERCHANTS-SYNC-DESIGN.md -> design + build record for a scheduled
 docs/Rotarians.md      -> /rotarians/ roster rules, incl. the Council of
                            Presidents section (added 2026-07-21) and how
                            to update it each Rotary Year
+docs/OPTIMIZATION-AUDIT-2026-10.md -> whole-repo optimization audit
+                           (2026-10-04) covering SEO, content strategy,
+                           workflow automation, merchant automation, QA,
+                           architecture, performance, accessibility,
+                           analytics, security, documentation, and
+                           Rotarians data — a dated snapshot, not a living
+                           design doc; see its own header before treating
+                           any finding in it as still open
 docs/agent-teams.md    -> reference guide for Claude Code's agent-teams
                            feature (generic, not project content); it IS
                            enabled, but only via a local, untracked
