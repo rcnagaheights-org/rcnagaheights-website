@@ -49,11 +49,16 @@ recommends against touching it except in one narrow, additive way
 
 ## 2. What's Already Working Well — Do Not Change
 
-- **The sync pattern itself** (Sheet/Drive → Apps Script → GitHub Action →
-  PR → Codex review → human merge). Proven three times now (merchants,
-  service projects, Rurok issues) with real production incidents caught
-  cleanly at every stage. This is the template for everything new in §6,
-  not something to replace with a different pattern.
+- **The GitHub-Action-sync-with-PR-review pattern** (Sheet/Drive → Apps
+  Script → GitHub Action → PR → Codex review → human merge) — proven
+  once, for merchants, with real production incidents (a duplicate ID, a
+  corrupted logo download) caught cleanly at every stage. Service
+  Projects and Rurok use a *different*, simpler pattern today (a direct
+  client-side live fetch with a static fallback, no GitHub Action
+  involved — see §6's correction) — don't conflate the two when reading
+  the rest of this audit. The GitHub-Action pattern is still the right
+  template for any *new* sync (§5/§6), precisely because it's the one
+  that's actually been proven under real failures.
 - **SEO fundamentals are already clean** — independently re-verified
   every page's title/meta description/canonical/OG/Twitter/JSON-LD/
   alt-text/H1-count against `docs/SEO.md`'s claims; all current and
@@ -126,12 +131,16 @@ crawlable project URLs solve two problems at once, not one.**
 Facebook preview cards" as unsolved, and the user deliberately accepted a
 generic page-level preview rather than build a static-page-generation
 step — at the time, correctly, since nothing existed yet to generate from
-safely. That infrastructure now exists: the live `?action=projects`
-endpoint plus `merchants-sync.js`'s exact pattern (Node script in CI →
-diff/generate → PR → Codex review → human merge) is proven safe three
-times over. Separately, §3 (finding 2) confirmed 13 of 14 projects' full
-descriptions never reach crawlable HTML at all today, regardless of
-sharing.
+safely. The *mechanism* this would reuse now exists and is proven safe —
+`merchants-sync.js`'s pattern of a Node script in CI diffing/generating
+content and opening a PR for Codex review and human merge, confirmed
+working end-to-end including its own first real production PR (see §6
+below for exactly what is and isn't already built on this pattern: only
+merchants currently use it, not Rurok or Service Projects). The live
+`?action=projects` endpoint already exists and already serves the data a
+new sync script would need. Separately, §3 (finding 2) confirmed 13 of
+14 projects' full descriptions never reach crawlable HTML at all today,
+regardless of sharing.
 
 **Recommendation**: a small, additive GitHub Action (same pattern as
 `merchants-sync.js`, not a new technology) that generates one static
@@ -145,10 +154,17 @@ like every other sync job. This:
 - Surfaces the 13 currently-hidden descriptions as real page text
 - Needs zero change to GitHub Pages config — it's the exact same
   folder+`index.html` pattern every existing page already uses
-- Needs zero change to the existing `/projects/` index page or its JS —
-  purely additive new files
 - Should regenerate `sitemap.xml` to include the new URLs in the same
   script
+- **Requires one small change to the existing index page, not zero**:
+  `projectUrl()` in `projects/index.html:271-273` currently builds share
+  links as `/projects/?project=<slug>`, not `/projects/<slug>/`. Without
+  updating that function to point at the new generated pages, sharing
+  would still serve the generic OG card from the query-string URL,
+  undermining the whole point of this recommendation. This is a
+  one-function change, not a rework of the page's rendering logic — but
+  it is a real change, not "purely additive," and the recommendation
+  isn't complete without it.
 
 This is not "introduce a static site generator." It's one more script in
 `.github/scripts/`, templating a single page type, following the review
@@ -161,9 +177,20 @@ pipeline that already exists.
   Could be one new column in the `RurokIssues` Sheet tab. Solves the
   "bulletin content is invisible to search" gap without touching the
   Heyzine integration.
-- Page-specific JSON-LD: `Event` schema for dated service projects
-  (start/end date, location = Naga City) — a real, well-supported rich-
-  result type for past community events.
+- Page-specific JSON-LD: `Event` schema for dated service projects is a
+  real, well-supported rich-result type for past community events, but
+  it's not a drop-in given the current data: `service-projects.json` has
+  only one `date` field (no start/end pair) and no structured location
+  field at all — several projects' real locations are not Naga City
+  (e.g. `service-projects.json:33` is Lipa City, Batangas; `:65` and `:9`
+  are Calabanga, Camarines Sur, both only mentioned inside free-text
+  `description` prose). Hardcoding "Naga City" as every project's
+  `Event` location, as an earlier draft of this recommendation did, would
+  publish factually wrong structured data. This needs authoritative
+  per-project location/date fields added at the data-entry level (a
+  Sheet column) before the JSON-LD can be generated honestly — or the
+  generator should omit `location`/date-range properties it can't
+  source correctly rather than inventing them.
 - Local relevance is already solid ("Naga City" appears on 6 of 8 pages,
   address/venue correct since 2026-07-21) — no action needed.
 
@@ -194,15 +221,28 @@ manual sync trigger" bundles two things at different readiness levels:
   never auto-published. That's the realistic ceiling, and it's a
   meaningful one.
 
-**Rurok and Service Projects** already match the target pipeline
-(Sheets/Drive → Apps Script → GitHub sync → generated content → PR →
-review → merge → Pages) almost exactly, with one small gap each: Service
-Projects photos are still a manual download/resize/commit step
+**Important correction**: Rurok and Service Projects do *not* currently
+go through any GitHub-Action sync/PR pipeline — only the merchants sync
+does. `rurok/index.html` and `projects/index.html` fetch their Apps
+Script endpoints (`?action=rurokIssues`/`?action=projects`) directly from
+the browser at page-load time, falling back to a committed static JSON
+file if that call fails; `.github/workflows/` contains only
+`merchants-sync.yml`. The committed static fallbacks for these two
+(`assets/rurok/issues.json`, `assets/service-projects/service-projects.json`)
+are updated by hand/by Claude when they change, not by any scheduled job.
+So the target pipeline (Sheets/Drive → Apps Script → GitHub sync →
+generated content → PR → review → merge → Pages) is proven exactly
+**once so far**, for merchants. Building the per-project static pages
+recommended in §5, or an equivalent sync for Rurok/Rotarians, means
+writing a *new* GitHub Action script following `merchants-sync.js`'s
+pattern — not reusing an existing one. The remaining manual steps are
+real either way:
+Service Projects photos are a manual download/resize/commit step
 (deliberately, per `docs/SERVICE-PROJECTS-DESIGN.md` §7 — agreed call,
 automating image selection safely is a much harder, lower-value problem
-than the data sync itself); Rurok's one remaining manual step is a blank
-Heyzine title/subtitle needing a per-issue label fix — small, infrequent,
-not worth automating.
+than a data sync); Rurok's one remaining manual step is a blank Heyzine
+title/subtitle needing a per-issue label fix — small, infrequent, not
+worth automating.
 
 **What NOT to build**: a unified "one mega-workflow" handling
 merchants/projects/rurok/rotarians all through one script. Keep them as
@@ -378,11 +418,16 @@ Do NOT touch yet: the existing `/projects/` index page's own rendering
 logic — Phase B is purely additive new files.
 
 **PHASE C — Workflow automation**: approve and build Phase 2 logo
-resolution (if chosen); consider auto-merge for Codex-clean, non-removal
-merchant-sync PRs only (explicitly keep human review on any proposed
-removal).
-Do NOT touch yet: Rotarians automation (deferred, §12); consolidating the
-three sync jobs into one.
+resolution (if chosen); build a new GitHub Action for per-project page
+generation (§5/§6), following `merchants-sync.js`'s pattern.
+Do NOT touch: the human-merge gate on any sync job's PRs, merchants
+included — keep every merchant-sync PR (not just proposed removals)
+human-reviewed before merge; an earlier draft of this audit incorrectly
+suggested auto-merging "Codex-clean, non-removal" merchant PRs, which
+would have contradicted both `docs/MERCHANTS-SYNC-DESIGN.md`'s own
+design and §2's own instruction to keep the reviewer/implementer/
+human-merge division exact. Also do NOT touch yet: Rotarians automation
+(deferred, §12); consolidating future sync jobs into one script.
 
 **PHASE D — QA + reliability**: `node --check`/JSON-validity/
 link-checker/SEO-consistency GitHub Action; one Playwright smoke test per
