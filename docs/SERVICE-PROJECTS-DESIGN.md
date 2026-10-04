@@ -493,6 +493,38 @@ The `?project=<slug>` restore-on-load logic on `projects/index.html`
 itself is untouched and still works, so an old/bookmarked link in that
 form still resolves correctly.
 
+**Three issues Codex's automatic review on PR #151 caught and fixed
+before merge**, all real:
+- **(P1, blocking) A brand-new project added via the live Sheet (§7)
+  renders on `/projects/` immediately, with zero file edits — well
+  before anyone updates `service-projects.json` and re-runs the
+  generator.** The first version of `projectUrl()` assumed every project
+  already had a generated page, so sharing a live-only project would
+  send a 404 instead of the previously-working `?project=<slug>` link.
+  Fixed: `projects/index.html` now fetches
+  `generated-pages-manifest.json` at load and only links to a generated
+  page for a slug actually present in it, falling back to the
+  query-string form for everything else (including if the manifest fetch
+  itself fails).
+- **(P2) Generated `<title>`s were 61-99 characters** — `docs/SEO.md`'s
+  own checklist caps `<title>` at 60 (search results truncate past
+  that), and 13 of the 14 real project names already blow past 60 once
+  any suffix is added. Fixed: the generator now tries progressively
+  shorter suffixes (`| Service Projects | Rotary Club of Naga Heights` →
+  `| Rotary Club of Naga Heights` → `| RCNH` → the bare name) and uses
+  the fullest one that still fits 60 chars. `og:title`/`twitter:title`
+  aren't bound by that SERP-truncation rule, so they always keep the
+  fullest form regardless of length.
+- **(P2) `sitemap.xml`'s `<lastmod>` was stamped with today's date for
+  every project on every run**, even one that changed nothing —
+  contrary to `docs/SEO.md`'s own "only bump `lastmod` if the page's
+  content actually changed" rule, and the kind of thing that erodes a
+  crawler's trust in these hints over time. Fixed: the manifest now
+  stores a `lastmod` per slug, only advanced to today when that slug's
+  generated HTML actually changed (or it's brand new); confirmed via two
+  back-to-back runs with no data change producing byte-identical
+  `sitemap.xml`/manifest output.
+
 **Not yet done**: confirmed on the live deployed site by the user (built
 and verified locally — `node --check`-equivalent syntax validation on
 every generated page's inline script, JSON-LD parse-validated, all 14

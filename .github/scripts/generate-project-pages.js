@@ -86,10 +86,35 @@ function formatDateHuman(isoDate) {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 }
 
+// docs/SEO.md's checklist requires <title> <=60 chars (search results
+// truncate past that) -- 13 of 14 real project names already blow past 60
+// once any suffix is added (caught by Codex review on PR #151). Tries the
+// fullest, most descriptive suffix that still fits the project's own name,
+// falling back to shorter ones, and only as a last resort truncates the
+// name itself (none of the current 14 names are long enough to need that).
+// og:title/twitter:title aren't bound by this rule (no SERP truncation to
+// avoid), so they always get the fullest form regardless of length.
+const TITLE_SUFFIX_FULL = ' | Service Projects | Rotary Club of Naga Heights';
+const TITLE_SUFFIX_SHORT = ' | Rotary Club of Naga Heights';
+const TITLE_SUFFIX_MIN = ' | RCNH';
+const TITLE_MAX_LEN = 60;
+
+function buildPageTitle(projectName) {
+  const candidates = [
+    projectName + TITLE_SUFFIX_FULL,
+    projectName + TITLE_SUFFIX_SHORT,
+    projectName + TITLE_SUFFIX_MIN,
+    projectName
+  ];
+  const fit = candidates.find(c => c.length <= TITLE_MAX_LEN);
+  return fit || truncateDescription(projectName, TITLE_MAX_LEN - 1);
+}
+
 function renderPage(project, slug) {
   const canonical = `${SITE_ORIGIN}/projects/${slug}/`;
   const imageUrl = `${SITE_ORIGIN}${project.image}`;
-  const title = `${project.project_name} | Service Projects | Rotary Club of Naga Heights`;
+  const fullTitle = `${project.project_name}${TITLE_SUFFIX_FULL}`;
+  const pageTitle = buildPageTitle(project.project_name);
   const metaDesc = truncateDescription(project.description, 155);
   const dateHuman = formatDateHuman(project.date);
 
@@ -97,7 +122,7 @@ function renderPage(project, slug) {
 <html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>${escapeHtml(title)}</title>
+  <title>${escapeHtml(pageTitle)}</title>
   <meta name="description" content="${escapeAttr(metaDesc)}">
   <link rel="canonical" href="${canonical}">
   <meta name="theme-color" content="#0c3c7c">
@@ -105,7 +130,7 @@ function renderPage(project, slug) {
   <!-- Open Graph -->
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Rotary Club of Naga Heights">
-  <meta property="og:title" content="${escapeAttr(title)}">
+  <meta property="og:title" content="${escapeAttr(fullTitle)}">
   <meta property="og:description" content="${escapeAttr(metaDesc)}">
   <meta property="og:image" content="${escapeAttr(imageUrl)}">
   <meta property="og:image:width" content="1200">
@@ -113,7 +138,7 @@ function renderPage(project, slug) {
   <meta property="og:url" content="${canonical}">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${escapeAttr(title)}">
+  <meta name="twitter:title" content="${escapeAttr(fullTitle)}">
   <meta name="twitter:description" content="${escapeAttr(metaDesc)}">
   <meta name="twitter:image" content="${escapeAttr(imageUrl)}">
   <script type="application/ld+json">
@@ -249,26 +274,41 @@ document.getElementById('share-btn').addEventListener('click', async function(){
 `;
 }
 
+// { slugs: [...] } was the original (PR #151) shape; { pages: { slug:
+// { lastmod } } } replaces it so sitemap.xml's <lastmod> only moves for a
+// slug whose generated HTML actually changed this run, per docs/SEO.md's
+// own "bump lastmod only if the page's content actually changed" rule
+// (caught by Codex review: the original always stamped every slug with
+// today, even on a run that changed nothing). Reads the old shape too, so
+// an existing manifest from before this fix isn't discarded -- every slug
+// in it just gets today's date once, the same one-time reset a brand new
+// manifest would start from.
 function loadManifest() {
-  if (!fs.existsSync(MANIFEST_PATH)) return { slugs: [] };
-  return JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
+  if (!fs.existsSync(MANIFEST_PATH)) return { pages: {} };
+  const data = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
+  if (data.pages) return data;
+  const today = new Date().toISOString().slice(0, 10);
+  const pages = {};
+  (data.slugs || []).forEach(slug => { pages[slug] = { lastmod: today }; });
+  return { pages };
 }
 
-function writeManifest(slugs) {
-  fs.writeFileSync(MANIFEST_PATH, JSON.stringify({ slugs: slugs.sort() }, null, 2) + '\n');
+function writeManifest(pages) {
+  const sorted = {};
+  Object.keys(pages).sort().forEach(slug => { sorted[slug] = pages[slug]; });
+  fs.writeFileSync(MANIFEST_PATH, JSON.stringify({ pages: sorted }, null, 2) + '\n');
 }
 
-function regenerateSitemap(slugs) {
+function regenerateSitemap(pages) {
   const sitemap = fs.readFileSync(SITEMAP_PATH, 'utf8');
   const beginIdx = sitemap.indexOf(SITEMAP_BEGIN);
   const endIdx = sitemap.indexOf(SITEMAP_END);
   if (beginIdx === -1 || endIdx === -1 || endIdx < beginIdx) {
     throw new Error('sitemap.xml is missing the BEGIN/END auto-generated-project-pages markers');
   }
-  const today = new Date().toISOString().slice(0, 10);
-  const entries = slugs
+  const entries = Object.keys(pages)
     .sort()
-    .map(slug => `  <url>\n    <loc>${SITE_ORIGIN}/projects/${slug}/</loc>\n    <lastmod>${today}</lastmod>\n  </url>`)
+    .map(slug => `  <url>\n    <loc>${SITE_ORIGIN}/projects/${slug}/</loc>\n    <lastmod>${pages[slug].lastmod}</lastmod>\n  </url>`)
     .join('\n');
   const before = sitemap.slice(0, beginIdx + SITEMAP_BEGIN.length);
   const after = sitemap.slice(endIdx);
@@ -296,10 +336,12 @@ function main() {
 
   const newSlugs = [...bySlug.keys()];
   const manifest = loadManifest();
-  const removedSlugs = manifest.slugs.filter(s => !bySlug.has(s));
+  const removedSlugs = Object.keys(manifest.pages).filter(s => !bySlug.has(s));
 
   if (!fs.existsSync(PROJECTS_DIR)) fs.mkdirSync(PROJECTS_DIR, { recursive: true });
 
+  const today = new Date().toISOString().slice(0, 10);
+  const newPages = {};
   let written = 0;
   newSlugs.forEach(slug => {
     const project = bySlug.get(slug);
@@ -307,11 +349,17 @@ function main() {
     const filePath = path.join(dir, 'index.html');
     const html = renderPage(project, slug);
     const existing = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : null;
-    if (existing !== html) {
+    const changed = existing !== html;
+    if (changed) {
       fs.mkdirSync(dir, { recursive: true });
       fs.writeFileSync(filePath, html);
       written++;
     }
+    // Only a slug whose generated HTML actually changed (or that's brand
+    // new) gets today's date -- an unchanged page keeps whatever lastmod
+    // it already had, so sitemap.xml only ever reports a real change.
+    const previous = manifest.pages[slug];
+    newPages[slug] = { lastmod: changed || !previous ? today : previous.lastmod };
   });
 
   removedSlugs.forEach(slug => {
@@ -319,8 +367,8 @@ function main() {
     if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true });
   });
 
-  writeManifest(newSlugs);
-  regenerateSitemap(newSlugs);
+  writeManifest(newPages);
+  regenerateSitemap(newPages);
 
   console.log(`Generated/updated ${written} project page(s) out of ${newSlugs.length} total.`);
   if (removedSlugs.length) console.log(`Removed ${removedSlugs.length} stale page(s): ${removedSlugs.join(', ')}`);

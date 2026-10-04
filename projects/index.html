@@ -270,17 +270,39 @@ function slugify(str){
     .replace(/^-+|-+$/g, '');
 }
 
+// Populated from assets/service-projects/generated-pages-manifest.json
+// below -- the set of slugs that actually have a generated static page on
+// disk right now. A brand-new project added via the live Sheet (§7 of
+// docs/SERVICE-PROJECTS-DESIGN.md) renders on this page immediately, with
+// zero file edits, well before anyone updates service-projects.json and
+// re-runs .github/scripts/generate-project-pages.js -- so projectUrl()
+// below must not assume every live project already has a generated page
+// (caught by Codex review on PR #151: that assumption would send a share
+// click for a live-only project straight to a 404).
+let generatedProjectSlugs = new Set();
+fetch('/assets/service-projects/generated-pages-manifest.json')
+  .then(function(r){ return r.json(); })
+  .then(function(data){ generatedProjectSlugs = new Set(data.slugs || []); })
+  .catch(function(){ /* leave empty -- every project falls back to the always-working query-string link below */ });
+
 /**
  * Points at this project's own generated static page
- * (projects/<slug>/index.html, see docs/OPTIMIZATION-AUDIT-2026-10.md §5),
- * not the old /projects/?project=<slug> query-string form -- that page had
- * no OG tags of its own, so sharing it always showed this index page's
- * generic photo/description regardless of which project was shared. The
- * generated page has its own real title/OG image/description, so sharing
- * this URL now correctly shows the right project on Facebook/etc.
+ * (projects/<slug>/index.html, see docs/OPTIMIZATION-AUDIT-2026-10.md §5)
+ * when one actually exists yet -- it has its own real OG tags, so sharing
+ * it correctly shows the right project's photo on Facebook/etc., unlike
+ * the old /projects/?project=<slug> query-string form, which always
+ * showed this index page's generic photo/description regardless of which
+ * project was shared. Falls back to that same query-string form for any
+ * project without a generated page yet (new live-only projects, or if the
+ * manifest fetch above hasn't resolved/failed) -- that link always works
+ * since this page's own restoreSharedProject() handles it.
  */
 function projectUrl(project){
-  return `${window.location.origin}/projects/${encodeURIComponent(slugify(project.project_name))}/`;
+  const slug = slugify(project.project_name);
+  if (generatedProjectSlugs.has(slug)) {
+    return `${window.location.origin}/projects/${encodeURIComponent(slug)}/`;
+  }
+  return `${window.location.origin}/projects/?project=${encodeURIComponent(slug)}`;
 }
 
 let shareFallbackTarget = null; // the project currently bound to the open fallback menu

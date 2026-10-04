@@ -1,18 +1,46 @@
 {
-  "slugs": [
-    "27th-up-harong-academic-festival",
-    "4-in-1-district-learning-seminar",
-    "binhi-ng-kinabukasan",
-    "brigada-eskwela-mahabang-dahilig-shs",
-    "chartering-of-the-ncf-interact-club",
-    "diskwentulong-card",
-    "governor-s-visit",
-    "lead",
-    "liwanag-sa-dilim-sustainable-alternative-lighting",
-    "rcnh-website",
-    "rurok-the-rcnh-magazine",
-    "summer-club-turnover-and-strategic-planning",
-    "talk-on-ethical-leadership-for-law-students",
-    "unlocking-mental-well-being"
-  ]
+  "pages": {
+    "27th-up-harong-academic-festival": {
+      "lastmod": "2026-10-04"
+    },
+    "4-in-1-district-learning-seminar": {
+      "lastmod": "2026-10-04"
+    },
+    "binhi-ng-kinabukasan": {
+      "lastmod": "2026-10-04"
+    },
+    "brigada-eskwela-mahabang-dahilig-shs": {
+      "lastmod": "2026-10-04"
+    },
+    "chartering-of-the-ncf-interact-club": {
+      "lastmod": "2026-10-04"
+    },
+    "diskwentulong-card": {
+      "lastmod": "2026-10-04"
+    },
+    "governor-s-visit": {
+      "lastmod": "2026-10-04"
+    },
+    "lead": {
+      "lastmod": "2026-10-04"
+    },
+    "liwanag-sa-dilim-sustainable-alternative-lighting": {
+      "lastmod": "2026-10-04"
+    },
+    "rcnh-website": {
+      "lastmod": "2026-10-04"
+    },
+    "rurok-the-rcnh-magazine": {
+      "lastmod": "2026-10-04"
+    },
+    "summer-club-turnover-and-strategic-planning": {
+      "lastmod": "2026-10-04"
+    },
+    "talk-on-ethical-leadership-for-law-students": {
+      "lastmod": "2026-10-04"
+    },
+    "unlocking-mental-well-being": {
+      "lastmod": "2026-10-04"
+    }
+  }
 }
