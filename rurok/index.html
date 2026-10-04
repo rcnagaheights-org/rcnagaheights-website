@@ -301,7 +301,12 @@ function renderIssues(data){
   if (!data || !data.current || !data.current.url) throw new Error('No current Rurok issue in data');
 
   featuredIframe.title = `Rurok — Rotary Club of Naga Heights Bulletin, ${data.current.label || ''}`;
-  featuredIframe.src = data.current.url;
+  // Reassigning an iframe's src to the SAME url still re-navigates it in
+  // some cases, which would discard the static fallback's loading head
+  // start (or flash/restart the slow Heyzine embed right as it becomes
+  // usable) on every normal load, since live and static usually agree.
+  // Same guard already used by preloadIssue() below for the other iframe.
+  if (featuredIframe.src !== data.current.url) featuredIframe.src = data.current.url;
 
   const past = Array.isArray(data.past) ? data.past : [];
   const stillViewable = past.filter(issue => !issue.pdf_url);
@@ -358,8 +363,12 @@ fetch(`${APPS_SCRIPT_URL}?action=rurokIssues`)
   .then(r => r.json())
   .then(data => {
     if (!data || data.error || !data.current) throw new Error('Live Rurok issues unavailable');
-    liveIssuesRendered = true;
+    // renderIssues() has its own stricter check (data.current.url must
+    // exist too) and can still throw here -- only mark live as rendered
+    // once it actually succeeds, so a late static response isn't wrongly
+    // suppressed by a live response that looked valid but failed to render.
     renderIssues(data);
+    liveIssuesRendered = true;
   })
   .catch(() => {});
 
