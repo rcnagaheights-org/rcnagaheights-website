@@ -96,12 +96,6 @@ docs/OPTIMIZATION-AUDIT-2026-10.md -> whole-repo optimization audit
                            Rotarians data — a dated snapshot, not a living
                            design doc; see its own header before treating
                            any finding in it as still open
-docs/agent-teams.md    -> reference guide for Claude Code's agent-teams
-                           feature (generic, not project content); it IS
-                           enabled, but only via a local, untracked
-                           .claude/settings.local.json (git-ignored, not
-                           committed) — a fresh clone won't have it on
-                           until that file is (re)created locally
 .claude/settings.json  -> committed, project-scoped Claude Code
                            permission rules (added 2026-10-03) — currently
                            just allow-listing the PR subscribe/unsubscribe
@@ -374,6 +368,62 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   required image-integrity validation before any future automated
   download could become a commit candidate) was written up but
   explicitly NOT implemented — see docs/MERCHANTS-SYNC-DESIGN.md §3b.
+- **Started 2026-10-04**: Phase A of docs/OPTIMIZATION-AUDIT-2026-10.md's
+  roadmap (quick wins / low risk). Done so far, frontend/docs only: all
+  31 Rotarians portraits now have `loading="lazy"`; all 8 pages preconnect
+  to `cdn.tailwindcss.com`/`fonts.googleapis.com`/`fonts.gstatic.com`; the
+  homepage hero carousel now respects `prefers-reduced-motion` (matching
+  the DTC banner's existing handling); the mobile menu button on all 6
+  nav-bearing pages now reports `aria-expanded`; `docs/agent-teams.md`
+  (generic Claude Code reference, no project content) removed from the
+  repo per the audit's own recommendation; `docs/QA-STATUS.md` and
+  `docs/CONTENT-MANAGEMENT.md` got explicit staleness banners pointing to
+  their current replacements instead of silently going stale further.
+  **Updated 2026-10-04**: Google Search Console verification was already
+  done (user confirmed a pre-existing, already-verified property — real
+  data flowing: 89 clicks, 5 of 6 real pages indexed). Used the Search
+  Console API (a one-off OAuth access token, not a stored credential) to
+  check the 6th: `/rurok/` is "Discovered — currently not indexed," real
+  evidence supporting docs/OPTIMIZATION-AUDIT-2026-10.md §5's point that
+  the page's actual bulletin content lives entirely inside a third-party
+  Heyzine iframe with little real indexable text — not yet acted on,
+  flagged for later.
+  **Also updated 2026-10-04**: `Code.gs` v14 — fixed the Sheets
+  formula-injection gap (`docs/OPTIMIZATION-AUDIT-2026-10.md` §10) after
+  a fresh `clasp login`. New `setSafeValue_()`/`appendRowSafely_()`
+  helpers now guard every write site that takes public, unauthenticated
+  input (`registerCard_`'s `fullName`; `logAction_`/`logVerification_`'s
+  `action`/`detail`/`cardNumber`/`result`/`merchantName`). Tested against
+  the real Sheet (a temporary, non-production test tab, deleted after)
+  before shipping: found that `setNumberFormat('@')` alone does **not**
+  stop a leading `=` from still being evaluated as a formula (it caught
+  `+`/`-`/`@` but `=1+1` still silently evaluated to `2`) — the real fix
+  needed a literal apostrophe prepended for all four trigger characters,
+  confirmed to store the exact original string (Sheets strips the
+  apostrophe on write, same as manual UI entry) and block formula
+  evaluation in every case tested, including a classic DDE-injection
+  payload. Deployed to the existing live Web App deployment (no new
+  deployment ID); confirmed `?action=partners`/`projects`/`rurokIssues`/
+  `verify` all still work correctly afterward. This closes Phase A in
+  full — all 8 items now done.
+  **Updated again 2026-10-04**: `Code.gs` v14.1 — Codex's automatic
+  review of the v14 fix on PR #150 caught a real TOCTOU race it
+  introduced: `appendRowSafely_` replaced the atomic `sheet.appendRow()`
+  with a manual `getLastRow()+1` read then per-cell writes, so two
+  concurrent public requests (e.g. simultaneous `?action=verify` calls,
+  both logging via `logVerification_`) could read the same row number
+  and both write to it, corrupting/interleaving `Logs`/`Verifications`
+  data. Fixed by wrapping `appendRowSafely_`'s body in
+  `LockService.getScriptLock()`/`waitLock`/try-finally — same pattern
+  `registerCard_` already used around its own full body. Confirmed via a
+  temporary test harness (deleted after) that `LockService`'s script
+  lock is safely re-entrant within one execution (no self-deadlock when
+  called from inside `registerCard_`'s own already-held lock), then
+  re-ran all 8 formula-injection adversarial cases through the new
+  lock-wrapped path — all still stored correctly as literal strings.
+  Deployed to the existing live Web App deployment; confirmed
+  `?action=partners`/`verify`/unknown-action all still respond correctly
+  afterward.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no

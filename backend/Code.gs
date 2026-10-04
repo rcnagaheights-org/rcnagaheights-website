@@ -1,8 +1,45 @@
 /**
  * DiskwenTulong Card (DTC) — Apps Script backend
- * v13 — matches docs/DTC-DESIGN.md, docs/RUROK-DESIGN.md,
+ * v14.1 — matches docs/DTC-DESIGN.md, docs/RUROK-DESIGN.md,
  * docs/SERVICE-PROJECTS-DESIGN.md, and docs/MERCHANTS-SYNC-DESIGN.md in
  * the rcnagaheights-website repo.
+ *
+ * CHANGES FROM v14:
+ * - Codex review on the v14 formula-injection fix (PR #150) caught a
+ *   real TOCTOU race in the new appendRowSafely_: it replaced the atomic
+ *   sheet.appendRow() with a manual getLastRow()+1 read followed by
+ *   per-cell writes, so two concurrent calls (e.g. simultaneous public
+ *   ?action=verify requests, both logging via logVerification_, which has
+ *   no lock of its own) could read the same getLastRow() value and both
+ *   write to the same target row, corrupting/interleaving Logs/
+ *   Verifications data. Fixed by wrapping appendRowSafely_'s body in
+ *   LockService.getScriptLock()/waitLock(10000)/try-finally, the same
+ *   pattern registerCard_ already uses around its own full body.
+ *   Confirmed via a temporary test harness (since removed) that
+ *   LockService's script lock is safely re-entrant within one execution,
+ *   so this does not deadlock when appendRowSafely_ is called from
+ *   logAction_/logVerification_ while already inside registerCard_'s own
+ *   outer lock. registerCard_'s direct setSafeValue_() call (not routed
+ *   through appendRowSafely_) needed no change -- it was already fully
+ *   inside that function's pre-existing outer lock.
+ *
+ * CHANGES FROM v13:
+ * - Fixed a Google Sheets formula-injection gap (docs/OPTIMIZATION-AUDIT-2026-10.md
+ *   §10): registerCard_'s payload.fullName, and logAction_/logVerification_'s
+ *   action/detail/cardNumber/result/merchantName, were written via plain
+ *   .setValue()/.appendRow() with no sanitization -- a string beginning
+ *   with =, +, -, or @ is interpreted as a formula by Sheets, exactly as
+ *   if a human had typed it into the UI (the classic CSV/Spreadsheet-
+ *   injection class). New setSafeValue_()/appendRowSafely_() helpers
+ *   force the cell to plain-text format and, for the =/+/-/@ cases,
+ *   prepend a literal apostrophe before writing -- confirmed via a live
+ *   test (not just reasoning) against the real Sheet: setNumberFormat('@')
+ *   alone does NOT stop a leading '=' from still being evaluated as a
+ *   formula, but the apostrophe-prefix does, storing the exact original
+ *   string (Sheets strips the apostrophe back off, same as manual UI
+ *   entry). All of registerCard_, logAction_, and logVerification_'s
+ *   write sites now go through these helpers. Purely a write-path
+ *   hardening -- no other endpoint/behavior touched.
  *
  * CHANGES FROM v12:
  * - getPartners_() now returns merchant_id (the Merchants sheet's own
@@ -299,7 +336,7 @@ function registerCard_(payload) {
         }
         var rowNum = i + 1;
         sheet.getRange(rowNum, statusCol + 1).setValue('ACTIVE');
-        sheet.getRange(rowNum, nameCol + 1).setValue(payload.fullName);
+        setSafeValue_(sheet.getRange(rowNum, nameCol + 1), payload.fullName);
         sheet.getRange(rowNum, regDateCol + 1).setValue(new Date());
         sheet.getRange(rowNum, expiryCol + 1).setValue(CONFIG.EXPIRY_DATE);
         sheet.getRange(rowNum, registeredByCol + 1).setValue(memberEmail);
@@ -758,7 +795,7 @@ function getRurokIssues_() {
 
 function logAction_(action, detail) {
   var sheet = getSheet_(CONFIG.SHEET_LOGS);
-  sheet.appendRow([new Date(), action, detail]);
+  appendRowSafely_(sheet, [new Date(), action, detail]);
 }
 
 /**
@@ -776,7 +813,62 @@ function logAction_(action, detail) {
  */
 function logVerification_(cardNumber, result, merchantName) {
   var sheet = getSheet_(CONFIG.SHEET_VERIFICATIONS);
-  sheet.appendRow([new Date(), cardNumber, result, merchantName || '']);
+  appendRowSafely_(sheet, [new Date(), cardNumber, result, merchantName || '']);
+}
+
+/**
+ * Writes `value` into `range` as a literal value. If it's a string,
+ * forces the cell to plain-text number format ('@') before writing --
+ * Range.setValue() otherwise interprets a string beginning with
+ * =, +, -, or @ as a formula, exactly as if a human had typed it into
+ * the Sheets UI (the classic CSV/Spreadsheet-injection class). This is
+ * the reliable fix: it changes how the CELL parses any value, unlike a
+ * leading-apostrophe workaround, which only neutralizes manual UI entry,
+ * not an API-written value.
+ */
+function setSafeValue_(range, value) {
+  if (typeof value === 'string') {
+    range.setNumberFormat('@');
+    // A leading =, +, -, or @ is Google Sheets' set of formula-trigger
+    // characters -- setNumberFormat('@') alone stops Sheets auto-typing
+    // a value as a number/date, but does NOT stop a leading '=' from
+    // still being parsed as a formula (confirmed empirically: a plain-
+    // text-formatted cell still evaluated "=1+1" to 2). Prepending a
+    // literal apostrophe is the one thing that reliably blocks formula
+    // parsing for all four trigger characters -- Sheets strips the
+    // apostrophe back off on write, storing the exact original string
+    // (confirmed empirically, matches the classic OWASP CSV/Spreadsheet-
+    // injection mitigation).
+    if (/^[=+\-@]/.test(value)) value = "'" + value;
+  }
+  range.setValue(value);
+}
+
+/**
+ * appendRow() doesn't allow pre-formatting the row it's about to create,
+ * so this computes the target row directly and writes each value through
+ * setSafeValue_ instead, keeping every string value safe from formula
+ * injection while leaving non-string values (Date, number) with their
+ * normal format. Wrapped in the script lock -- without it, two concurrent
+ * calls (e.g. simultaneous ?action=verify requests, both logging via
+ * logVerification_) can read the same getLastRow() value and then both
+ * write to the same target row, corrupting/interleaving data (TOCTOU race,
+ * caught by Codex review). Confirmed via a temporary test harness that
+ * LockService's script lock is safely re-entrant within one execution, so
+ * this doesn't deadlock when called from inside registerCard_'s own
+ * already-held outer lock.
+ */
+function appendRowSafely_(sheet, values) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var rowNum = sheet.getLastRow() + 1;
+    for (var i = 0; i < values.length; i++) {
+      setSafeValue_(sheet.getRange(rowNum, i + 1), values[i]);
+    }
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function escapeHtml_(str) {

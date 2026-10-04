@@ -1,11 +1,27 @@
 # QA Status & Known Risks
-Version: v2.0 · Last updated: 2026-08-24
+Version: v2.1 · Last updated: 2026-10-04
 
 Consolidated from a full-repo QA/documentation assessment. This file
 exists because "confirmed working" gets used loosely across the other
 docs — some claims are backed by the user's own live screenshots, some
 are only sandbox-verified (never touched the real deployed site), and
 that distinction matters before trusting any of it at face value.
+
+**Flagged stale by `docs/OPTIMIZATION-AUDIT-2026-10.md`**: this file
+predates nearly everything built since 2026-08-24 — the Partner
+Merchants sync job (and its Phase 1/2 proof-of-capability work), the
+Service Projects live-sync rework, and the page-load fixes across
+`/diskwentulong/`, `/projects/`, and `/rurok/` all landed after this
+file's last update and are not reflected below. Several "sandbox-only"
+caveats below have also since been directly contradicted by live-site
+verification done as part of that later work (e.g. this environment's
+Playwright *has* since reached the live Apps Script endpoint and the
+live site directly, more than once). Section 1 (no automated test
+suite) is also §7/Phase D's direct subject in the optimization audit —
+check there before assuming this file's standing risk is still fully
+unaddressed. Not rewritten here, per this repo's "append, don't
+rewrite" documentation convention — read what follows as history up to
+2026-08-24, not current state.
 
 ## 1. No automated test suite — standing risk
 Confirmed: no `.github/workflows/`, no CI config, no `package.json`, no

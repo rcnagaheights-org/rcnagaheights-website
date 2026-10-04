@@ -43,6 +43,9 @@
     "slogan": "Service Above Self"
   }
   </script>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&amp;family=Playfair+Display:wght@600;700;800&amp;display=swap" rel="stylesheet">
@@ -70,7 +73,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
    <nav class="max-w-7xl mx-auto h-[112px] px-4 sm:px-6 flex items-center justify-between"><a href="/" class="flex items-center">
 <img data-template-id="nav-logo" class="h-20 lg:h-24 w-auto" src="/assets/header-logo.png" alt="Rotary Club of Naga Heights"></a>
     <div class="hidden xl:flex gap-1"><a data-template-id="nav-about" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">About Rotary</a> <a data-template-id="nav-rotarians" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/rotarians/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">The Rotarians</a> <a data-template-id="nav-projects" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/projects/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">Service Projects</a> <a data-template-id="nav-diskwentulong" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/diskwentulong/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">DiskwenTulong Card</a> <a data-template-id="nav-rurok" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f]" href="/rurok/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">Rurok</a> <a data-template-id="nav-contact" class="canva-button nav-link px-3 py-2 rounded-full font-semibold text-sm text-[#17458f] active" href="/contact/" style="color: rgb(23, 69, 143); font-weight: 600; font-style: normal; font-size: 14px;">Contact Us</a>
-    </div><button id="menu-button" class="xl:hidden w-11 h-11 grid place-items-center"><i data-lucide="menu"></i></button>
+    </div><button id="menu-button" class="xl:hidden w-11 h-11 grid place-items-center" aria-expanded="false" aria-label="Menu"><i data-lucide="menu"></i></button>
    </nav>
    <div id="mobile-menu" class="hidden xl:hidden border-t bg-white px-5 py-3 grid"><a class="nav-link text-left py-3 border-b" href="/">About Rotary</a> <a class="nav-link text-left py-3 border-b" href="/rotarians/">The Rotarians</a> <a class="nav-link text-left py-3 border-b" href="/projects/">Service Projects</a> <a class="nav-link text-left py-3 border-b" href="/diskwentulong/">DiskwenTulong Card</a> <a class="nav-link text-left py-3 border-b" href="/rurok/">Rurok</a> <a class="nav-link text-left py-3 active" href="/contact/">Contact Us</a>
    </div>
@@ -120,7 +123,7 @@ body{margin:0;font-family:'Libre Franklin',sans-serif;color:#17324d}h1,h2,h3{fon
   </main>
 
   <script>
-document.getElementById('menu-button').onclick=()=>document.getElementById('mobile-menu').classList.toggle('hidden');
+document.getElementById('menu-button').onclick=function(){var btn=this;var hidden=document.getElementById('mobile-menu').classList.toggle('hidden');btn.setAttribute('aria-expanded', hidden?'false':'true');};
 (function(){
   document.querySelectorAll('a[href^="tel:"]').forEach(a=>{
     if(a.getAttribute('href').includes('XXX')){
