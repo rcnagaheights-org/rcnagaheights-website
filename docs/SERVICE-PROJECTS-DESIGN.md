@@ -1,5 +1,5 @@
 # Service Projects Page — Data-Driven Rework
-Version: v5 · Last updated: 2026-10-04
+Version: v5.1 · Last updated: 2026-10-04
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). **Updated 2026-10-03**: the page
@@ -435,8 +435,9 @@ Facebook app by the user.
 
 ## 10. Per-project static pages — BUILT (2026-10-04)
 Implements Option A from §9, per `docs/OPTIMIZATION-AUDIT-2026-10.md`
-§5/§14 (Phase B, scoped to B1 only — B2/B3 deferred, see CLAUDE.md's
-Current Status). Real differences from the §9 sketch, decided while
+§5/§14 (Phase B, scoped to B1 only — B2/B3 explicitly skipped by the
+user's decision, not just deferred, see CLAUDE.md's Current Status).
+Real differences from the §9 sketch, decided while
 building:
 
 - **Full real pages, not thin redirect stubs.** §9's sketch described a
@@ -528,5 +529,12 @@ before merge**, all real:
 **Not yet done**: confirmed on the live deployed site by the user (built
 and verified locally — `node --check`-equivalent syntax validation on
 every generated page's inline script, JSON-LD parse-validated, all 14
-image paths confirmed to exist); Phase C's scheduled-Action wrapper;
-`Event` JSON-LD (§9/B3, still blocked on real location/date-range data).
+image paths confirmed to exist); Phase C's scheduled-Action wrapper.
+
+**Explicitly skipped (2026-10-04), not just deferred**: `Event` JSON-LD
+for projects (§9/B3) and the Rurok per-issue text summary (B2, see
+`docs/OPTIMIZATION-AUDIT-2026-10.md` §5). Both had real blockers (B3
+needs per-project location/date-range data the Sheet doesn't have;
+B2 needs per-issue summary content to be written), but the user decided
+not to pursue either as follow-up work, so neither is open/pending —
+don't pick these back up without the user raising them again.
