@@ -477,7 +477,19 @@ doing any Drive-related content work.
   the 3 options weighed and a technical recommendation for later
   automating static per-project share pages via `clasp`, if ever
   revisited.
-
+  **Fixed 2026-10-04** (reported as "slow to load"): the page's live
+  `?action=projects` fetch had no parallel static fallback — unlike
+  `/diskwentulong/`'s already-fixed pattern, the static
+  `service-projects.json` fallback here only started inside the live
+  call's `.catch()`, so every page load waited out the full live round
+  trip (documented 2-3s Apps Script overhead) before showing anything.
+  Now fires the static fallback immediately in parallel, same as
+  `/diskwentulong/`; the live call still wins and re-renders on top once
+  it resolves. Playwright-confirmed against the real live backend:
+  projects now render in ~0.9s instead of waiting ~3s+, with the live
+  data settling cleanly on top and no errors. `/rurok/`'s
+  `?action=rurokIssues` fetch has this same latent issue and was not
+  touched by this fix — flagged here, not yet fixed.
 ## Keep this file updated
 After a change affecting "Current status" or "Known placeholders," update
 those sections as part of your commit — don't leave them stale. This file

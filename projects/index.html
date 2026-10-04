@@ -489,6 +489,7 @@ const IMAGE_BY_PROJECT = {
 };
 
 let allProjects = [];
+let liveProjectsRendered = false;
 
 function renderProjects(projects){
   if (!projects.length) {
@@ -543,24 +544,40 @@ function restoreSharedProject(){
  * assets/service-projects/service-projects.json only if the live call
  * fails or returns no projects.
  */
+function loadStaticProjects(){
+  fetch('/assets/service-projects/service-projects.json')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (!liveProjectsRendered) renderProjects(data.projects || []);
+    })
+    .catch(function(){
+      if (liveProjectsRendered) return;
+      const emptyEl = document.getElementById('featured-empty');
+      emptyEl.textContent = 'Could not load service projects right now. Please try again later.';
+      emptyEl.classList.remove('modal-hidden');
+      renderCarousel('areas_of_focus', []);
+      renderCarousel('avenues_of_service', []);
+    });
+}
+
+// The live Apps Script call is the source of truth but routinely takes
+// 2-3s (Apps Script Web App overhead, not something this frontend can
+// fix) -- previously this page waited for that call to fail before even
+// starting the static fallback, so every load was at least that slow.
+// Firing the same-origin static fallback in parallel instead means
+// visitors see projects almost instantly; the live call still wins and
+// re-renders on top of it once it resolves. Same pattern already proven
+// on /diskwentulong/.
+loadStaticProjects();
+
 fetch(`${APPS_SCRIPT_URL}?action=projects`)
   .then(function(r){ return r.json(); })
   .then(function(data){
     if (data.error || !data.projects || !data.projects.length) throw new Error(data.error || 'empty');
+    liveProjectsRendered = true;
     renderProjects(data.projects);
   })
-  .catch(function(){
-    fetch('/assets/service-projects/service-projects.json')
-      .then(function(r){ return r.json(); })
-      .then(function(data){ renderProjects(data.projects || []); })
-      .catch(function(){
-        const emptyEl = document.getElementById('featured-empty');
-        emptyEl.textContent = 'Could not load service projects right now. Please try again later.';
-        emptyEl.classList.remove('modal-hidden');
-        renderCarousel('areas_of_focus', []);
-        renderCarousel('avenues_of_service', []);
-      });
-  });
+  .catch(function(){});
 
 lucide.createIcons();
 </script>
