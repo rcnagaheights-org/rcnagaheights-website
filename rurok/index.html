@@ -330,20 +330,38 @@ function renderIssues(data){
   lucide.createIcons();
 }
 
+// The live Apps Script call is the source of truth but routinely takes
+// 2-3s (Apps Script Web App overhead, not something this frontend can
+// fix) -- previously this page waited for that call to fail before even
+// starting the static fallback, so every load was at least that slow.
+// Firing the same-origin static fallback in parallel instead means
+// visitors see the featured issue almost instantly; the live call still
+// wins and re-renders on top once it resolves. Same pattern already
+// fixed on /diskwentulong/ and /projects/.
+let liveIssuesRendered = false;
+
+function loadStaticIssues(){
+  fetch('/assets/rurok/issues.json')
+    .then(r => r.json())
+    .then(data => {
+      if (!liveIssuesRendered) renderIssues(data);
+    })
+    .catch(() => {
+      if (!liveIssuesRendered) {
+        featuredLoading.innerHTML = '<p class="text-slate-500 text-sm px-6 text-center">Could not load the latest issue right now. Please try again shortly.</p>';
+      }
+    });
+}
+loadStaticIssues();
+
 fetch(`${APPS_SCRIPT_URL}?action=rurokIssues`)
   .then(r => r.json())
   .then(data => {
     if (!data || data.error || !data.current) throw new Error('Live Rurok issues unavailable');
+    liveIssuesRendered = true;
     renderIssues(data);
   })
-  .catch(() => {
-    fetch('/assets/rurok/issues.json')
-      .then(r => r.json())
-      .then(renderIssues)
-      .catch(() => {
-        featuredLoading.innerHTML = '<p class="text-slate-500 text-sm px-6 text-center">Could not load the latest issue right now. Please try again shortly.</p>';
-      });
-  });
+  .catch(() => {});
 
 const issueIframe = document.getElementById('issue-modal-iframe');
 const issueLoading = document.getElementById('issue-modal-loading');

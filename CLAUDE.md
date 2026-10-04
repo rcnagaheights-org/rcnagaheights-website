@@ -487,9 +487,21 @@ doing any Drive-related content work.
   `/diskwentulong/`; the live call still wins and re-renders on top once
   it resolves. Playwright-confirmed against the real live backend:
   projects now render in ~0.9s instead of waiting ~3s+, with the live
-  data settling cleanly on top and no errors. `/rurok/`'s
-  `?action=rurokIssues` fetch has this same latent issue and was not
-  touched by this fix — flagged here, not yet fixed.
+  data settling cleanly on top and no errors. Also fixed two related
+  render bugs found by Codex review before merge: a stale "could not
+  load" error message that never cleared once live data arrived, and a
+  `?project=<slug>` deep link to a project present only in the stale
+  static fallback whose lightbox never closed once live data (correctly)
+  showed no such project.
+  **Also fixed 2026-10-04**: `/rurok/`'s `?action=rurokIssues` fetch had
+  the identical issue (flagged but not fixed in the projects-page PR) —
+  same parallel-static-fallback fix applied. Playwright-confirmed: the
+  featured issue now renders at ~0.8s via the static fallback, and the
+  live call correctly overwrites the iframe with the live-current issue
+  once it resolves (~3.5s+). No separate stale-error fix was needed here
+  — the existing loading overlay already clears via the iframe's own
+  `load` event once live data sets a real `src`, confirmed empirically
+  by forcing the static fetch to fail.
 ## Keep this file updated
 After a change affecting "Current status" or "Known placeholders," update
 those sections as part of your commit — don't leave them stale. This file
