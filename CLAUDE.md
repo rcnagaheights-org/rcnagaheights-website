@@ -379,11 +379,33 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   repo per the audit's own recommendation; `docs/QA-STATUS.md` and
   `docs/CONTENT-MANAGEMENT.md` got explicit staleness banners pointing to
   their current replacements instead of silently going stale further.
-  **Not yet done from Phase A**: the Sheets-formula-injection fix in
-  `backend/Code.gs` (blocked on a fresh `clasp login` — the session's
-  saved credential expired mid-session, `invalid_rapt`) and Google Search
-  Console verification (needs the user's own action/token, not something
-  this session can do unilaterally).
+  **Updated 2026-10-04**: Google Search Console verification was already
+  done (user confirmed a pre-existing, already-verified property — real
+  data flowing: 89 clicks, 5 of 6 real pages indexed). Used the Search
+  Console API (a one-off OAuth access token, not a stored credential) to
+  check the 6th: `/rurok/` is "Discovered — currently not indexed," real
+  evidence supporting docs/OPTIMIZATION-AUDIT-2026-10.md §5's point that
+  the page's actual bulletin content lives entirely inside a third-party
+  Heyzine iframe with little real indexable text — not yet acted on,
+  flagged for later.
+  **Also updated 2026-10-04**: `Code.gs` v14 — fixed the Sheets
+  formula-injection gap (`docs/OPTIMIZATION-AUDIT-2026-10.md` §10) after
+  a fresh `clasp login`. New `setSafeValue_()`/`appendRowSafely_()`
+  helpers now guard every write site that takes public, unauthenticated
+  input (`registerCard_`'s `fullName`; `logAction_`/`logVerification_`'s
+  `action`/`detail`/`cardNumber`/`result`/`merchantName`). Tested against
+  the real Sheet (a temporary, non-production test tab, deleted after)
+  before shipping: found that `setNumberFormat('@')` alone does **not**
+  stop a leading `=` from still being evaluated as a formula (it caught
+  `+`/`-`/`@` but `=1+1` still silently evaluated to `2`) — the real fix
+  needed a literal apostrophe prepended for all four trigger characters,
+  confirmed to store the exact original string (Sheets strips the
+  apostrophe on write, same as manual UI entry) and block formula
+  evaluation in every case tested, including a classic DDE-injection
+  payload. Deployed to the existing live Web App deployment (no new
+  deployment ID); confirmed `?action=partners`/`projects`/`rurokIssues`/
+  `verify` all still work correctly afterward. This closes Phase A in
+  full — all 8 items now done.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
