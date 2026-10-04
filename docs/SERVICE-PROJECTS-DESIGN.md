@@ -1,5 +1,5 @@
 # Service Projects Page — Data-Driven Rework
-Version: v4.1 · Last updated: 2026-10-03
+Version: v5 · Last updated: 2026-10-04
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). **Updated 2026-10-03**: the page
@@ -389,6 +389,11 @@ tradeoff. docs/PROJECTS-PAGE.md §4 (the original platform-constraint
 writeup this all traces back to) has been cross-referenced to this
 decision.
 
+**Superseded 2026-10-04 — see §10.** Option A (static per-project pages)
+was built as part of `docs/OPTIMIZATION-AUDIT-2026-10.md`'s Phase B,
+following the sketch below but as full real pages rather than thin
+redirect stubs.
+
 ### Future enhancement — automating Option A via `clasp`
 Not built now, but worth real consideration later, flagged per the
 user's request: Option A's usual objection ("a build step, and
@@ -427,3 +432,101 @@ see section 8's own verification note — covers both the Featured
 section and an arbitrary carousel card via the lightbox, plus the
 `?project=<slug>` restore path. Not yet confirmed on a real device/
 Facebook app by the user.
+
+## 10. Per-project static pages — BUILT (2026-10-04)
+Implements Option A from §9, per `docs/OPTIMIZATION-AUDIT-2026-10.md`
+§5/§14 (Phase B, scoped to B1 only — B2/B3 deferred, see CLAUDE.md's
+Current Status). Real differences from the §9 sketch, decided while
+building:
+
+- **Full real pages, not thin redirect stubs.** §9's sketch described a
+  tiny OG-tags-plus-redirect file. What's built instead is a complete,
+  standalone page per project (own header/nav/footer, hero image, full
+  description text, Share button) — so the page is useful to a human
+  landing on it directly (e.g. from a search result), not just to a
+  crawler passing through. This also means 13 of 14 projects' full
+  descriptions are real crawlable HTML for the first time, not only
+  something `og:description` summarizes.
+- **Reads the committed `service-projects.json`, not the live
+  `?action=projects` endpoint**, unlike §9's sketch (step 1). The live
+  endpoint's `image_filename` is a raw Drive filename that
+  `getServiceProjects_`'s own doc comment says does NOT reliably match
+  the actual committed/resized photo — that mapping has always been a
+  manual, human step (see `docs/SERVICE-PROJECTS-DESIGN.md` §7). The
+  committed JSON already has the correct, human-verified `image` path
+  for every project, so generating from it avoids any risk of a
+  generated page showing the wrong photo. A future live-endpoint-based
+  version would need a stable per-project id (like `merchant_id` for
+  Partner Merchants) before it could safely merge live field updates
+  with the committed `image` mapping — not built.
+- **Run manually, not yet a scheduled GitHub Action.** §9's sketch's
+  step 3 (daily Action + diff PR) is explicitly Phase C work
+  (`docs/OPTIMIZATION-AUDIT-2026-10.md` §14), not built in this pass —
+  `.github/scripts/generate-project-pages.js` exists and is written to
+  follow that same pattern when Phase C wires a workflow around it, but
+  for now it's `node .github/scripts/generate-project-pages.js`, run by
+  hand whenever `service-projects.json` changes.
+
+**What it does**: for each of the 14 committed projects, generates
+`projects/<slug>/index.html` (slug via the same `slugify()` as
+`projects/index.html`, kept byte-for-byte identical in both places) with
+its own `<title>`/canonical/OG image (that project's real photo)/JSON-LD
+(the same `NGO` schema every other page carries, not an `Event` schema —
+see §9's own `Event`-schema data-gap reasoning in
+`docs/OPTIMIZATION-AUDIT-2026-10.md` §5, which still applies and is
+unaffected by this). Also regenerates `sitemap.xml`'s auto-generated
+block (between `<!-- BEGIN/END auto-generated project pages -->`
+markers) and removes any previously-generated page whose project was
+later removed from the JSON, tracked via
+`assets/service-projects/generated-pages-manifest.json` so the script
+never deletes a folder it didn't itself create.
+
+**The one real (not purely additive) change this needed**:
+`projects/index.html`'s `projectUrl()` now points at
+`/projects/<slug>/` instead of the old `/projects/?project=<slug>`
+query-string form. Without this, every Share button (Featured section,
+lightbox, fallback Facebook/Copy-Link menu) would still link to a URL
+with no OG tags of its own, and sharing any project would keep showing
+this index page's generic photo/description regardless of which project
+was actually shared — the exact gap this whole section exists to close.
+The `?project=<slug>` restore-on-load logic on `projects/index.html`
+itself is untouched and still works, so an old/bookmarked link in that
+form still resolves correctly.
+
+**Three issues Codex's automatic review on PR #151 caught and fixed
+before merge**, all real:
+- **(P1, blocking) A brand-new project added via the live Sheet (§7)
+  renders on `/projects/` immediately, with zero file edits — well
+  before anyone updates `service-projects.json` and re-runs the
+  generator.** The first version of `projectUrl()` assumed every project
+  already had a generated page, so sharing a live-only project would
+  send a 404 instead of the previously-working `?project=<slug>` link.
+  Fixed: `projects/index.html` now fetches
+  `generated-pages-manifest.json` at load and only links to a generated
+  page for a slug actually present in it, falling back to the
+  query-string form for everything else (including if the manifest fetch
+  itself fails).
+- **(P2) Generated `<title>`s were 61-99 characters** — `docs/SEO.md`'s
+  own checklist caps `<title>` at 60 (search results truncate past
+  that), and 13 of the 14 real project names already blow past 60 once
+  any suffix is added. Fixed: the generator now tries progressively
+  shorter suffixes (`| Service Projects | Rotary Club of Naga Heights` →
+  `| Rotary Club of Naga Heights` → `| RCNH` → the bare name) and uses
+  the fullest one that still fits 60 chars. `og:title`/`twitter:title`
+  aren't bound by that SERP-truncation rule, so they always keep the
+  fullest form regardless of length.
+- **(P2) `sitemap.xml`'s `<lastmod>` was stamped with today's date for
+  every project on every run**, even one that changed nothing —
+  contrary to `docs/SEO.md`'s own "only bump `lastmod` if the page's
+  content actually changed" rule, and the kind of thing that erodes a
+  crawler's trust in these hints over time. Fixed: the manifest now
+  stores a `lastmod` per slug, only advanced to today when that slug's
+  generated HTML actually changed (or it's brand new); confirmed via two
+  back-to-back runs with no data change producing byte-identical
+  `sitemap.xml`/manifest output.
+
+**Not yet done**: confirmed on the live deployed site by the user (built
+and verified locally — `node --check`-equivalent syntax validation on
+every generated page's inline script, JSON-LD parse-validated, all 14
+image paths confirmed to exist); Phase C's scheduled-Action wrapper;
+`Event` JSON-LD (§9/B3, still blocked on real location/date-range data).

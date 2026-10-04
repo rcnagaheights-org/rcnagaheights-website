@@ -9,6 +9,13 @@ framework, no package.json. Every page is a self-contained .html file.
 index.html               -> / (About Rotary / homepage)
 rotarians/index.html     -> /rotarians/  (Officers, members, president)
 projects/index.html      -> /projects/   (Service projects)
+projects/<slug>/index.html -> /projects/<slug>/ (one static page per
+                             project, generated — added 2026-10-04, see
+                             docs/SERVICE-PROJECTS-DESIGN.md §8-9. Do NOT
+                             hand-edit these; re-run
+                             `.github/scripts/generate-project-pages.js`
+                             after any change to
+                             assets/service-projects/service-projects.json)
 diskwentulong/index.html -> /diskwentulong/ (DTC info + partner merchant
                              directory, replaces the old foundation/ page
                              as of 2026-07-18 — see docs/DTC-DESIGN.md)
@@ -85,6 +92,18 @@ docs/MERCHANTS-SYNC-DESIGN.md -> design + build record for a scheduled
                            logo checklist also flags existing merchants'
                            missing/mismatched logos with Drive deep
                            links (Phase 1, 2026-10-03) — see §2b-2
+.github/scripts/generate-project-pages.js -> generates one static
+                           projects/<slug>/index.html per Service
+                           Projects row (added 2026-10-04,
+                           docs/OPTIMIZATION-AUDIT-2026-10.md Phase B) —
+                           reads the committed service-projects.json (not
+                           the live endpoint — see the script's own header
+                           comment for why), regenerates sitemap.xml's
+                           auto-generated block, and removes any stale
+                           generated page via
+                           assets/service-projects/generated-pages-manifest.json.
+                           Run manually; NOT yet wired to a scheduled
+                           GitHub Action — that's Phase C
 docs/Rotarians.md      -> /rotarians/ roster rules, incl. the Council of
                            Presidents section (added 2026-07-21) and how
                            to update it each Rotary Year
@@ -424,6 +443,37 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   Deployed to the existing live Web App deployment; confirmed
   `?action=partners`/`verify`/unknown-action all still respond correctly
   afterward.
+- **Started 2026-10-04**: Phase B of docs/OPTIMIZATION-AUDIT-2026-10.md's
+  roadmap — scoped down to B1 only (per-project static pages); B2 (Rurok
+  per-issue text summary) and B3 (`Event` JSON-LD for projects) deferred,
+  both blocked on real gaps (B2 needs per-issue summary content to be
+  written; B3 needs real per-project location/date-range data the Sheet
+  doesn't have yet — see docs/OPTIMIZATION-AUDIT-2026-10.md §5).
+  **B1 done**: a new `.github/scripts/generate-project-pages.js`
+  generates one static `projects/<slug>/index.html` per Service Projects
+  row (14 today) — own title/canonical/OG image (that project's real
+  photo)/JSON-LD, full description text as real crawlable HTML (13 of 14
+  of these never reached crawlable text before), a Share button, and a
+  "← All Service Projects" link back. Reads the committed
+  `service-projects.json`, not the live `?action=projects` endpoint —
+  the live endpoint only returns a raw Drive `image_filename`, which
+  `getServiceProjects_`'s own doc comment notes does NOT reliably match
+  the actual committed photo (that mapping has always been a manual,
+  human step) — so generating from the committed, human-verified JSON
+  avoids any risk of a generated page showing the wrong photo. Also
+  regenerates `sitemap.xml`'s auto-generated block (14 new URLs) and
+  tracks previously-generated slugs in
+  `assets/service-projects/generated-pages-manifest.json` so a project
+  removed from the JSON later has its page cleaned up automatically.
+  `projects/index.html`'s `projectUrl()` was updated to point share
+  links at these new pages instead of the old `/projects/?project=<slug>`
+  query-string form — this is the one real (not purely additive) change
+  this phase needed: without it, sharing a project would still show this
+  index page's generic photo/description instead of the right one,
+  closing the long-deferred docs/SERVICE-PROJECTS-DESIGN.md §9 gap.
+  Run manually (`node .github/scripts/generate-project-pages.js`)
+  whenever `service-projects.json` changes — deliberately NOT wired to a
+  scheduled GitHub Action yet; that's Phase C.
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
