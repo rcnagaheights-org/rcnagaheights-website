@@ -398,5 +398,21 @@
     "commitment": "5% Discount",
     "facebook_url": "https://www.facebook.com/greenstockPH",
     "logo": "greenstock.jpg"
+  },
+  {
+    "merchant_id": "M-0051",
+    "name": "BIGGS",
+    "category": "Restaurants",
+    "commitment": "8% Discount",
+    "facebook_url": "https://www.facebook.com/biggsphl",
+    "logo": null
+  },
+  {
+    "merchant_id": "M-0052",
+    "name": "Musnest",
+    "category": "Accounting Services",
+    "commitment": "PhP500 Discount",
+    "facebook_url": "https://www.facebook.com/musnestconsultancy",
+    "logo": null
   }
 ]

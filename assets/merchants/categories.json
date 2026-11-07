@@ -16,7 +16,8 @@
     "Training Services": "graduation-cap",
     "Dental Services": "smile",
     "Wholesale Supplies": "boxes",
-    "Other": "grid"
+    "Other": "grid",
+    "Accounting Services": "grid"
   },
   "order": [
     "Grooming Services",
@@ -35,6 +36,7 @@
     "Training Services",
     "Dental Services",
     "Wholesale Supplies",
-    "Other"
+    "Other",
+    "Accounting Services"
   ]
 }
