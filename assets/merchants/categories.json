@@ -17,7 +17,7 @@
     "Dental Services": "smile",
     "Wholesale Supplies": "boxes",
     "Other": "grid",
-    "Accounting Services": "grid"
+    "Accounting Services": "calculator"
   },
   "order": [
     "Grooming Services",
