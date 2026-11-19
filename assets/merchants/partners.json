@@ -405,7 +405,7 @@
     "category": "Restaurants",
     "commitment": "8% Discount",
     "facebook_url": "https://www.facebook.com/biggsphl",
-    "logo": null
+    "logo": "biggs.png"
   },
   {
     "merchant_id": "M-0052",
@@ -413,6 +413,6 @@
     "category": "Accounting Services",
     "commitment": "PhP500 Discount",
     "facebook_url": "https://www.facebook.com/musnestconsultancy",
-    "logo": null
+    "logo": "musnest.png"
   }
 ]
