@@ -1,5 +1,5 @@
 # Service Projects Page — Data-Driven Rework
-Version: v5.1 · Last updated: 2026-10-04
+Version: v6 · Last updated: 2026-11-19
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). **Updated 2026-10-03**: the page
@@ -7,8 +7,10 @@ now fetches LIVE from the DTC Apps Script backend's new `?action=projects`
 (`getServiceProjects_` in Code.gs), falling back to the committed
 `assets/service-projects/service-projects.json` only if that call fails —
 the same live-then-static-fallback pattern `/diskwentulong/` and `/rurok/`
-already use. See §7 for the full automation design. All 14 real projects
-are live either way (see §6).
+already use. See §7 for the full automation design. **Updated 2026-11-19**:
+a backlog of 30 more real projects (found in Drive, see §11) was migrated
+to both the live Sheet and the static fallback — 44 real projects are now
+live either way (see §6/§11).
 
 ## 0. Why this rework
 The old page (see docs/PROJECTS-PAGE.md for its now-superseded
@@ -538,3 +540,44 @@ needs per-project location/date-range data the Sheet doesn't have;
 B2 needs per-issue summary content to be written), but the user decided
 not to pursue either as follow-up work, so neither is open/pending —
 don't pick these back up without the user raising them again.
+
+## 11. 30-project backlog migration (2026-11-19)
+A routine `docs/CONTENT-MANAGEMENT.md` Drive content-sync check found
+that "Service Projects.xlsx" (the sheet §1 describes) had grown from 14
+rows to 44 — 30 real projects spanning June-October 2026 that were
+never transferred into the live native Sheet `getServiceProjects_`
+reads from, meaning six months of real club activity never appeared on
+`/projects/` even though the source data existed in Drive the whole
+time. Full remediation, both halves:
+
+- **Static site** (committed directly to this repo): downloaded all 30
+  photos from Drive (12 were HEIC — 2 of those failed ImageMagick's HEIC
+  decoder with a broken depth-map reference / unsupported codec and
+  needed `pillow-heif` instead), resized to ≤1600px and compressed to
+  ~500KB or less, committed under `assets/service-projects/`, and added
+  all 30 entries to `service-projects.json` (14 → 44).
+- **Live native Sheet**: appended via a temporary, one-time `clasp`-pushed
+  migration — same pattern as previous one-time Apps Script data/access
+  fixes documented elsewhere in this repo (see `backend/Code.gs`'s own
+  history): a throwaway `doGet` action + `migrateServiceProjectsBacklog_`
+  function (dedupe-safe — skips any row whose name already exists) was
+  pushed with `appsscript.json`'s `access` temporarily set to `MYSELF`,
+  called once (`appended_count: 30`, `skipped_count: 0`,
+  `total_rows_now: 44`), then fully stripped back out and the clean
+  version (byte-identical to `backend/Code.gs`) pushed back as HEAD —
+  the production deployment itself was never touched (data changes
+  don't need a redeploy). Confirmed live: `?action=projects` now
+  returns all 44 projects correctly, categories included.
+- **Generated artifacts**: `projects/index.html`'s `IMAGE_BY_PROJECT`
+  map, all 30 new `projects/<slug>/index.html` pages (via
+  `generate-project-pages.js`), and `sitemap.xml`'s auto-generated block
+  were all regenerated/updated to match.
+
+**One data-quality note, flagged for a source-level fix:** "PUSONG
+ORAGON PARA SA PRESONG ORAGON"'s Avenue-of-Service cell in the xlsx has
+4 comma-separated categories crammed into one field. Neither this
+site's data model nor `getServiceProjects_`'s own `": "`-splitting
+parser supports more than one category per row — picked the single
+best-fit category (`Peacebuilding and Conflict Prevention`,
+`areas_of_focus`) for both the committed JSON and the live-Sheet row
+rather than carry a garbled multi-category string into either.

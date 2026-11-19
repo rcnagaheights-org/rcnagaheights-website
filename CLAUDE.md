@@ -477,6 +477,22 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   Run manually (`node .github/scripts/generate-project-pages.js`)
   whenever `service-projects.json` changes — deliberately NOT wired to a
   scheduled GitHub Action yet; that's Phase C.
+- **2026-11-19**: a routine Drive content-sync check (docs/CONTENT-
+  MANAGEMENT.md) found "Service Projects.xlsx" had grown from 14 rows to
+  44 — 30 real projects (June-October 2026) that were never transferred
+  into the live native Sheet, so six months of real activity was
+  invisible on `/projects/` even though the source data existed in
+  Drive. Fully migrated: all 30 photos downloaded/converted (12 HEIC,
+  2 needing `pillow-heif` after ImageMagick couldn't decode them) and
+  committed, `service-projects.json`/`IMAGE_BY_PROJECT`/30 generated
+  per-project pages/`sitemap.xml` all updated (14 → 44), AND the live
+  Sheet itself appended via a temporary one-time `clasp`-pushed
+  migration function (stripped back out afterward, clean Code.js
+  confirmed byte-identical to `backend/Code.gs`) — confirmed live,
+  `?action=projects` now returns all 44. See
+  docs/SERVICE-PROJECTS-DESIGN.md §11 for the full account, including
+  one data-quality fix (a row with 4 categories crammed into one field,
+  resolved by picking the single best-fit category).
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
