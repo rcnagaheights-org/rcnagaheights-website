@@ -1,5 +1,5 @@
 # Service Projects Page — Data-Driven Rework
-Version: v6 · Last updated: 2026-11-19
+Version: v6.1 · Last updated: 2026-11-19
 
 ## Status
 Design CONFIRMED and BUILT (2026-07-20). **Updated 2026-10-03**: the page
@@ -9,8 +9,10 @@ now fetches LIVE from the DTC Apps Script backend's new `?action=projects`
 the same live-then-static-fallback pattern `/diskwentulong/` and `/rurok/`
 already use. See §7 for the full automation design. **Updated 2026-11-19**:
 a backlog of 30 more real projects (found in Drive, see §11) was migrated
-to both the live Sheet and the static fallback — 44 real projects are now
-live either way (see §6/§11).
+to both the live Sheet and the static fallback — 44 real projects were
+live either way, then corrected the same day to 40 after 4 of those rows
+turned out to be RUROK bulletin issues, not service projects (see §11's
+"Corrected same day" note).
 
 ## 0. Why this rework
 The old page (see docs/PROJECTS-PAGE.md for its now-superseded
@@ -581,3 +583,18 @@ parser supports more than one category per row — picked the single
 best-fit category (`Peacebuilding and Conflict Prevention`,
 `areas_of_focus`) for both the committed JSON and the live-Sheet row
 rather than carry a garbled multi-category string into either.
+
+**Corrected same day:** 4 of the 30 migrated rows — "RUROK: THE RCNH
+MAGAZINE JUNE/JULY/AUGUST/SEPTEMBER 2026 ISSUE" — shouldn't have been
+treated as service projects at all; they're per-issue entries for the
+RUROK bulletin (already represented by its own single "RUROK: THE RCNH
+MAGAZINE" project, live since 2026-10-04, and by `/rurok/` itself), not
+club service activities. Removed from everywhere the migration had
+added them: `service-projects.json` (44 → 40), `IMAGE_BY_PROJECT`, the
+4 generated `projects/<slug>/index.html` pages + their `sitemap.xml`
+entries and manifest tracking, their 4 committed photos, AND the live
+Sheet (via the same temporary-`clasp`-push one-time-function pattern,
+this time a deletion rather than an append — `removed_count: 4`,
+`total_rows_now: 40`). The original "RUROK: THE RCNH MAGAZINE" entry
+and its page were untouched. Confirmed live: `?action=projects` now
+returns 40 projects with exactly that one RUROK entry.
