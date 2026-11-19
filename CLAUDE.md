@@ -493,6 +493,13 @@ Tailwind 3.4.17 (CDN), vanilla JS, Lucide icons 0.263.0 (CDN), Google Fonts
   docs/SERVICE-PROJECTS-DESIGN.md §11 for the full account, including
   one data-quality fix (a row with 4 categories crammed into one field,
   resolved by picking the single best-fit category).
+  **Corrected same day**: 4 of those 30 rows — the RUROK June/July/
+  August/September 2026 monthly issues — were wrongly treated as
+  service projects (they're bulletin issues, already covered by the
+  existing single "RUROK: THE RCNH MAGAZINE" project and by `/rurok/`
+  itself). Removed from everywhere, including the live Sheet (same
+  temporary-`clasp` one-time-function pattern, this time a deletion);
+  confirmed live, `?action=projects` now returns 40 (44 → 40).
 
 ## Content management (Google Drive)
 A Google Drive connector is available to you, but you have no
